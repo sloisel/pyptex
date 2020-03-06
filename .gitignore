@@ -17,4 +17,6 @@ testgen*
 __pycache__
 *~
 doc
+build
+dist
 !tests/test?/testgold?/*

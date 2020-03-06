@@ -12,8 +12,9 @@ argv=""
 cd $1
 clean
 exec > >(tee -i runtests.log) 2>&1
-sp=`cd ../../scripts && pwd`
-pyptex="$sp/pyptex --pdb=no"
+sp=`cd ../.. && pwd`
+export PYTHONPATH=$sp
+pyptex="$sp/scripts/pyptex --pdb=no"
 cmdk='x'
 argk='x'
 for fn in test?.tex

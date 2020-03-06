@@ -44,14 +44,19 @@ class BSCommand (build_scripts):
 setup(
     name="pyptex",
     description="Python Preprocessor for (La)TeX",
-    version="0.1",
+    version="0.1.1",
 	packages=find_packages(),
-	install_requires=["sympy>=1.5","numpy","setuptools"],
-    build_requires=["pdoc"],
+	install_requires=["sympy>=1.5","numpy>=1.18","setuptools","pdoc3>=0.7"],
 	python_requires=">=3",
     author="Sébastien Loisel",
     author_email="sloisel@gmail.com",
     zip_safe=False,
+    url="https://github.com/sloisel/pyptex",
+    project_urls={
+        "Documentation": "https://htmlpreview.github.io/?https://github.com/sloisel/pyptex/blob/master/html/pyptex.html",
+        "Source": "https://github.com/sloisel/pyptex",
+    },
+    license="MIT",
     scripts=['scripts/pyptex'],
     cmdclass={'build_scripts': BSCommand},
 )
