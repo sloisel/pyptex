@@ -1,6 +1,11 @@
 from setuptools import setup, find_packages
 from distutils.command.build_scripts import build_scripts
 
+from os import path
+this_directory = path.abspath(path.dirname(__file__))
+with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
+    long_description = f.read()
+
 # don't touch my shebang
 class BSCommand (build_scripts):
     def run(self):
@@ -44,7 +49,7 @@ class BSCommand (build_scripts):
 setup(
     name="pyptex",
     description="Python Preprocessor for (La)TeX",
-    version="0.1.1",
+    version="0.1.2",
 	packages=find_packages(),
 	install_requires=["sympy>=1.5","numpy>=1.18","setuptools","pdoc3>=0.7"],
 	python_requires=">=3",
@@ -59,4 +64,6 @@ setup(
     license="MIT",
     scripts=['scripts/pyptex'],
     cmdclass={'build_scripts': BSCommand},
+    long_description=long_description,
+    long_description_content_type='text/markdown',
 )
