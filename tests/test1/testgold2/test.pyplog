@@ -1,0 +1,203 @@
+test.tex: pyptex compilation begins
+Found 157 lines of Python.
+Using cached Python outputs
+Saving to file: test.pyptex
+Dependencies are:
+{'.../__init__.py': '(datetime)', 'test.bib': '(datetime)'}
+Running Latex command:
+pdflatex --file-line-error --synctex=1 test.pyptex && (test ! -f test.bib || bibtex test.aux)
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex)
+ restricted \write18 enabled.
+entering extended mode
+(./test.pyptex
+LaTeX2e <2017-04-15>
+Babel <3.10> and hyphenation patterns for 84 language(s) loaded.
+(/usr/local/texlive/2017/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/local/texlive/2017/texmf-dist/tex/latex/base/size10.clo))
+(/usr/local/texlive/2017/texmf-dist/tex/latex/base/inputenc.sty
+(/usr/local/texlive/2017/texmf-dist/tex/latex/base/utf8.def
+(/usr/local/texlive/2017/texmf-dist/tex/latex/base/t1enc.dfu)
+(/usr/local/texlive/2017/texmf-dist/tex/latex/base/ot1enc.dfu)
+(/usr/local/texlive/2017/texmf-dist/tex/latex/base/omsenc.dfu)))
+(/usr/local/texlive/2017/texmf-dist/tex/generic/babel/babel.sty
+(/usr/local/texlive/2017/texmf-dist/tex/generic/babel-english/english.ldf
+(/usr/local/texlive/2017/texmf-dist/tex/generic/babel/babel.def)))
+(/usr/local/texlive/2017/texmf-dist/tex/latex/amsmath/amsmath.sty
+For additional information on amsmath, use the `?' option.
+(/usr/local/texlive/2017/texmf-dist/tex/latex/amsmath/amstext.sty
+(/usr/local/texlive/2017/texmf-dist/tex/latex/amsmath/amsgen.sty))
+(/usr/local/texlive/2017/texmf-dist/tex/latex/amsmath/amsbsy.sty)
+(/usr/local/texlive/2017/texmf-dist/tex/latex/amsmath/amsopn.sty))
+(/usr/local/texlive/2017/texmf-dist/tex/latex/tools/verbatim.sty)
+(/usr/local/texlive/2017/texmf-dist/tex/latex/relsize/relsize.sty)
+(/usr/local/texlive/2017/texmf-dist/tex/latex/graphics/graphicx.sty
+(/usr/local/texlive/2017/texmf-dist/tex/latex/graphics/keyval.sty)
+(/usr/local/texlive/2017/texmf-dist/tex/latex/graphics/graphics.sty
+(/usr/local/texlive/2017/texmf-dist/tex/latex/graphics/trig.sty)
+(/usr/local/texlive/2017/texmf-dist/tex/latex/graphics-cfg/graphics.cfg)
+(/usr/local/texlive/2017/texmf-dist/tex/latex/graphics-def/pdftex.def
+(/usr/local/texlive/2017/texmf-dist/tex/generic/oberdiek/infwarerr.sty)
+(/usr/local/texlive/2017/texmf-dist/tex/generic/oberdiek/ltxcmds.sty))))
+(/usr/local/texlive/2017/texmf-dist/tex/generic/oberdiek/hologo.sty
+(/usr/local/texlive/2017/texmf-dist/tex/generic/oberdiek/kvsetkeys.sty
+(/usr/local/texlive/2017/texmf-dist/tex/generic/oberdiek/etexcmds.sty
+(/usr/local/texlive/2017/texmf-dist/tex/generic/oberdiek/ifluatex.sty)))
+(/usr/local/texlive/2017/texmf-dist/tex/generic/oberdiek/kvdefinekeys.sty)
+(/usr/local/texlive/2017/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
+(/usr/local/texlive/2017/texmf-dist/tex/generic/oberdiek/ifpdf.sty))
+(/usr/local/texlive/2017/texmf-dist/tex/generic/ifxetex/ifxetex.sty)
+(/usr/local/texlive/2017/texmf-dist/tex/generic/oberdiek/ifvtex.sty))
+(/usr/local/texlive/2017/texmf-dist/tex/latex/listings/listings.sty
+(/usr/local/texlive/2017/texmf-dist/tex/latex/listings/lstmisc.sty)
+(/usr/local/texlive/2017/texmf-dist/tex/latex/listings/listings.cfg))
+(/usr/local/texlive/2017/texmf-dist/tex/latex/natbib/natbib.sty) (./test.aux)
+(/usr/local/texlive/2017/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+) (/usr/local/texlive/2017/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
+(/usr/local/texlive/2017/texmf-dist/tex/latex/oberdiek/grfext.sty)
+(/usr/local/texlive/2017/texmf-dist/tex/latex/oberdiek/kvoptions.sty)
+(/usr/local/texlive/2017/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg))
+
+Package natbib Warning: Citation `lamport1994latex' on page 1 undefined on inpu
+t line 42.
+
+
+Package natbib Warning: Citation `virtanen2020scipy' on page 1 undefined on inp
+ut line 43.
+
+
+Package natbib Warning: Citation `meurer2017sympy' on page 1 undefined on input
+ line 43.
+
+
+Overfull \hbox (6.5659pt too wide) in paragraph at lines 45--46
+[]\OT1/cmr/m/n/10 One in-stalls P[]T[]X by typ-ing \OT1/cmtt/m/n/10 pip install
+ pyptex \OT1/cmr/m/n/10 at the com-mand prompt.
+
+Overfull \hbox (12.48195pt too wide) in paragraph at lines 53--54
+\OT1/cmr/m/n/10 One com-piles \OT1/cmtt/m/n/10 example.tex \OT1/cmr/m/n/10 us-i
+ng the P[]T[]X com-mand line \OT1/cmtt/m/n/10 pyptex example.tex\OT1/cmr/m/n/10
+ .
+[1{/usr/local/texlive/2017/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+
+Package natbib Warning: Citation `fine2005tex' on page 2 undefined on input lin
+e 91.
+
+
+Package natbib Warning: Citation `ehmsen' on page 2 undefined on input line 91.
+
+
+
+Package natbib Warning: Citation `poore2015pythontex' on page 2 undefined on in
+put line 91.
+
+
+Package natbib Warning: Citation `molteno2014sympytex' on page 2 undefined on i
+nput line 91.
+
+
+Package natbib Warning: Citation `drake2009sagetex' on page 2 undefined on inpu
+t line 91.
+
+
+Package natbib Warning: Citation `pakin2004perltex' on page 2 undefined on inpu
+t line 91.
+
+
+Package natbib Warning: Citation `hagen2005luatex' on page 2 undefined on input
+ line 91.
+
+
+Package natbib Warning: Citation `knuth1984texbook' on page 2 undefined on inpu
+t line 91.
+
+
+Package natbib Warning: Citation `hepple1998' on page 2 undefined on input line
+ 91.
+
+
+Package natbib Warning: Citation `alchin2013pro' on page 2 undefined on input l
+ine 91.
+
+[2]
+
+Package natbib Warning: Citation `Loisel2020' on page 3 undefined on input line
+ 93.
+
+[3] (./plot1.tex) (./plot2.tex) (./plot1.pyptex
+Underfull \hbox (badness 10000) in paragraph at lines 115--1
+
+[4] <fun-eps-converted-to.pdf, id=31, 462.52798pt x 346.89601pt>
+<use fun-eps-converted-to.pdf>) (./plot2.pyptex
+<plot2-generated/fig1-eps-converted-to.pdf, id=32, 372.9132pt x 281.56192pt>
+<use plot2-generated/fig1-eps-converted-to.pdf>)
+Overfull \hbox (15.87747pt too wide) in paragraph at lines 2--118
+[][]  []
+
+Underfull \hbox (badness 10000) in paragraph at lines 2--118
+
+
+Overfull \hbox (1.52615pt too wide) in paragraph at lines 128--129
+[]\OT1/cmr/m/n/10 de-faults to [][]\OT1/cmtt/m/n/10 "pdflatex --file-line-error
+ --synctex=1" []\OT1/cmr/m/n/10 but this can be over-
+
+Overfull \hbox (0.84431pt too wide) in paragraph at lines 130--131
+[]\OT1/cmr/m/n/10 P[]T[]X can be used pro-gram-mat-i-cally in the Python in-ter
+-preter with \OT1/cmtt/m/n/10 import
+[5 <./fun-eps-converted-to.pdf> <./plot2-generated/fig1-eps-converted-to.pdf>]
+[6]
+
+Package natbib Warning: Citation `cimpanu2018twelve' on page 7 undefined on inp
+ut line 152.
+
+[7]
+Overfull \hbox (3.16675pt too wide) in paragraph at lines 175--176
+\OT1/cmr/m/n/10 from \OT1/cmtt/m/n/10 notes.tex\OT1/cmr/m/n/10 , re-gard-less o
+f any cache con-tents, or re-port gen-uine Python
+[8]
+Overfull \hbox (13.55447pt too wide) in paragraph at lines 185--187
+\OT1/cmr/m/n/10 cache file by is-su-ing the Python com-mand [][]\OT1/cmtt/m/n/1
+0 pyp.disable_cache=True []\OT1/cmr/m/n/10 in \OT1/cmtt/m/n/10 notes.tex\OT1/cm
+r/m/n/10 ,
+[9] (./test.bbl
+Underfull \hbox (badness 1168) in paragraph at lines 83--89
+\OT1/cmr/m/n/10 Reddy, David Cour-na-peau, Ev-geni Burovski, Pearu Pe-ter-son, 
+War-ren
+[10])
+
+Package natbib Warning: There were undefined citations.
+
+[11] (./test.aux
+
+Package natbib Warning: Citation(s) may have changed.
+(natbib)                Rerun to get citations correct.
+
+) )
+(see the transcript file for additional information)</usr/local/texlive/2017/te
+xmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2017/tex
+mf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2017/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmbx7.pfb></usr/local/texlive/2017/texmf-
+dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb></usr/local/texlive/2017/texmf-di
+st/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2017/texmf-dis
+t/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2017/texmf-dist
+/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2017/texmf-dist/f
+onts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2017/texmf-dist/fon
+ts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2017/texmf-dist/fonts
+/type1/public/amsfonts/cm/cmr6.pfb></usr/local/texlive/2017/texmf-dist/fonts/ty
+pe1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1
+/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/pu
+blic/amsfonts/cm/cmr9.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/publi
+c/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public
+/amsfonts/cm/cmti10.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/
+amsfonts/cm/cmtt10.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/a
+msfonts/cm/cmtt12.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/am
+sfonts/cm/cmtt8.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsf
+onts/cm/cmtt9.pfb>
+SyncTeX written on test.synctex.gz.
+Transcript written on test.log.
+This is BibTeX, Version 0.99d (TeX Live 2017)
+The top-level auxiliary file: test.aux
+The style file: plainnat.bst
+Database file #1: test.bib
+test.tex: pyptex compilation ends

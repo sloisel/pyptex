@@ -1,0 +1,35 @@
+#!/bin/bash
+set -e
+sp=`cd ../scripts && pwd`
+if [ "x$1" = "x--generate" ]; then
+	rm -rf */testgold*
+	shift
+fi
+
+rm -f runtests.log
+
+echo "runtests: launching unit tests (parallel execution)" > runtests.log
+dirs=`ls -F | grep /`
+for d in $dirs; do
+	cmd="./runtest $d"
+	echo "runtests: launching $cmd" > runtests.log
+	$cmd &
+done
+wait
+exec > >(tee -ia runtests.log) 2>&1
+echo "runtests: parallel execution complete, collating log files."
+cat */runtests.log
+echo ========================================================
+echo runtests: Summary
+GREEN=`echo -e '\033[32m'`
+NORMAL=`echo -e '\033[0m'`
+RED=`echo -e '\033[31m'`
+cat */runtests.log | grep -E 'runtests:.*(FAIL|pass)' | sed "s/FAIL/${RED}FAIL${NORMAL}/g" | sed "s/pass/${GREEN}pass${NORMAL}/"
+fails=`cat */runtests.log | grep -E 'runtests:.*FAIL' | wc -l`
+passes=`cat */runtests.log | grep -E 'runtests:.*pass' | wc -l`
+total=`cat */runtests.log | grep -E 'runtests:.*(FAIL|pass)' | wc -l`
+echo "runtests: Statistics"
+echo "runtests: total number of tests       : $total"
+echo "runtests: total number of tests passed: $passes"
+echo "runtests: total number of tests failed: $fails"
+exit $fails

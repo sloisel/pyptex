@@ -1,0 +1,1403 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.7.5" />
+<title>pyptex API documentation</title>
+<meta name="description" content="PypTeX: the Python Preprocessor for TeX …" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>pyptex</code></h1>
+</header>
+<section id="section-intro">
+<h2 id="pyptex-the-python-preprocessor-for-tex">PypTeX: the Python Preprocessor for TeX</h2>
+<h3 id="author-sebastien-loisel">Author: Sébastien Loisel</h3>
+<p>PypTeX is the Python Preprocessor for LaTeX. It allows one to embed Python
+code fragments in a LaTeX template file.</p>
+<h1 id="requirements">Requirements</h1>
+<p>This has been tested on Mac with TeXLive 2017. PypTeX itself can be installed
+via <code>pip install pyptex</code>.</p>
+<h1 id="introduction">Introduction</h1>
+<p>Assume <code>example.tex</code> contains the following text:</p>
+<pre><code>\documentclass{article}
+@{from sympy import *}
+\begin{document}
+$$\int x^3\,dx = @{S('integrate(x^3,x)')}+C$$
+\end{document}
+</code></pre>
+<p>The command <code>pyptex example.tex</code> will generate <code>example.pdf</code>,
+as well as the intermediary file <code>example.pyptex</code>. PypTeX works by extracting Python
+fragments in <code>example.tex</code> indicated by either <code>@{...}</code> or <code>@{{{...}}}</code> and substituting the
+corresponding outputs to produce <code>example.pyptex</code>, which is then compiled with
+<code>pdflatex example.pyptex</code>, although one can use any desired LaTeX processor in lieu of
+<code>pdflatex</code>. The intermediary file <code>example.pyptex</code> is pure LaTeX.</p>
+<p>When processing Python fragments, the global scope contains an object <code>pyp</code> that is a
+(weakref proxy for a) <a title="pyptex.pyptex" href="#pyptex.pyptex"><code>pyptex</code></a> object that makes available several helper functions
+and useful data. For example, <code>pyp.print("hello, world")</code> inserts the string <code>hello, world</code>
+into the generated <code>example.pyptex</code> file.</p>
+<h1 id="template-preprocessing-vs-embedding">Template preprocessing vs embedding</h1>
+<p>PypTeX is a template preprocessor for LaTeX based on the Python language. When Python
+is embedded into LaTeX, Python code fragments are identified by LaTeX commands that use
+standard TeX notation, such as <code>\py{...}</code>. The code extraction is performed by TeX, then
+the code fragments are executed by Python, finally TeX is run again to merge the
+Python-generated LaTeX fragments back into the master file.</p>
+<p>By contrast, PypTeX is a preprocessor that extracts Python code fragments indicated by
+<code>@{...}</code> using regular expressions. Once the relevant Python outputs are collected, they
+are also inserted by regular expressions. LaTeX is only invoked once, on the final output.</p>
+<p>There may be specialized cases where Python embeddings are preferred, but we found
+that template preprocessing is superior to embedding. There are many reasons (that
+will be described elsewhere in detail) but we briefly mention the following reasons:
+1. Embeddings can result in deadlock. If we have <code>\includegraphics{dog.png}</code>, but
+<code>dog.png</code> is generated by a Python fragment, the first run of LaTeX will fail because
+<code>dog.png</code> does not yet exist. Since LaTeX failed, it did not extract the Python fragments
+and we cannot run the Python code that would generate <code>dog.png</code> unless we temporarily
+delete the <code>\includegraphics{dog.png}</code> from <code>a.tex</code>. In our experience, deadlock
+occurs almost every time we edit our large <code>.tex</code> files.
+2. Embedding makes debugging difficult. By contrast, PypTeX treats Python's debugger Pdb
+as a first-class citizen and everything should work as normal. Please let us know if some
+debugging task somehow fails for you.
+3. Performance. Substituting using regular expressions is faster than running the
+LaTeX processor.</p>
+<h1 id="caching">Caching</h1>
+<p>When compiling <code>a.tex</code>, PypTeX creates a cache file <code>a.pickle</code>. This file is
+automatically invalidated if the Python fragments in <code>a.tex</code> change, or if some
+other dependencies have changed. Dependencies can be declared from inside <code>a.tex</code> via
+<code>pyp.dep(...)</code>. Caching can be completely disabled with <code>pyp.disable_cache=True</code>,
+and users can delete <code>a.pickle</code> as necessary.</p>
+<h1 id="scopes">Scopes</h1>
+<p>For each template file <code>a.tex</code>, <code>b.tex</code>, &hellip; a private global scope is created for
+executing Python fragments. This means that Python fragments in <code>a.tex</code> cannot use
+functions or variables defined in <code>b.tex</code>, although shared functions could be
+implemented in a shared <code>c.py</code> Python module that is <code>import</code>ed into
+<code>a.tex</code> and <code>b.tex</code>.</p>
+<p>In particular, when does <code>pyp.input('b.tex')</code> from <code>a.tex</code>, the code in <code>b.tex</code> cannot
+use functions and data generated in <code>a.tex</code>. This means that <code>b.tex</code> is effectively
+a "compilation unit" whose semantics are essentially independent of <code>a.tex</code>.</p>
+<p>For any given <code>a.tex</code> file, its private global scope is initialized with the
+standard Python builtins and with a single <code>pyp</code> object, which is a <code>weakref.proxy</code>
+to the <code>pyptex('a.tex')</code> instance. We use a <code>weakref.proxy</code> because the global
+scope of <code>a.tex</code> is a <code>dict</code> stored in the (private) variable <code>pyp.__global__</code>. The
+use of <code>weakref.proxy</code> avoids creating a circular data structure that would otherwise
+stymie the Python garbage collector. For most purposes, this global <code>pyp</code> variable
+acts exactly like a concrete <a title="pyptex.pyptex" href="#pyptex.pyptex"><code>pyptex</code></a> instance.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">r&#34;&#34;&#34;
+## PypTeX: the Python Preprocessor for TeX
+
+### Author: Sébastien Loisel
+
+PypTeX is the Python Preprocessor for LaTeX. It allows one to embed Python
+code fragments in a LaTeX template file.
+
+# Requirements
+
+This has been tested on Mac with TeXLive 2017. PypTeX itself can be installed
+via `pip install pyptex`.
+
+# Introduction
+
+Assume `example.tex` contains the following text:
+
+    \documentclass{article}
+    @{from sympy import *}
+    \begin{document}
+    $$\int x^3\,dx = @{S(&#39;integrate(x^3,x)&#39;)}+C$$
+    \end{document}
+
+The command `pyptex example.tex` will generate `example.pdf`,
+as well as the intermediary file `example.pyptex`. PypTeX works by extracting Python 
+fragments in `example.tex` indicated by either `@{...}` or `@{{{...}}}` and substituting the
+corresponding outputs to produce `example.pyptex`, which is then compiled with 
+`pdflatex example.pyptex`, although one can use any desired LaTeX processor in lieu of
+`pdflatex`. The intermediary file `example.pyptex` is pure LaTeX.
+
+When processing Python fragments, the global scope contains an object `pyp` that is a
+(weakref proxy for a) `pyptex.pyptex` object that makes available several helper functions
+and useful data. For example, `pyp.print(&#34;hello, world&#34;)` inserts the string `hello, world` 
+into the generated `example.pyptex` file.
+
+# Template preprocessing vs embedding
+
+PypTeX is a template preprocessor for LaTeX based on the Python language. When Python
+is embedded into LaTeX, Python code fragments are identified by LaTeX commands that use
+standard TeX notation, such as `\py{...}`. The code extraction is performed by TeX, then
+the code fragments are executed by Python, finally TeX is run again to merge the
+Python-generated LaTeX fragments back into the master file.
+
+By contrast, PypTeX is a preprocessor that extracts Python code fragments indicated by
+`@{...}` using regular expressions. Once the relevant Python outputs are collected, they
+are also inserted by regular expressions. LaTeX is only invoked once, on the final output.
+
+There may be specialized cases where Python embeddings are preferred, but we found
+that template preprocessing is superior to embedding. There are many reasons (that
+will be described elsewhere in detail) but we briefly mention the following reasons:
+1. Embeddings can result in deadlock. If we have `\includegraphics{dog.png}`, but 
+`dog.png` is generated by a Python fragment, the first run of LaTeX will fail because
+`dog.png` does not yet exist. Since LaTeX failed, it did not extract the Python fragments
+and we cannot run the Python code that would generate `dog.png` unless we temporarily
+delete the `\includegraphics{dog.png}` from `a.tex`. In our experience, deadlock
+occurs almost every time we edit our large `.tex` files.
+2. Embedding makes debugging difficult. By contrast, PypTeX treats Python&#39;s debugger Pdb 
+as a first-class citizen and everything should work as normal. Please let us know if some
+debugging task somehow fails for you.
+3. Performance. Substituting using regular expressions is faster than running the
+LaTeX processor.
+
+# Caching
+
+When compiling `a.tex`, PypTeX creates a cache file `a.pickle`. This file is
+automatically invalidated if the Python fragments in `a.tex` change, or if some
+other dependencies have changed. Dependencies can be declared from inside `a.tex` via
+`pyp.dep(...)`. Caching can be completely disabled with `pyp.disable_cache=True`,
+and users can delete `a.pickle` as necessary.
+
+# Scopes
+
+For each template file `a.tex`, `b.tex`, ... a private global scope is created for
+executing Python fragments. This means that Python fragments in `a.tex` cannot use
+functions or variables defined in `b.tex`, although shared functions could be
+implemented in a shared `c.py` Python module that is `import`ed into
+`a.tex` and `b.tex`.
+
+In particular, when does `pyp.input(&#39;b.tex&#39;)` from `a.tex`, the code in `b.tex` cannot
+use functions and data generated in `a.tex`. This means that `b.tex` is effectively
+a &#34;compilation unit&#34; whose semantics are essentially independent of `a.tex`.
+
+For any given `a.tex` file, its private global scope is initialized with the 
+standard Python builtins and with a single `pyp` object, which is a `weakref.proxy` 
+to the `pyptex(&#39;a.tex&#39;)` instance. We use a `weakref.proxy` because the global
+scope of `a.tex` is a `dict` stored in the (private) variable `pyp.__global__`. The
+use of `weakref.proxy` avoids creating a circular data structure that would otherwise
+stymie the Python garbage collector. For most purposes, this global `pyp` variable
+acts exactly like a concrete `pyptex` instance.
+&#34;&#34;&#34;
+
+import sys
+import sympy
+import re
+import os
+import traceback
+import numpy
+import glob
+import pickle
+import time
+import subprocess
+import datetime
+import weakref
+
+__pdoc__ = {&#34;pyptex.compile&#34;:False,
+            &#34;pyptex.generateddir&#34;:False,
+            &#34;pyptex.process&#34;:False,
+            &#34;pyptex.resolvedeps&#34;:False,
+            &#34;pyptex.run&#34;:False,}
+
+pypparser = re.compile(r&#39;((?&lt;!\\)%[^\n]*\n)|(@@{)|(@{([^{}]+)}|@{{{(.*?)}}})&#39;,re.DOTALL)
+
+__pdoc__[&#34;format_my_nanos&#34;] = False
+# Credit: abarnet on StackOverflow
+def format_my_nanos(nanos):
+    &#34;&#34;&#34;Convert nanoseconds to a human-readable format&#34;&#34;&#34;
+    dt = datetime.datetime.fromtimestamp(nanos / 1e9)
+    return &#39;{}.{:09.0f}&#39;.format(dt.strftime(&#39;%Y-%m-%d@%H:%M:%S&#39;), nanos % 1e9)
+
+__pdoc__[&#34;dictdiff&#34;] = False
+def dictdiff(A,B):
+    A = set(A.items())
+    B = set(B.items())
+    D = A ^ B
+    if(len(D)==0):
+        return None
+    return next(iter(D))
+
+class pyptex:
+    r&#34;&#34;&#34;Class `pyptex.pyptex` is used to parse an input (templated) `a.tex` file
+    and produce an output `a.pyptex` file, and can be used as follows:
+        `pyp = pyptex(&#39;a.tex&#39;)`
+    The constructor reads `a.tex`, executes Python fragments and performs relevant
+    substitutions, writing `a.pyptex` to disk. The contents of `a.pyptex` are also
+    available as `pyp.compiled`.
+    &#34;&#34;&#34;
+    def genname(self,pattern=&#34;fig{gencount}.eps&#34;):
+        r&#34;&#34;&#34;Generate a filename
+        
+        To produce an automatically generated filename, use the statement
+        `pyp.genname()`, where `pyp` is an object of type `pyptex`, for parsing a
+        given file `a.tex`. By default, this will generate the name 
+        `&#39;a-generated/fig{gencount}.eps&#39;`
+        The subdirectory can be overridden by overwriting `pyp.gendir`,
+        and `gencount` denotes `pyp.gencount`. Any desired pattern can be used,
+        for example:
+            `name = pyp.genname(&#39;hello-{gencount}-{thing}.txt&#39;)`
+        will return something like `&#39;a-generated/hello-X-Y.txt&#39;`, where
+        `X` is `pyp.gencount` and `Y` is `pyp.thing`.
+
+        `pyp.genname()` does not actually create the file. `pyp.genname()` increments
+        `pyp.gencount` every time it is called.
+        &#34;&#34;&#34;
+        self.gencount = self.gencount+1
+        return self.gendir+&#39;/&#39;+pattern.format(**self.__dict__)
+
+    def savefig(self,fig,pattern=&#34;fig{gencount}.eps&#34;,**kwargs):
+        &#34;&#34;&#34;Save a figure to the a-generated/* subdirectory.
+        
+        If `pyp` is an object of type `pyptex`:
+        `pyp.savefig(fig)` saves a SymPy or matplotlib figure to the `a-generated/*` 
+        subdirectory, using the `pyptex.genname()` automatically generated filename. 
+        `pyp.savefig(fig,pattern)` further specifies the filename pattern of the
+        generated name, see `genname()`.
+        `pyp.savefig(fig,pattern,...)` passes any further keyword arguments directly
+        to the `savefig` function from matplotlib.
+
+        A typical way of using this from a TeX file is:
+        `\\includegraphics{@{pyp.savefig(...)}}`
+        &#34;&#34;&#34;
+        if(self.__sympy_plot__ == None):
+            self.__sympy_plot__ = sympy.plotting.plot(1,show=False).__class__
+        figname = self.genname(pattern)
+        if(fig.__class__==self.__sympy_plot__):
+            backend = fig.backend(fig)
+            backend.process_series()
+            backend.fig.savefig(figname, **kwargs)
+        else:
+            fig.savefig(figname, **kwargs)
+        self.dep(figname)
+        return figname
+    def generateddir(self):
+        &#34;&#34;&#34;This is an internal function that creates the generated directory&#34;&#34;&#34;
+        self.gendir = self.filename+&#39;-generated&#39;
+        if not os.path.exists(self.gendir):
+            os.makedirs(self.gendir)
+        self.gencount = 0
+
+    def __init__(self,texfilename,argv=[],latexcommand=False):
+        r&#34;&#34;&#34;`pyp = pyptex(&#39;a.tex&#39;)` reads in the LaTeX file a.tex and locates all
+        Python code fragments contained inside. These Python code fragments are
+        executed and their outputs are substituted to produce the `a.pyptex` output file.
+
+        `pyp = pyptex(&#39;a.tex&#39;,argv)` passes &#34;command-line arguments&#34;. The pyptex
+        command-line passes `sys.argv[2:]` for this parameter. If omitted, `argv`
+        defaults to `[]`. If using PypTeX as an templating engine to generate
+        multiple documents from a single source `a.tex` file, one should use
+        the `argv` parameter to pass in the various side-parameters needed to generate
+        each document. For example, `a.tex` might have the line &#34;Dear @{pyp.argv[0]}&#34;&#34;
+        One could produce a letter to John by doing `pyp = pyptex(&#39;a.tex&#39;,[&#39;John&#39;])`.
+
+        `pyp = pyptex(&#39;a.tex&#39;,argv,latexcommand)` further executes a specific shell
+        command once `a.pyptex` has been written to disk (e.g. `pdflatex {pytexfilename}`).
+        The default value of `latexcommand` is `False`, in which case no shell command
+        is executed.
+
+        Some salient fields of the `pyp=pyptex(&#39;a.tex&#39;)` class are:
+
+        * `pyp.filename = &#39;a&#39;` (so `a.tex`, with the extension stripped)
+        * `pyp.texfilename = &#39;a.tex&#39;`
+        * `pyp.cachefilename = &#39;a.pickle&#39;`
+        * `pyp.bibfilename = &#39;a.bib&#39;`, used by the `pyp.bib()` function
+        * `pyp.pyptexfilename = &#39;a.pyptex&#39;`
+        * `pyp.auxfilename = &#39;a.aux&#39;`, useful in case bibtex is used
+        * `pyp.latex = &#34;pdflatex --file-line-error --synctex=1&#34;`
+          One may overwrite this in a.tex to choose a different latex engine, e.g.
+          `pyp.latex = &#34;latex&#34;`
+        * `pyp.latexcommand` defaults to `False`, but the command-line version of `pyptex
+          uses something like
+          `r&#34;{latex} {pyptexfilename} &amp;&amp; (test ! -f {bibfilename} || bibtex {auxfilename})&#34;`
+          The relevant substitutions are performed by `string.format` from `pyp.__dict__`
+        * `pyp.disable_cache = False`, set this to `True` if you want to disable the `a.pickle`
+          cache. You shouldn&#39;t need to do this but if your Python code is nondeterministic
+          or if tracking dependencies is too hard, disabling all caching will ensure
+          that `a.pyptex` is correctly compiled into `a.pdf` and that a stale cache is
+          never used.
+        * `pyp.deps` is a dictionary of dependencies and timestamps
+        * `pyp.lc` counts lines while parsing
+        * `pyp.argv` stores the ``command-line arguments&#39;&#39; for template generation
+        * `pyp.exitcode` is the exit code of the `pyp.latexcommand`
+        * `pyp.gencount` is the counter for generated files (see `pyp.gen()`)
+        * `pyp.fragments` is the list of Python fragments extracted from a.tex
+        * `pyp.outputs` is the matching outputs.
+        * `pyp.compiled` is the string that is written to `a.pyptex`
+        &#34;&#34;&#34;
+        print(texfilename+&#34;: pyptex compilation begins&#34;)
+        self.__globals__ = {&#34;__builtins__&#34;:__builtins__,&#34;pyp&#34;:weakref.proxy(self)}
+        self.filename = os.path.splitext(texfilename)[0]
+        self.texfilename = texfilename
+        self.cachefilename = self.filename+&#39;.pickle&#39;
+        self.bibfilename = self.filename+&#39;.bib&#39;
+        self.pyptexfilename = self.filename+&#39;.pyptex&#39;
+        self.auxfilename = self.filename+&#39;.aux&#39;
+        self.latex = &#34;pdflatex --file-line-error --synctex=1&#34;
+        self.latexcommand = latexcommand
+        self.disable_cache = False
+        self.deps = {}
+        self.lc = 0
+        self.argv = argv
+        self.__sympy_plot__ = None
+        self.exitcode = 0
+        self.generateddir()
+        self.dep(__file__)
+        self.compile()
+        print(texfilename+&#34;: pyptex compilation ends&#34;)
+
+
+    def run(self,S,k):
+        &#34;&#34;&#34;An internal function for executing Python code&#34;&#34;&#34;
+        print(&#34;Executing Python code:\n&#34;+S)
+        S = &#34;\n&#34;*k+S
+        glob = self.__globals__
+        doeval = False
+        self.accum = []
+        try:
+            C = compile(S,self.texfilename,mode=&#39;eval&#39;)
+            doeval = True
+        except:
+            pass
+        if(doeval):
+            ret = eval(C,glob)
+            self.accum.append(ret)
+        else:
+            C = compile(S,self.texfilename,mode=&#39;exec&#39;)
+            exec(C,glob)
+        print(&#34;Python result:\n&#34;+str(self.accum))
+        return self.accum
+    def print(self,*argv):
+        &#34;&#34;&#34;If `pyp` is an object of type `pyptex`, `pyp.print(X)` causes `X` to be converted
+        to its latex representation and substituted into the `a.pyptex` output file.
+        The conversion is given by `sympy.latex(X)`, except that `None` is converted
+        to the empty string.
+
+        Many values can be printed at once with the notation `pyp.print(X,Y,...)`&#34;&#34;&#34;
+        self.accum.extend(argv)
+
+    def process(self,S,runner):
+        &#34;&#34;&#34;An internal helper function for parsing the input file&#34;&#34;&#34;
+        SS = S.splitlines()
+        ln = numpy.cumsum(numpy.array(numpy.array(list(S),dtype=&#39;U1&#39;)==&#39;\n&#39;,int))
+        ln = numpy.insert(ln,0,0)
+        def dowork(m):
+            if(m.start(1)&gt;=0):
+                return m.group(0)
+            if(m.start(2)&gt;=0):
+                return &#39;@{&#39;
+            for k in range(4,6):
+                if(m.start(k)&gt;=0):
+                    z = m.group(k)
+                    z0 = m.start(k)
+                    z1 = m.end(k)
+            self.lc = self.lc + (ln[z1]-ln[z0])+1
+            return runner(z,ln[z0])
+        return pypparser.sub(dowork,S)
+
+    def compile(self):
+        &#34;&#34;&#34;An internal function for compiling the input file&#34;&#34;&#34;
+        with open(self.texfilename,&#39;rt&#39;) as file:
+            text = file.read()
+        try:
+            with open(self.cachefilename,&#34;rb&#34;) as file:
+                cache = pickle.load(file)
+        except:
+            cache = {}
+        defaults = {&#34;fragments&#34;:[],
+                    &#34;outputs&#34;:[],
+                    &#34;deps&#34;:{},
+                    &#34;argv&#34;:[],
+                    &#34;disable_cache&#34;:True,
+                    }
+        for k,v in defaults.items():
+            if(not k in cache):
+                cache[k] = v
+        self.fragments = []
+        def scanner(C,k):
+            self.fragments.append(C)
+            return &#34;&#34;
+        self.process(text,runner = scanner)
+        print(&#34;Found &#34;+str(self.lc)+&#34; lines of Python.&#34;)
+        saveddeps = self.deps
+        self.deps = {}
+        for k in cache[&#34;deps&#34;]:
+            self.dep(k)
+        self.resolvedeps()
+        cached = True
+        if(cache[&#34;disable_cache&#34;]):
+            print(&#34;disable_cache=True&#34;)
+            cached = False
+        elif(cache[&#34;argv&#34;]!=self.argv):
+            print(&#34;argv differs&#34;,self.argv,cache[&#34;argv&#34;])
+            cached = False
+        elif(cache[&#34;fragments&#34;]!=self.fragments):
+            F1 = dict(enumerate(cache[&#34;fragments&#34;]))
+            F2 = dict(enumerate(self.fragments))
+            k = dictdiff(F1,F2)[0]
+            print(&#34;Fragment #&#34;,k,
+                  &#34;\nCached version:\n&#34;,F1[k] if k in F1 else None,
+                  &#34;\nLive version:\n&#34;,F2[k] if k in F2 else None)
+            cached = False
+        elif(self.deps!=cache[&#34;deps&#34;]):
+            F1 = cache[&#34;deps&#34;]
+            F2 = self.deps
+            k = dictdiff(F1,F2)[0]
+            print(&#34;Dependency mismatch&#34;,k,
+                  &#34;\nCached version:\n&#34;,F1[k] if k in F1 else None,
+                  &#34;\nLive version:\n&#34;,F2[k] if k in F2 else None)
+            cached = False
+        if(cached):
+            print(&#34;Using cached Python outputs&#34;)
+            for k,v in cache.items():
+                self.__dict__[k] = v 
+            self.subcount = -1
+            def subber(C,k):
+                self.subcount = self.subcount+1
+                return self.outputs[self.subcount]
+
+            self.compiled = self.process(text,runner = subber)
+        else:
+            print(&#34;Cache is invalidated.&#34;)
+            self.deps = saveddeps
+            self.outputs = []
+            def appender(C,k):
+                result = self.run(C,k)
+                self.outputs.append(&#34;&#34;.join(map(lambda x: sympy.latex(x) if x!=None else &#34;&#34;,result)))
+                return self.outputs[-1]
+            self.compiled = self.process(text,runner = appender)
+            writecache = True
+        sys.stdout.flush()
+        if(self.pyptexfilename):
+            print(&#34;Saving to file: &#34;+self.pyptexfilename)
+            with open(self.pyptexfilename,&#39;wt&#39;) as file:
+                file.write(self.compiled)
+        self.resolvedeps()
+        print(&#34;Dependencies are:\n&#34;+str(self.deps))
+        if(cached==False):
+            print(&#34;Saving cache file&#34;,self.cachefilename)
+            with open(self.cachefilename,&#39;wb&#39;) as file:
+                cache = {}
+                for k,v in self.__dict__.items():
+                    if(k[0:2]==&#39;__&#39; and k[-2:]==&#39;__&#39;):
+                        pass
+                    elif(callable(v)):
+                        pass
+                    else:
+                        cache[k]=v
+                print(&#34;Caching:&#34;,cache.keys())
+                pickle.dump(cache,file)
+        if(self.latexcommand):
+            cmd = self.latexcommand.format(**self.__dict__)
+            print(&#34;Running Latex command:\n&#34;+cmd)
+            self.exitcode = os.system(cmd)
+    def bib(self,bib):
+        &#34;&#34;&#34;A helper function for creating a `.bib` file. If `pyp=pyptex(&#39;a.tex&#39;)`,
+        then `pyp.bib(&#39;&#39;&#39;@book{knuth1984texbook, title={The {TEXbook}}, 
+        author={Knuth, Donald Ervin and Bibby, Duane}}&#39;&#39;&#39;)` creates a file
+        `a.bib` with the given text. This is just a convenience function
+        that makes it easier to incorporate the bibtex file straight into the
+        `a.tex` source. In `a.tex`, the typical way of using it is:
+        `\\bibliography{@{{{pyp.bib(&#34;...&#34;)}}}}`
+        &#34;&#34;&#34;
+        with self.open(self.bibfilename,&#39;wt&#39;) as file:
+            file.write(bib)
+        return self.filename
+    def dep(self,filename):
+        &#34;&#34;&#34;
+        If `pyp=pyptex(&#39;a.tex&#39;)`, then `pyp.dep(filename)` declares that the Python code
+        in `a.tex` depends on the file designated by `filename`. When the object
+        `pyptex(&#39;a.tex&#39;)` is constructed, the file `a.pickle` will be loaded (if it exists).
+        `a.pickle` is a cache of the results of the Python calculactions in `a.tex`. 
+        If the cache is deemed valid, the `pyptex` constructor does not rerun all 
+        the Python fragments in `a.tex` but instead uses the previously cached outputs.
+
+        The cache is invalidated under the following scenarios:
+        1. The new Python fragments in `a.tex` are not identical to the cached fragments.
+        2. The &#34;last modification&#34; timestamp on dependencies is not the same as in the cache.
+        3. `pyp.disable_cache==True`
+
+        The list of dependencies defaults to only the `pyptex` executable. Additional 
+        dependencies can be manually declared via `pyp.dep(filename)`.
+
+        For convenience, `pyp.dep(filename)` returns filename.
+        &#34;&#34;&#34;
+        self.deps[filename] = &#34;&#34;
+        return filename
+    def resolvedeps(self):
+        &#34;&#34;&#34;An internal function that actually computes the datestamps of dependencies&#34;&#34;&#34;
+        for k in self.deps:
+            try:
+                ds = format_my_nanos ( os.stat(k).st_mtime_ns )
+            except:
+                ds = &#34;&#34;
+            self.deps[k] = ds
+
+    def input(self,filename,argv=False):
+        r&#34;&#34;&#34;If `pyp = pyptex(&#39;a.tex&#39;)` then 
+        `pyp.input(&#39;b.tex&#39;)`
+        return the string `\input{&#34;b.pyptex&#34;}`. The common way of using this is to
+        put `@{pyp.input(&#39;b.tex&#39;)}` somewhere in `a.tex`.
+        The function `pyp.input(&#39;b.tex&#39;)` internally calls the constructor
+        `pyptex(&#39;b.tex&#39;)` so that `b.pyptex` is compiled from `b.tex`.
+
+        Note that the two files `a.tex` and `b.tex` are &#34;semantically isolated&#34;. All
+        calculations, variables and functions defined in `a.tex` live in a global scope
+        that is private to `a.tex`, much like each Python module has a private global
+        scope. In a similar fashion, `b.tex` has its own private global scope.
+        The global `pyp` objects in `a.tex` and `b.tex` are also different instances
+        of the `pyptex` class. This is similar to the notion of &#34;compilation units&#34; in 
+        the C programming language.
+
+        If one wishes to pass some parameters from `a.tex` to `b.tex`, one may use
+        the notation `pyp.input(&#39;b.tex&#39;,argv)`, which will initialize the global
+        `pyp` object of `b.tex` so that it contains the field `pyp.argv=argv`.
+
+        If one absolutely needs to export variables from `b.tex` back to `a.tex`, one
+        should directly use the `pyptex` constructor, e.g. `pyp_b = pyptex(&#39;b.tex&#39;,argv)`;
+        one can then retrieve values from the `b.tex` scope, e.g. with `pyp_b.fragments[0]`.
+        &#34;&#34;&#34;
+        ret=pyptex(filename,argv or self.argv,False)
+        return r&#34;\input{&#34;+ret.pyptexfilename+&#34;}&#34;
+    def open(self,filename,*argv,**kwargs):
+        &#34;&#34;&#34;If pyp = pyptex(&#39;a.tex&#39;) then pyp.open(filename,...) is a wrapper for
+        the builtin function open(filename,...) that further adds filename to
+        the list of dependencies via pyp.dep(filename).
+        &#34;&#34;&#34;
+        self.dep(filename)
+        return open(filename,*argv,**kwargs)
+
+def pyptexmain(argv=None):
+    &#34;&#34;&#34;
+    This function parses an input file a.tex to produce a.pyptex and a.pdf, by
+    doing pyp = pyptex(&#39;a.tex&#39;,...) object. The filename a.tex must be in argv[1];
+    if argv is not provided, it is taken from sys.argv.
+    The default pyp.latexcommand invokes pdflatex and, if a.bib is present, also bibtex.
+    If an exception occurs, pdb is automatically invoked in postmortem mode.
+    If &#34;--pdb=no&#34; is in argv, it is removed from argv and automatic pdb postmortem is disabled.
+    If &#34;--pdb=yes&#34; is in argv, automatic pdb postmortem is enabled. This is the default.
+    &#34;&#34;&#34;
+    argv = argv or sys.argv
+    dopdb = True
+    try:
+        k = argv.index(&#39;--pdb=no&#39;)
+        argv.pop(k)
+        dopdb = False
+    except:
+        pass
+    try:
+        k = argv.index(&#39;--pdb=yes&#39;)
+        argv.pop(k)
+        dopdb = True
+    except:
+        pass
+    assert len(argv)&gt;=2, &#34;Usage: pyptex &lt;filename.tex&gt; ...&#34;
+    try:
+        # logging inspired by Jacob Gabrielson on Stackoverflow
+        tee = subprocess.Popen([&#34;tee&#34;, os.path.splitext(argv[1])[0]+&#34;.pyplog&#34;], stdin=subprocess.PIPE)
+        os.dup2(tee.stdin.fileno(), sys.stdout.fileno())
+        os.dup2(tee.stdin.fileno(), sys.stderr.fileno())
+        pyp = pyptex(argv[1],argv[2:],
+            latexcommand=r&#34;{latex} {pyptexfilename} &amp;&amp; (test ! -f {bibfilename} || bibtex {auxfilename})&#34;
+            )
+    except:
+        import pdb
+        traceback.print_exc(file=sys.stdout)
+        if(dopdb):
+            print(&#34;A Python error has occurred. Launching the debugger pdb.\nType &#39;help&#39; for a list of commands, and &#39;quit&#39; when done.&#34;)
+            pdb.post_mortem()
+            sys.exit(1)
+    return pyp.exitcode</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="pyptex.pyptexmain"><code class="name flex">
+<span>def <span class="ident">pyptexmain</span></span>(<span>argv=None)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>This function parses an input file a.tex to produce a.pyptex and a.pdf, by
+doing pyp = pyptex('a.tex',&hellip;) object. The filename a.tex must be in argv[1];
+if argv is not provided, it is taken from sys.argv.
+The default pyp.latexcommand invokes pdflatex and, if a.bib is present, also bibtex.
+If an exception occurs, pdb is automatically invoked in postmortem mode.
+If "&ndash;pdb=no" is in argv, it is removed from argv and automatic pdb postmortem is disabled.
+If "&ndash;pdb=yes" is in argv, automatic pdb postmortem is enabled. This is the default.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def pyptexmain(argv=None):
+    &#34;&#34;&#34;
+    This function parses an input file a.tex to produce a.pyptex and a.pdf, by
+    doing pyp = pyptex(&#39;a.tex&#39;,...) object. The filename a.tex must be in argv[1];
+    if argv is not provided, it is taken from sys.argv.
+    The default pyp.latexcommand invokes pdflatex and, if a.bib is present, also bibtex.
+    If an exception occurs, pdb is automatically invoked in postmortem mode.
+    If &#34;--pdb=no&#34; is in argv, it is removed from argv and automatic pdb postmortem is disabled.
+    If &#34;--pdb=yes&#34; is in argv, automatic pdb postmortem is enabled. This is the default.
+    &#34;&#34;&#34;
+    argv = argv or sys.argv
+    dopdb = True
+    try:
+        k = argv.index(&#39;--pdb=no&#39;)
+        argv.pop(k)
+        dopdb = False
+    except:
+        pass
+    try:
+        k = argv.index(&#39;--pdb=yes&#39;)
+        argv.pop(k)
+        dopdb = True
+    except:
+        pass
+    assert len(argv)&gt;=2, &#34;Usage: pyptex &lt;filename.tex&gt; ...&#34;
+    try:
+        # logging inspired by Jacob Gabrielson on Stackoverflow
+        tee = subprocess.Popen([&#34;tee&#34;, os.path.splitext(argv[1])[0]+&#34;.pyplog&#34;], stdin=subprocess.PIPE)
+        os.dup2(tee.stdin.fileno(), sys.stdout.fileno())
+        os.dup2(tee.stdin.fileno(), sys.stderr.fileno())
+        pyp = pyptex(argv[1],argv[2:],
+            latexcommand=r&#34;{latex} {pyptexfilename} &amp;&amp; (test ! -f {bibfilename} || bibtex {auxfilename})&#34;
+            )
+    except:
+        import pdb
+        traceback.print_exc(file=sys.stdout)
+        if(dopdb):
+            print(&#34;A Python error has occurred. Launching the debugger pdb.\nType &#39;help&#39; for a list of commands, and &#39;quit&#39; when done.&#34;)
+            pdb.post_mortem()
+            sys.exit(1)
+    return pyp.exitcode</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="pyptex.pyptex"><code class="flex name class">
+<span>class <span class="ident">pyptex</span></span>
+<span>(</span><span>texfilename, argv=[], latexcommand=False)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Class <a title="pyptex.pyptex" href="#pyptex.pyptex"><code>pyptex</code></a> is used to parse an input (templated) <code>a.tex</code> file
+and produce an output <code>a.pyptex</code> file, and can be used as follows:
+<code>pyp = pyptex('a.tex')</code>
+The constructor reads <code>a.tex</code>, executes Python fragments and performs relevant
+substitutions, writing <code>a.pyptex</code> to disk. The contents of <code>a.pyptex</code> are also
+available as <code>pyp.compiled</code>.</p>
+<p><code>pyp = pyptex('a.tex')</code> reads in the LaTeX file a.tex and locates all
+Python code fragments contained inside. These Python code fragments are
+executed and their outputs are substituted to produce the <code>a.pyptex</code> output file.</p>
+<p><code>pyp = pyptex('a.tex',argv)</code> passes "command-line arguments". The pyptex
+command-line passes <code>sys.argv[2:]</code> for this parameter. If omitted, <code>argv</code>
+defaults to <code>[]</code>. If using PypTeX as an templating engine to generate
+multiple documents from a single source <code>a.tex</code> file, one should use
+the <code>argv</code> parameter to pass in the various side-parameters needed to generate
+each document. For example, <code>a.tex</code> might have the line "Dear @{pyp.argv[0]}""
+One could produce a letter to John by doing <code>pyp = pyptex('a.tex',['John'])</code>.</p>
+<p><code>pyp = pyptex('a.tex',argv,latexcommand)</code> further executes a specific shell
+command once <code>a.pyptex</code> has been written to disk (e.g. <code>pdflatex {pytexfilename}</code>).
+The default value of <code>latexcommand</code> is <code>False</code>, in which case no shell command
+is executed.</p>
+<p>Some salient fields of the <code>pyp=pyptex('a.tex')</code> class are:</p>
+<ul>
+<li><code>pyp.filename = 'a'</code> (so <code>a.tex</code>, with the extension stripped)</li>
+<li><code>pyp.texfilename = 'a.tex'</code></li>
+<li><code>pyp.cachefilename = 'a.pickle'</code></li>
+<li><code>pyp.bibfilename = 'a.bib'</code>, used by the <code>pyp.bib()</code> function</li>
+<li><code>pyp.pyptexfilename = 'a.pyptex'</code></li>
+<li><code>pyp.auxfilename = 'a.aux'</code>, useful in case bibtex is used</li>
+<li><code>pyp.latex = "pdflatex --file-line-error --synctex=1"</code>
+One may overwrite this in a.tex to choose a different latex engine, e.g.
+<code>pyp.latex = "latex"</code></li>
+<li><code>pyp.latexcommand</code> defaults to <code>False</code>, but the command-line version of <code>pyptex
+uses something like</code>r"{latex} {pyptexfilename} &amp;&amp; (test ! -f {bibfilename} || bibtex {auxfilename})"<code>The relevant substitutions are performed by</code>string.format<code>from</code>pyp.<strong>dict</strong>`</li>
+<li><code>pyp.disable_cache = False</code>, set this to <code>True</code> if you want to disable the <code>a.pickle</code>
+cache. You shouldn't need to do this but if your Python code is nondeterministic
+or if tracking dependencies is too hard, disabling all caching will ensure
+that <code>a.pyptex</code> is correctly compiled into <code>a.pdf</code> and that a stale cache is
+never used.</li>
+<li><code>pyp.deps</code> is a dictionary of dependencies and timestamps</li>
+<li><code>pyp.lc</code> counts lines while parsing</li>
+<li><code>pyp.argv</code> stores the ``command-line arguments'' for template generation</li>
+<li><code>pyp.exitcode</code> is the exit code of the <code>pyp.latexcommand</code></li>
+<li><code>pyp.gencount</code> is the counter for generated files (see <code>pyp.gen()</code>)</li>
+<li><code>pyp.fragments</code> is the list of Python fragments extracted from a.tex</li>
+<li><code>pyp.outputs</code> is the matching outputs.</li>
+<li><code>pyp.compiled</code> is the string that is written to <code>a.pyptex</code></li>
+</ul></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class pyptex:
+    r&#34;&#34;&#34;Class `pyptex.pyptex` is used to parse an input (templated) `a.tex` file
+    and produce an output `a.pyptex` file, and can be used as follows:
+        `pyp = pyptex(&#39;a.tex&#39;)`
+    The constructor reads `a.tex`, executes Python fragments and performs relevant
+    substitutions, writing `a.pyptex` to disk. The contents of `a.pyptex` are also
+    available as `pyp.compiled`.
+    &#34;&#34;&#34;
+    def genname(self,pattern=&#34;fig{gencount}.eps&#34;):
+        r&#34;&#34;&#34;Generate a filename
+        
+        To produce an automatically generated filename, use the statement
+        `pyp.genname()`, where `pyp` is an object of type `pyptex`, for parsing a
+        given file `a.tex`. By default, this will generate the name 
+        `&#39;a-generated/fig{gencount}.eps&#39;`
+        The subdirectory can be overridden by overwriting `pyp.gendir`,
+        and `gencount` denotes `pyp.gencount`. Any desired pattern can be used,
+        for example:
+            `name = pyp.genname(&#39;hello-{gencount}-{thing}.txt&#39;)`
+        will return something like `&#39;a-generated/hello-X-Y.txt&#39;`, where
+        `X` is `pyp.gencount` and `Y` is `pyp.thing`.
+
+        `pyp.genname()` does not actually create the file. `pyp.genname()` increments
+        `pyp.gencount` every time it is called.
+        &#34;&#34;&#34;
+        self.gencount = self.gencount+1
+        return self.gendir+&#39;/&#39;+pattern.format(**self.__dict__)
+
+    def savefig(self,fig,pattern=&#34;fig{gencount}.eps&#34;,**kwargs):
+        &#34;&#34;&#34;Save a figure to the a-generated/* subdirectory.
+        
+        If `pyp` is an object of type `pyptex`:
+        `pyp.savefig(fig)` saves a SymPy or matplotlib figure to the `a-generated/*` 
+        subdirectory, using the `pyptex.genname()` automatically generated filename. 
+        `pyp.savefig(fig,pattern)` further specifies the filename pattern of the
+        generated name, see `genname()`.
+        `pyp.savefig(fig,pattern,...)` passes any further keyword arguments directly
+        to the `savefig` function from matplotlib.
+
+        A typical way of using this from a TeX file is:
+        `\\includegraphics{@{pyp.savefig(...)}}`
+        &#34;&#34;&#34;
+        if(self.__sympy_plot__ == None):
+            self.__sympy_plot__ = sympy.plotting.plot(1,show=False).__class__
+        figname = self.genname(pattern)
+        if(fig.__class__==self.__sympy_plot__):
+            backend = fig.backend(fig)
+            backend.process_series()
+            backend.fig.savefig(figname, **kwargs)
+        else:
+            fig.savefig(figname, **kwargs)
+        self.dep(figname)
+        return figname
+    def generateddir(self):
+        &#34;&#34;&#34;This is an internal function that creates the generated directory&#34;&#34;&#34;
+        self.gendir = self.filename+&#39;-generated&#39;
+        if not os.path.exists(self.gendir):
+            os.makedirs(self.gendir)
+        self.gencount = 0
+
+    def __init__(self,texfilename,argv=[],latexcommand=False):
+        r&#34;&#34;&#34;`pyp = pyptex(&#39;a.tex&#39;)` reads in the LaTeX file a.tex and locates all
+        Python code fragments contained inside. These Python code fragments are
+        executed and their outputs are substituted to produce the `a.pyptex` output file.
+
+        `pyp = pyptex(&#39;a.tex&#39;,argv)` passes &#34;command-line arguments&#34;. The pyptex
+        command-line passes `sys.argv[2:]` for this parameter. If omitted, `argv`
+        defaults to `[]`. If using PypTeX as an templating engine to generate
+        multiple documents from a single source `a.tex` file, one should use
+        the `argv` parameter to pass in the various side-parameters needed to generate
+        each document. For example, `a.tex` might have the line &#34;Dear @{pyp.argv[0]}&#34;&#34;
+        One could produce a letter to John by doing `pyp = pyptex(&#39;a.tex&#39;,[&#39;John&#39;])`.
+
+        `pyp = pyptex(&#39;a.tex&#39;,argv,latexcommand)` further executes a specific shell
+        command once `a.pyptex` has been written to disk (e.g. `pdflatex {pytexfilename}`).
+        The default value of `latexcommand` is `False`, in which case no shell command
+        is executed.
+
+        Some salient fields of the `pyp=pyptex(&#39;a.tex&#39;)` class are:
+
+        * `pyp.filename = &#39;a&#39;` (so `a.tex`, with the extension stripped)
+        * `pyp.texfilename = &#39;a.tex&#39;`
+        * `pyp.cachefilename = &#39;a.pickle&#39;`
+        * `pyp.bibfilename = &#39;a.bib&#39;`, used by the `pyp.bib()` function
+        * `pyp.pyptexfilename = &#39;a.pyptex&#39;`
+        * `pyp.auxfilename = &#39;a.aux&#39;`, useful in case bibtex is used
+        * `pyp.latex = &#34;pdflatex --file-line-error --synctex=1&#34;`
+          One may overwrite this in a.tex to choose a different latex engine, e.g.
+          `pyp.latex = &#34;latex&#34;`
+        * `pyp.latexcommand` defaults to `False`, but the command-line version of `pyptex
+          uses something like
+          `r&#34;{latex} {pyptexfilename} &amp;&amp; (test ! -f {bibfilename} || bibtex {auxfilename})&#34;`
+          The relevant substitutions are performed by `string.format` from `pyp.__dict__`
+        * `pyp.disable_cache = False`, set this to `True` if you want to disable the `a.pickle`
+          cache. You shouldn&#39;t need to do this but if your Python code is nondeterministic
+          or if tracking dependencies is too hard, disabling all caching will ensure
+          that `a.pyptex` is correctly compiled into `a.pdf` and that a stale cache is
+          never used.
+        * `pyp.deps` is a dictionary of dependencies and timestamps
+        * `pyp.lc` counts lines while parsing
+        * `pyp.argv` stores the ``command-line arguments&#39;&#39; for template generation
+        * `pyp.exitcode` is the exit code of the `pyp.latexcommand`
+        * `pyp.gencount` is the counter for generated files (see `pyp.gen()`)
+        * `pyp.fragments` is the list of Python fragments extracted from a.tex
+        * `pyp.outputs` is the matching outputs.
+        * `pyp.compiled` is the string that is written to `a.pyptex`
+        &#34;&#34;&#34;
+        print(texfilename+&#34;: pyptex compilation begins&#34;)
+        self.__globals__ = {&#34;__builtins__&#34;:__builtins__,&#34;pyp&#34;:weakref.proxy(self)}
+        self.filename = os.path.splitext(texfilename)[0]
+        self.texfilename = texfilename
+        self.cachefilename = self.filename+&#39;.pickle&#39;
+        self.bibfilename = self.filename+&#39;.bib&#39;
+        self.pyptexfilename = self.filename+&#39;.pyptex&#39;
+        self.auxfilename = self.filename+&#39;.aux&#39;
+        self.latex = &#34;pdflatex --file-line-error --synctex=1&#34;
+        self.latexcommand = latexcommand
+        self.disable_cache = False
+        self.deps = {}
+        self.lc = 0
+        self.argv = argv
+        self.__sympy_plot__ = None
+        self.exitcode = 0
+        self.generateddir()
+        self.dep(__file__)
+        self.compile()
+        print(texfilename+&#34;: pyptex compilation ends&#34;)
+
+
+    def run(self,S,k):
+        &#34;&#34;&#34;An internal function for executing Python code&#34;&#34;&#34;
+        print(&#34;Executing Python code:\n&#34;+S)
+        S = &#34;\n&#34;*k+S
+        glob = self.__globals__
+        doeval = False
+        self.accum = []
+        try:
+            C = compile(S,self.texfilename,mode=&#39;eval&#39;)
+            doeval = True
+        except:
+            pass
+        if(doeval):
+            ret = eval(C,glob)
+            self.accum.append(ret)
+        else:
+            C = compile(S,self.texfilename,mode=&#39;exec&#39;)
+            exec(C,glob)
+        print(&#34;Python result:\n&#34;+str(self.accum))
+        return self.accum
+    def print(self,*argv):
+        &#34;&#34;&#34;If `pyp` is an object of type `pyptex`, `pyp.print(X)` causes `X` to be converted
+        to its latex representation and substituted into the `a.pyptex` output file.
+        The conversion is given by `sympy.latex(X)`, except that `None` is converted
+        to the empty string.
+
+        Many values can be printed at once with the notation `pyp.print(X,Y,...)`&#34;&#34;&#34;
+        self.accum.extend(argv)
+
+    def process(self,S,runner):
+        &#34;&#34;&#34;An internal helper function for parsing the input file&#34;&#34;&#34;
+        SS = S.splitlines()
+        ln = numpy.cumsum(numpy.array(numpy.array(list(S),dtype=&#39;U1&#39;)==&#39;\n&#39;,int))
+        ln = numpy.insert(ln,0,0)
+        def dowork(m):
+            if(m.start(1)&gt;=0):
+                return m.group(0)
+            if(m.start(2)&gt;=0):
+                return &#39;@{&#39;
+            for k in range(4,6):
+                if(m.start(k)&gt;=0):
+                    z = m.group(k)
+                    z0 = m.start(k)
+                    z1 = m.end(k)
+            self.lc = self.lc + (ln[z1]-ln[z0])+1
+            return runner(z,ln[z0])
+        return pypparser.sub(dowork,S)
+
+    def compile(self):
+        &#34;&#34;&#34;An internal function for compiling the input file&#34;&#34;&#34;
+        with open(self.texfilename,&#39;rt&#39;) as file:
+            text = file.read()
+        try:
+            with open(self.cachefilename,&#34;rb&#34;) as file:
+                cache = pickle.load(file)
+        except:
+            cache = {}
+        defaults = {&#34;fragments&#34;:[],
+                    &#34;outputs&#34;:[],
+                    &#34;deps&#34;:{},
+                    &#34;argv&#34;:[],
+                    &#34;disable_cache&#34;:True,
+                    }
+        for k,v in defaults.items():
+            if(not k in cache):
+                cache[k] = v
+        self.fragments = []
+        def scanner(C,k):
+            self.fragments.append(C)
+            return &#34;&#34;
+        self.process(text,runner = scanner)
+        print(&#34;Found &#34;+str(self.lc)+&#34; lines of Python.&#34;)
+        saveddeps = self.deps
+        self.deps = {}
+        for k in cache[&#34;deps&#34;]:
+            self.dep(k)
+        self.resolvedeps()
+        cached = True
+        if(cache[&#34;disable_cache&#34;]):
+            print(&#34;disable_cache=True&#34;)
+            cached = False
+        elif(cache[&#34;argv&#34;]!=self.argv):
+            print(&#34;argv differs&#34;,self.argv,cache[&#34;argv&#34;])
+            cached = False
+        elif(cache[&#34;fragments&#34;]!=self.fragments):
+            F1 = dict(enumerate(cache[&#34;fragments&#34;]))
+            F2 = dict(enumerate(self.fragments))
+            k = dictdiff(F1,F2)[0]
+            print(&#34;Fragment #&#34;,k,
+                  &#34;\nCached version:\n&#34;,F1[k] if k in F1 else None,
+                  &#34;\nLive version:\n&#34;,F2[k] if k in F2 else None)
+            cached = False
+        elif(self.deps!=cache[&#34;deps&#34;]):
+            F1 = cache[&#34;deps&#34;]
+            F2 = self.deps
+            k = dictdiff(F1,F2)[0]
+            print(&#34;Dependency mismatch&#34;,k,
+                  &#34;\nCached version:\n&#34;,F1[k] if k in F1 else None,
+                  &#34;\nLive version:\n&#34;,F2[k] if k in F2 else None)
+            cached = False
+        if(cached):
+            print(&#34;Using cached Python outputs&#34;)
+            for k,v in cache.items():
+                self.__dict__[k] = v 
+            self.subcount = -1
+            def subber(C,k):
+                self.subcount = self.subcount+1
+                return self.outputs[self.subcount]
+
+            self.compiled = self.process(text,runner = subber)
+        else:
+            print(&#34;Cache is invalidated.&#34;)
+            self.deps = saveddeps
+            self.outputs = []
+            def appender(C,k):
+                result = self.run(C,k)
+                self.outputs.append(&#34;&#34;.join(map(lambda x: sympy.latex(x) if x!=None else &#34;&#34;,result)))
+                return self.outputs[-1]
+            self.compiled = self.process(text,runner = appender)
+            writecache = True
+        sys.stdout.flush()
+        if(self.pyptexfilename):
+            print(&#34;Saving to file: &#34;+self.pyptexfilename)
+            with open(self.pyptexfilename,&#39;wt&#39;) as file:
+                file.write(self.compiled)
+        self.resolvedeps()
+        print(&#34;Dependencies are:\n&#34;+str(self.deps))
+        if(cached==False):
+            print(&#34;Saving cache file&#34;,self.cachefilename)
+            with open(self.cachefilename,&#39;wb&#39;) as file:
+                cache = {}
+                for k,v in self.__dict__.items():
+                    if(k[0:2]==&#39;__&#39; and k[-2:]==&#39;__&#39;):
+                        pass
+                    elif(callable(v)):
+                        pass
+                    else:
+                        cache[k]=v
+                print(&#34;Caching:&#34;,cache.keys())
+                pickle.dump(cache,file)
+        if(self.latexcommand):
+            cmd = self.latexcommand.format(**self.__dict__)
+            print(&#34;Running Latex command:\n&#34;+cmd)
+            self.exitcode = os.system(cmd)
+    def bib(self,bib):
+        &#34;&#34;&#34;A helper function for creating a `.bib` file. If `pyp=pyptex(&#39;a.tex&#39;)`,
+        then `pyp.bib(&#39;&#39;&#39;@book{knuth1984texbook, title={The {TEXbook}}, 
+        author={Knuth, Donald Ervin and Bibby, Duane}}&#39;&#39;&#39;)` creates a file
+        `a.bib` with the given text. This is just a convenience function
+        that makes it easier to incorporate the bibtex file straight into the
+        `a.tex` source. In `a.tex`, the typical way of using it is:
+        `\\bibliography{@{{{pyp.bib(&#34;...&#34;)}}}}`
+        &#34;&#34;&#34;
+        with self.open(self.bibfilename,&#39;wt&#39;) as file:
+            file.write(bib)
+        return self.filename
+    def dep(self,filename):
+        &#34;&#34;&#34;
+        If `pyp=pyptex(&#39;a.tex&#39;)`, then `pyp.dep(filename)` declares that the Python code
+        in `a.tex` depends on the file designated by `filename`. When the object
+        `pyptex(&#39;a.tex&#39;)` is constructed, the file `a.pickle` will be loaded (if it exists).
+        `a.pickle` is a cache of the results of the Python calculactions in `a.tex`. 
+        If the cache is deemed valid, the `pyptex` constructor does not rerun all 
+        the Python fragments in `a.tex` but instead uses the previously cached outputs.
+
+        The cache is invalidated under the following scenarios:
+        1. The new Python fragments in `a.tex` are not identical to the cached fragments.
+        2. The &#34;last modification&#34; timestamp on dependencies is not the same as in the cache.
+        3. `pyp.disable_cache==True`
+
+        The list of dependencies defaults to only the `pyptex` executable. Additional 
+        dependencies can be manually declared via `pyp.dep(filename)`.
+
+        For convenience, `pyp.dep(filename)` returns filename.
+        &#34;&#34;&#34;
+        self.deps[filename] = &#34;&#34;
+        return filename
+    def resolvedeps(self):
+        &#34;&#34;&#34;An internal function that actually computes the datestamps of dependencies&#34;&#34;&#34;
+        for k in self.deps:
+            try:
+                ds = format_my_nanos ( os.stat(k).st_mtime_ns )
+            except:
+                ds = &#34;&#34;
+            self.deps[k] = ds
+
+    def input(self,filename,argv=False):
+        r&#34;&#34;&#34;If `pyp = pyptex(&#39;a.tex&#39;)` then 
+        `pyp.input(&#39;b.tex&#39;)`
+        return the string `\input{&#34;b.pyptex&#34;}`. The common way of using this is to
+        put `@{pyp.input(&#39;b.tex&#39;)}` somewhere in `a.tex`.
+        The function `pyp.input(&#39;b.tex&#39;)` internally calls the constructor
+        `pyptex(&#39;b.tex&#39;)` so that `b.pyptex` is compiled from `b.tex`.
+
+        Note that the two files `a.tex` and `b.tex` are &#34;semantically isolated&#34;. All
+        calculations, variables and functions defined in `a.tex` live in a global scope
+        that is private to `a.tex`, much like each Python module has a private global
+        scope. In a similar fashion, `b.tex` has its own private global scope.
+        The global `pyp` objects in `a.tex` and `b.tex` are also different instances
+        of the `pyptex` class. This is similar to the notion of &#34;compilation units&#34; in 
+        the C programming language.
+
+        If one wishes to pass some parameters from `a.tex` to `b.tex`, one may use
+        the notation `pyp.input(&#39;b.tex&#39;,argv)`, which will initialize the global
+        `pyp` object of `b.tex` so that it contains the field `pyp.argv=argv`.
+
+        If one absolutely needs to export variables from `b.tex` back to `a.tex`, one
+        should directly use the `pyptex` constructor, e.g. `pyp_b = pyptex(&#39;b.tex&#39;,argv)`;
+        one can then retrieve values from the `b.tex` scope, e.g. with `pyp_b.fragments[0]`.
+        &#34;&#34;&#34;
+        ret=pyptex(filename,argv or self.argv,False)
+        return r&#34;\input{&#34;+ret.pyptexfilename+&#34;}&#34;
+    def open(self,filename,*argv,**kwargs):
+        &#34;&#34;&#34;If pyp = pyptex(&#39;a.tex&#39;) then pyp.open(filename,...) is a wrapper for
+        the builtin function open(filename,...) that further adds filename to
+        the list of dependencies via pyp.dep(filename).
+        &#34;&#34;&#34;
+        self.dep(filename)
+        return open(filename,*argv,**kwargs)</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="pyptex.pyptex.bib"><code class="name flex">
+<span>def <span class="ident">bib</span></span>(<span>self, bib)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>A helper function for creating a <code>.bib</code> file. If <code>pyp=pyptex('a.tex')</code>,
+then <code>pyp.bib('''@book{knuth1984texbook, title={The {TEXbook}},
+author={Knuth, Donald Ervin and Bibby, Duane}}''')</code> creates a file
+<code>a.bib</code> with the given text. This is just a convenience function
+that makes it easier to incorporate the bibtex file straight into the
+<code>a.tex</code> source. In <code>a.tex</code>, the typical way of using it is:
+<code>\bibliography{@{{{pyp.bib("...")}}}}</code></p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def bib(self,bib):
+    &#34;&#34;&#34;A helper function for creating a `.bib` file. If `pyp=pyptex(&#39;a.tex&#39;)`,
+    then `pyp.bib(&#39;&#39;&#39;@book{knuth1984texbook, title={The {TEXbook}}, 
+    author={Knuth, Donald Ervin and Bibby, Duane}}&#39;&#39;&#39;)` creates a file
+    `a.bib` with the given text. This is just a convenience function
+    that makes it easier to incorporate the bibtex file straight into the
+    `a.tex` source. In `a.tex`, the typical way of using it is:
+    `\\bibliography{@{{{pyp.bib(&#34;...&#34;)}}}}`
+    &#34;&#34;&#34;
+    with self.open(self.bibfilename,&#39;wt&#39;) as file:
+        file.write(bib)
+    return self.filename</code></pre>
+</details>
+</dd>
+<dt id="pyptex.pyptex.dep"><code class="name flex">
+<span>def <span class="ident">dep</span></span>(<span>self, filename)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>If <code>pyp=pyptex('a.tex')</code>, then <code>pyp.dep(filename)</code> declares that the Python code
+in <code>a.tex</code> depends on the file designated by <code>filename</code>. When the object
+<code>pyptex('a.tex')</code> is constructed, the file <code>a.pickle</code> will be loaded (if it exists).
+<code>a.pickle</code> is a cache of the results of the Python calculactions in <code>a.tex</code>.
+If the cache is deemed valid, the <a title="pyptex.pyptex" href="#pyptex.pyptex"><code>pyptex</code></a> constructor does not rerun all
+the Python fragments in <code>a.tex</code> but instead uses the previously cached outputs.</p>
+<p>The cache is invalidated under the following scenarios:
+1. The new Python fragments in <code>a.tex</code> are not identical to the cached fragments.
+2. The "last modification" timestamp on dependencies is not the same as in the cache.
+3. <code>pyp.disable_cache==True</code></p>
+<p>The list of dependencies defaults to only the <a title="pyptex.pyptex" href="#pyptex.pyptex"><code>pyptex</code></a> executable. Additional
+dependencies can be manually declared via <code>pyp.dep(filename)</code>.</p>
+<p>For convenience, <code>pyp.dep(filename)</code> returns filename.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def dep(self,filename):
+    &#34;&#34;&#34;
+    If `pyp=pyptex(&#39;a.tex&#39;)`, then `pyp.dep(filename)` declares that the Python code
+    in `a.tex` depends on the file designated by `filename`. When the object
+    `pyptex(&#39;a.tex&#39;)` is constructed, the file `a.pickle` will be loaded (if it exists).
+    `a.pickle` is a cache of the results of the Python calculactions in `a.tex`. 
+    If the cache is deemed valid, the `pyptex` constructor does not rerun all 
+    the Python fragments in `a.tex` but instead uses the previously cached outputs.
+
+    The cache is invalidated under the following scenarios:
+    1. The new Python fragments in `a.tex` are not identical to the cached fragments.
+    2. The &#34;last modification&#34; timestamp on dependencies is not the same as in the cache.
+    3. `pyp.disable_cache==True`
+
+    The list of dependencies defaults to only the `pyptex` executable. Additional 
+    dependencies can be manually declared via `pyp.dep(filename)`.
+
+    For convenience, `pyp.dep(filename)` returns filename.
+    &#34;&#34;&#34;
+    self.deps[filename] = &#34;&#34;
+    return filename</code></pre>
+</details>
+</dd>
+<dt id="pyptex.pyptex.genname"><code class="name flex">
+<span>def <span class="ident">genname</span></span>(<span>self, pattern='fig{gencount}.eps')</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Generate a filename</p>
+<p>To produce an automatically generated filename, use the statement
+<code>pyp.genname()</code>, where <code>pyp</code> is an object of type <a title="pyptex.pyptex" href="#pyptex.pyptex"><code>pyptex</code></a>, for parsing a
+given file <code>a.tex</code>. By default, this will generate the name
+<code>'a-generated/fig{gencount}.eps'</code>
+The subdirectory can be overridden by overwriting <code>pyp.gendir</code>,
+and <code>gencount</code> denotes <code>pyp.gencount</code>. Any desired pattern can be used,
+for example:
+<code>name = pyp.genname('hello-{gencount}-{thing}.txt')</code>
+will return something like <code>'a-generated/hello-X-Y.txt'</code>, where
+<code>X</code> is <code>pyp.gencount</code> and <code>Y</code> is <code>pyp.thing</code>.</p>
+<p><code>pyp.genname()</code> does not actually create the file. <code>pyp.genname()</code> increments
+<code>pyp.gencount</code> every time it is called.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def genname(self,pattern=&#34;fig{gencount}.eps&#34;):
+    r&#34;&#34;&#34;Generate a filename
+    
+    To produce an automatically generated filename, use the statement
+    `pyp.genname()`, where `pyp` is an object of type `pyptex`, for parsing a
+    given file `a.tex`. By default, this will generate the name 
+    `&#39;a-generated/fig{gencount}.eps&#39;`
+    The subdirectory can be overridden by overwriting `pyp.gendir`,
+    and `gencount` denotes `pyp.gencount`. Any desired pattern can be used,
+    for example:
+        `name = pyp.genname(&#39;hello-{gencount}-{thing}.txt&#39;)`
+    will return something like `&#39;a-generated/hello-X-Y.txt&#39;`, where
+    `X` is `pyp.gencount` and `Y` is `pyp.thing`.
+
+    `pyp.genname()` does not actually create the file. `pyp.genname()` increments
+    `pyp.gencount` every time it is called.
+    &#34;&#34;&#34;
+    self.gencount = self.gencount+1
+    return self.gendir+&#39;/&#39;+pattern.format(**self.__dict__)</code></pre>
+</details>
+</dd>
+<dt id="pyptex.pyptex.input"><code class="name flex">
+<span>def <span class="ident">input</span></span>(<span>self, filename, argv=False)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>If <code>pyp = pyptex('a.tex')</code> then
+<code>pyp.input('b.tex')</code>
+return the string <code>\input{"b.pyptex"}</code>. The common way of using this is to
+put <code>@{pyp.input('b.tex')}</code> somewhere in <code>a.tex</code>.
+The function <code>pyp.input('b.tex')</code> internally calls the constructor
+<code>pyptex('b.tex')</code> so that <code>b.pyptex</code> is compiled from <code>b.tex</code>.</p>
+<p>Note that the two files <code>a.tex</code> and <code>b.tex</code> are "semantically isolated". All
+calculations, variables and functions defined in <code>a.tex</code> live in a global scope
+that is private to <code>a.tex</code>, much like each Python module has a private global
+scope. In a similar fashion, <code>b.tex</code> has its own private global scope.
+The global <code>pyp</code> objects in <code>a.tex</code> and <code>b.tex</code> are also different instances
+of the <a title="pyptex.pyptex" href="#pyptex.pyptex"><code>pyptex</code></a> class. This is similar to the notion of "compilation units" in
+the C programming language.</p>
+<p>If one wishes to pass some parameters from <code>a.tex</code> to <code>b.tex</code>, one may use
+the notation <code>pyp.input('b.tex',argv)</code>, which will initialize the global
+<code>pyp</code> object of <code>b.tex</code> so that it contains the field <code>pyp.argv=argv</code>.</p>
+<p>If one absolutely needs to export variables from <code>b.tex</code> back to <code>a.tex</code>, one
+should directly use the <a title="pyptex.pyptex" href="#pyptex.pyptex"><code>pyptex</code></a> constructor, e.g. <code>pyp_b = pyptex('b.tex',argv)</code>;
+one can then retrieve values from the <code>b.tex</code> scope, e.g. with <code>pyp_b.fragments[0]</code>.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def input(self,filename,argv=False):
+    r&#34;&#34;&#34;If `pyp = pyptex(&#39;a.tex&#39;)` then 
+    `pyp.input(&#39;b.tex&#39;)`
+    return the string `\input{&#34;b.pyptex&#34;}`. The common way of using this is to
+    put `@{pyp.input(&#39;b.tex&#39;)}` somewhere in `a.tex`.
+    The function `pyp.input(&#39;b.tex&#39;)` internally calls the constructor
+    `pyptex(&#39;b.tex&#39;)` so that `b.pyptex` is compiled from `b.tex`.
+
+    Note that the two files `a.tex` and `b.tex` are &#34;semantically isolated&#34;. All
+    calculations, variables and functions defined in `a.tex` live in a global scope
+    that is private to `a.tex`, much like each Python module has a private global
+    scope. In a similar fashion, `b.tex` has its own private global scope.
+    The global `pyp` objects in `a.tex` and `b.tex` are also different instances
+    of the `pyptex` class. This is similar to the notion of &#34;compilation units&#34; in 
+    the C programming language.
+
+    If one wishes to pass some parameters from `a.tex` to `b.tex`, one may use
+    the notation `pyp.input(&#39;b.tex&#39;,argv)`, which will initialize the global
+    `pyp` object of `b.tex` so that it contains the field `pyp.argv=argv`.
+
+    If one absolutely needs to export variables from `b.tex` back to `a.tex`, one
+    should directly use the `pyptex` constructor, e.g. `pyp_b = pyptex(&#39;b.tex&#39;,argv)`;
+    one can then retrieve values from the `b.tex` scope, e.g. with `pyp_b.fragments[0]`.
+    &#34;&#34;&#34;
+    ret=pyptex(filename,argv or self.argv,False)
+    return r&#34;\input{&#34;+ret.pyptexfilename+&#34;}&#34;</code></pre>
+</details>
+</dd>
+<dt id="pyptex.pyptex.open"><code class="name flex">
+<span>def <span class="ident">open</span></span>(<span>self, filename, *argv, **kwargs)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>If pyp = pyptex('a.tex') then pyp.open(filename,&hellip;) is a wrapper for
+the builtin function open(filename,&hellip;) that further adds filename to
+the list of dependencies via pyp.dep(filename).</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def open(self,filename,*argv,**kwargs):
+    &#34;&#34;&#34;If pyp = pyptex(&#39;a.tex&#39;) then pyp.open(filename,...) is a wrapper for
+    the builtin function open(filename,...) that further adds filename to
+    the list of dependencies via pyp.dep(filename).
+    &#34;&#34;&#34;
+    self.dep(filename)
+    return open(filename,*argv,**kwargs)</code></pre>
+</details>
+</dd>
+<dt id="pyptex.pyptex.print"><code class="name flex">
+<span>def <span class="ident">print</span></span>(<span>self, *argv)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>If <code>pyp</code> is an object of type <a title="pyptex.pyptex" href="#pyptex.pyptex"><code>pyptex</code></a>, <code>pyp.print(X)</code> causes <code>X</code> to be converted
+to its latex representation and substituted into the <code>a.pyptex</code> output file.
+The conversion is given by <code>sympy.latex(X)</code>, except that <code>None</code> is converted
+to the empty string.</p>
+<p>Many values can be printed at once with the notation <code>pyp.print(X,Y,...)</code></p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def print(self,*argv):
+    &#34;&#34;&#34;If `pyp` is an object of type `pyptex`, `pyp.print(X)` causes `X` to be converted
+    to its latex representation and substituted into the `a.pyptex` output file.
+    The conversion is given by `sympy.latex(X)`, except that `None` is converted
+    to the empty string.
+
+    Many values can be printed at once with the notation `pyp.print(X,Y,...)`&#34;&#34;&#34;
+    self.accum.extend(argv)</code></pre>
+</details>
+</dd>
+<dt id="pyptex.pyptex.savefig"><code class="name flex">
+<span>def <span class="ident">savefig</span></span>(<span>self, fig, pattern='fig{gencount}.eps', **kwargs)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Save a figure to the a-generated/* subdirectory.</p>
+<p>If <code>pyp</code> is an object of type <a title="pyptex.pyptex" href="#pyptex.pyptex"><code>pyptex</code></a>:
+<code>pyp.savefig(fig)</code> saves a SymPy or matplotlib figure to the <code>a-generated/*</code>
+subdirectory, using the <a title="pyptex.pyptex.genname" href="#pyptex.pyptex.genname"><code>pyptex.genname()</code></a> automatically generated filename.
+<code>pyp.savefig(fig,pattern)</code> further specifies the filename pattern of the
+generated name, see <code>genname()</code>.
+<code>pyp.savefig(fig,pattern,...)</code> passes any further keyword arguments directly
+to the <code>savefig</code> function from matplotlib.</p>
+<p>A typical way of using this from a TeX file is:
+<code>\includegraphics{@{pyp.savefig(...)}}</code></p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def savefig(self,fig,pattern=&#34;fig{gencount}.eps&#34;,**kwargs):
+    &#34;&#34;&#34;Save a figure to the a-generated/* subdirectory.
+    
+    If `pyp` is an object of type `pyptex`:
+    `pyp.savefig(fig)` saves a SymPy or matplotlib figure to the `a-generated/*` 
+    subdirectory, using the `pyptex.genname()` automatically generated filename. 
+    `pyp.savefig(fig,pattern)` further specifies the filename pattern of the
+    generated name, see `genname()`.
+    `pyp.savefig(fig,pattern,...)` passes any further keyword arguments directly
+    to the `savefig` function from matplotlib.
+
+    A typical way of using this from a TeX file is:
+    `\\includegraphics{@{pyp.savefig(...)}}`
+    &#34;&#34;&#34;
+    if(self.__sympy_plot__ == None):
+        self.__sympy_plot__ = sympy.plotting.plot(1,show=False).__class__
+    figname = self.genname(pattern)
+    if(fig.__class__==self.__sympy_plot__):
+        backend = fig.backend(fig)
+        backend.process_series()
+        backend.fig.savefig(figname, **kwargs)
+    else:
+        fig.savefig(figname, **kwargs)
+    self.dep(figname)
+    return figname</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul>
+<li><a href="#pyptex-the-python-preprocessor-for-tex">PypTeX: the Python Preprocessor for TeX</a><ul>
+<li><a href="#author-sebastien-loisel">Author: Sébastien Loisel</a></li>
+</ul>
+</li>
+<li><a href="#requirements">Requirements</a></li>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#template-preprocessing-vs-embedding">Template preprocessing vs embedding</a></li>
+<li><a href="#caching">Caching</a></li>
+<li><a href="#scopes">Scopes</a></li>
+</ul>
+</div>
+<ul id="index">
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="pyptex.pyptexmain" href="#pyptex.pyptexmain">pyptexmain</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="pyptex.pyptex" href="#pyptex.pyptex">pyptex</a></code></h4>
+<ul class="two-column">
+<li><code><a title="pyptex.pyptex.bib" href="#pyptex.pyptex.bib">bib</a></code></li>
+<li><code><a title="pyptex.pyptex.dep" href="#pyptex.pyptex.dep">dep</a></code></li>
+<li><code><a title="pyptex.pyptex.genname" href="#pyptex.pyptex.genname">genname</a></code></li>
+<li><code><a title="pyptex.pyptex.input" href="#pyptex.pyptex.input">input</a></code></li>
+<li><code><a title="pyptex.pyptex.open" href="#pyptex.pyptex.open">open</a></code></li>
+<li><code><a title="pyptex.pyptex.print" href="#pyptex.pyptex.print">print</a></code></li>
+<li><code><a title="pyptex.pyptex.savefig" href="#pyptex.pyptex.savefig">savefig</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.7.5</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>

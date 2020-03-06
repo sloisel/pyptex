@@ -1,0 +1,71 @@
+#!/bin/bash
+clean() {
+	rm -rf *.aux *.bbl *.bib *.blg *.dvi *.cache *.log *.pdf *.pickle *.pyplog *.pyptex *.synctex.gz *-eps-converted-to.pdf *.eps *-generated *~ testgen*
+}
+failtest() {
+	echo "runtests: $1: FAIL"
+}
+passtest() {
+	echo "runtests: $1: pass"
+}
+argv=""
+cd $1
+clean
+exec > >(tee -i runtests.log) 2>&1
+sp=`cd ../../scripts && pwd`
+pyptex="$sp/pyptex --pdb=no"
+cmdk='x'
+argk='x'
+for fn in test?.tex
+do
+	k=`echo $fn | sed 's/test\(.\).tex/\1/g'`
+	name=$1$k
+	echo runtests: $name
+	if [ -f $fn ]; then
+		echo "runtests: installing file variant $fn"
+		cp -f $fn test.tex
+	fi
+	mkdir testgen$k
+	$pyptex test.tex $argv
+	cp -r *.pyptex test-generated testgen$k
+	sed 's/\/.*\/\(__init__\.py\)/\.\.\.\/\1/g;' test.pyplog | sed 's/\([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]@[0-9:\.]*\)/(datetime)/g' | grep -v 'Output written on test.pdf' > testgen$k/test.pyplog
+	if [ -d testgold$k ]; then
+		echo "runtests: Gold image already exists"
+	else
+		echo "runtests: Generating gold image"
+		cp -r testgen$k testgold$k
+	fi
+	diffcmd="diff -r testgen$k testgold$k"
+	if $diffcmd; then
+		passtest $name
+	else
+		failtest $name
+	fi
+	args=`grep -e "^runtestsargv-[0-9]* .*" <test.pyplog || true`
+	if [ "x$args" = "x" ]; then
+		true
+	else
+		echo "runtests: storing argv $args"
+		argk=`echo $args | sed "s/^runtestsargv-\([0-9]*\) .*/\1/g"`
+		argl=`echo $args | sed "s/^runtestsargv-[0-9]* \(.*\)/\1/g"`
+		echo runtests: "$argk" "$argl"
+	fi
+	if [ "$k" = "$argk" ]; then
+		argv="$argl"
+		echo runtests: using argv=$argv
+	fi
+	cmd=`grep -e "^runtestsaction-[0-9]* .*" <test.pyplog || true`
+	if [ "x$cmd" = "x" ]; then
+		true
+	else
+		echo "runtests: storing action $cmd"
+		cmdk=`echo $cmd | sed "s/runtestsaction-\([0-9]*\) .*/\1/g"`
+		cmdl=`echo $cmd | sed "s/runtestsaction-[0-9]* \(.*\)/\1/g"`
+		echo runtests: k = $cmdk
+		echo runtests: cmd = $cmdl
+	fi
+	if [ "$k" = "$cmdk" ]; then
+		echo "runtests: action $cmdl"
+		$cmdl
+	fi
+done

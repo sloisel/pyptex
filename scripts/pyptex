@@ -1,0 +1,3 @@
+#!/usr/bin/env python3 -u
+import pyptex,sys
+sys.exit(pyptex.pyptexmain())

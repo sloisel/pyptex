@@ -1,0 +1,8 @@
+#!/bin/bash
+exec 1>&2
+if make; then
+	echo "pre-commit: success"
+	exit 0
+fi
+echo "pre-commit: ERROR. git commit is aborting."
+exit 1
