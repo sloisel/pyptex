@@ -35,8 +35,8 @@ into the generated `example.pyptex` file.
 
 # A slightly bigger example.
 
-[This](example/matrixinverse.tex) PypTeX source file produces
-[this](example/matrixinverse.pdf) example of a matrix inversion by 
+[This](https://github.com/sloisel/pyptex/blob/master/examples/matrixinverse.tex) PypTeX source file produces
+[this](https://github.com/sloisel/pyptex/blob/master/examples/matrixinverse.pdf) example of a matrix inversion by 
 augmented matrix approach.
 
 # Template preprocessing vs embedding
