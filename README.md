@@ -9,7 +9,8 @@ code fragments in a LaTeX template file.
 
 `pip install pyptex`
 
-You will also need a LaTeX installation, and the default LaTeX processor is `pdflatex`.
+1. You will also need a LaTeX installation, and the default LaTeX processor is `pdflatex`.
+2. You need a Python 3 installation.
 
 # Hello, world
 
@@ -24,6 +25,8 @@ Put the following in `example.tex`:
 The command `pyptex example.tex` will generate `example.pdf` and an intermediary
 pure-LaTeX file `example.pyptex`. The resulting PDF can be found
 [here](https://github.com/sloisel/pyptex/blob/master/examples/example.pdf)
+
+* The `pyptex` executable tries to locate the Python 3 executable using `/usr/bin/env python3`. This is because `python` refers to Python 2 on Macs and PypTeX is incompatible with Python 2. If your system doesn't have a `python3` executable, try something like: ``python `which pyptex` example.tex ``
 
 # Slightly bigger examples
 

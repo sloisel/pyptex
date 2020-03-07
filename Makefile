@@ -1,6 +1,6 @@
 all: test doc hooks dist examples
 
-.PHONY: all clean test doc hooks delete-hooks reinstall-hooks dist examples
+.PHONY: all clean test doc hooks delete-hooks reinstall-hooks dist examples pypi
 
 html/pyptex.html: pyptex/__init__.py
 	pdoc --html .
@@ -18,8 +18,9 @@ doc: html/pyptex.html
 
 exsrc := $(wildcard examples/*.tex)
 exdst := $(patsubst examples/%.tex,examples/%.pdf,$(exsrc))
-examples/%.pdf: examples/%.tex
-	cd examples && pyptex `echo $< | sed 's/examples\///'`
+export PYTHONPATH := $(shell pwd)
+examples/%.pdf: examples/%.tex pyptex/__init__.py
+	cd examples && ../scripts/pyptex `echo $< | sed 's/examples\///'`
 examples: ${exdst}
 
 hooksrc := $(wildcard hooks/*)
@@ -37,9 +38,12 @@ delete-hooks:
 
 reinstall-hooks: delete-hooks hooks
 
-dist/mark.txt: setup.py pyptex/__init__.py
+dist/.mark: setup.py pyptex/__init__.py
 	rm -rf dist
 	python3 setup.py sdist
-	touch dist/mark.txt
+	touch dist/.mark
 
-dist: dist/mark.txt
+dist: dist/.mark
+
+pypi: all
+	twine upload dist/*

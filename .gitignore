@@ -20,5 +20,6 @@ doc
 build
 dist
 .DS_Store
+.mark
 !tests/test?/testgold?/*
 !examples/*.pdf

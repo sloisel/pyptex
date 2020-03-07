@@ -558,7 +558,9 @@ def pyptexmain(argv=None):
         dopdb = True
     except:
         pass
-    assert len(argv)>=2, "Usage: pyptex <filename.tex> ..."
+    if len(argv)<2:
+        print("Usage: pyptex <filename.tex> ...")
+        sys.exit(1)
     try:
         # logging inspired by Jacob Gabrielson on Stackoverflow
         tee = subprocess.Popen(["tee", os.path.splitext(argv[1])[0]+".pyplog"], stdin=subprocess.PIPE)

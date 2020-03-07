@@ -670,7 +670,9 @@ def pyptexmain(argv=None):
         dopdb = True
     except:
         pass
-    assert len(argv)&gt;=2, &#34;Usage: pyptex &lt;filename.tex&gt; ...&#34;
+    if len(argv)&lt;2:
+        print(&#34;Usage: pyptex &lt;filename.tex&gt; ...&#34;)
+        sys.exit(1)
     try:
         # logging inspired by Jacob Gabrielson on Stackoverflow
         tee = subprocess.Popen([&#34;tee&#34;, os.path.splitext(argv[1])[0]+&#34;.pyplog&#34;], stdin=subprocess.PIPE)
@@ -766,7 +768,9 @@ If "&ndash;pdb=yes" is in argv, automatic pdb postmortem is enabled. This is the
         dopdb = True
     except:
         pass
-    assert len(argv)&gt;=2, &#34;Usage: pyptex &lt;filename.tex&gt; ...&#34;
+    if len(argv)&lt;2:
+        print(&#34;Usage: pyptex &lt;filename.tex&gt; ...&#34;)
+        sys.exit(1)
     try:
         # logging inspired by Jacob Gabrielson on Stackoverflow
         tee = subprocess.Popen([&#34;tee&#34;, os.path.splitext(argv[1])[0]+&#34;.pyplog&#34;], stdin=subprocess.PIPE)
