@@ -20,4 +20,4 @@ doc
 build
 dist
 !tests/test?/testgold?/*
-!examples/matrixinverse.pdf
+!examples/*.pdf
