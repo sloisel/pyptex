@@ -27,9 +27,13 @@ pure-LaTeX file `example.pyptex`. The resulting PDF can be found
 
 # Slightly bigger examples
 
-* 2d and 3d plotting [tex](https://github.com/sloisel/pyptex/blob/master/examples/plots.tex) [pdf](https://github.com/sloisel/pyptex/blob/master/examples/plots.pdf)
-* Matrix inverse exercise [tex](https://github.com/sloisel/pyptex/blob/master/examples/matrixinverse.tex) 
+* 2d and 3d plotting [tex](https://github.com/sloisel/pyptex/blob/master/examples/plots.tex)
+| 
+[pdf](https://github.com/sloisel/pyptex/blob/master/examples/plots.pdf)
+* Matrix inverse exercise [tex](https://github.com/sloisel/pyptex/blob/master/examples/matrixinverse.tex)
+|
 [pdf](https://github.com/sloisel/pyptex/blob/master/examples/matrixinverse.pdf)
+* The F19NB handout for numerical linear algebra at Heriot-Watt university is generated with PypTeX. [pdf](https://www.macs.hw.ac.uk/~sl398/notes.pdf)
 
 # Documentation
 
