@@ -42,7 +42,7 @@ pure-LaTeX file `example.pyptex`. The resulting PDF can be found
 
 # TeXShop
 
-If you want to use TeXShop, put the following into `~/Library/TeXShop/Engines/pyptex.engine` and restart TeXShop:
+If you want to use TeXShop on Mac, put the following into `~/Library/TeXShop/Engines/pyptex.engine` and restart TeXShop:
 ```
 #!/bin/bash
 pyptex $1

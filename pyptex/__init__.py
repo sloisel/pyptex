@@ -6,10 +6,12 @@ r"""
 PypTeX is the Python Preprocessor for LaTeX. It allows one to embed Python
 code fragments in a LaTeX template file.
 
-# Requirements
+# Installation
 
-This has been tested on Mac with TeXLive 2017. PypTeX itself can be installed
-via `pip install pyptex`.
+`pip install pyptex`
+
+1. You will also need a LaTeX installation, and the default LaTeX processor is `pdflatex`.
+2. You need a Python 3 installation.
 
 # Introduction
 
@@ -32,6 +34,9 @@ When processing Python fragments, the global scope contains an object `pyp` that
 (weakref proxy for a) `pyptex.pyptex` object that makes available several helper functions
 and useful data. For example, `pyp.print("hello, world")` inserts the string `hello, world` 
 into the generated `example.pyptex` file.
+
+* The `pyptex` executable tries to locate the Python 3 executable using `/usr/bin/env python3`. 
+If this is causing you problems, try `python -u -m pyptex example.tex` instead.
 
 # Slightly bigger examples
 
@@ -112,6 +117,14 @@ scope of `a.tex` is a `dict` stored in the (private) variable `pyp.__global__`. 
 use of `weakref.proxy` avoids creating a circular data structure that would otherwise
 stymie the Python garbage collector. For most purposes, this global `pyp` variable
 acts exactly like a concrete `pyptex` instance.
+
+# TeXShop
+
+If you want to use TeXShop on Mac, put the following into `~/Library/TeXShop/Engines/pyptex.engine` and restart TeXShop:
+```
+#!/bin/bash
+pyptex $1
+```
 """
 
 import sys

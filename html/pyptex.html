@@ -24,9 +24,12 @@
 <h3 id="author-sebastien-loisel">Author: Sébastien Loisel</h3>
 <p>PypTeX is the Python Preprocessor for LaTeX. It allows one to embed Python
 code fragments in a LaTeX template file.</p>
-<h1 id="requirements">Requirements</h1>
-<p>This has been tested on Mac with TeXLive 2017. PypTeX itself can be installed
-via <code>pip install pyptex</code>.</p>
+<h1 id="installation">Installation</h1>
+<p><code>pip install pyptex</code></p>
+<ol>
+<li>You will also need a LaTeX installation, and the default LaTeX processor is <code>pdflatex</code>.</li>
+<li>You need a Python 3 installation.</li>
+</ol>
 <h1 id="introduction">Introduction</h1>
 <p>Assume <code>example.tex</code> contains the following text:</p>
 <pre><code>\documentclass{article}
@@ -45,6 +48,10 @@ corresponding outputs to produce <code>example.pyptex</code>, which is then comp
 (weakref proxy for a) <a title="pyptex.pyptex" href="#pyptex.pyptex"><code>pyptex</code></a> object that makes available several helper functions
 and useful data. For example, <code>pyp.print("hello, world")</code> inserts the string <code>hello, world</code>
 into the generated <code>example.pyptex</code> file.</p>
+<ul>
+<li>The <a title="pyptex.pyptex" href="#pyptex.pyptex"><code>pyptex</code></a> executable tries to locate the Python 3 executable using <code>/usr/bin/env python3</code>.
+If this is causing you problems, try <code>python -u -m pyptex example.tex</code> instead.</li>
+</ul>
 <h1 id="slightly-bigger-examples">Slightly bigger examples</h1>
 <ul>
 <li>2d and 3d plotting <a href="https://github.com/sloisel/pyptex/blob/master/examples/plots.tex">tex</a>
@@ -112,6 +119,11 @@ scope of <code>a.tex</code> is a <code>dict</code> stored in the (private) varia
 use of <code>weakref.proxy</code> avoids creating a circular data structure that would otherwise
 stymie the Python garbage collector. For most purposes, this global <code>pyp</code> variable
 acts exactly like a concrete <a title="pyptex.pyptex" href="#pyptex.pyptex"><code>pyptex</code></a> instance.</p>
+<h1 id="texshop">TeXShop</h1>
+<p>If you want to use TeXShop on Mac, put the following into <code>~/Library/TeXShop/Engines/pyptex.engine</code> and restart TeXShop:</p>
+<pre><code>#!/bin/bash
+pyptex $1
+</code></pre>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -124,10 +136,12 @@ acts exactly like a concrete <a title="pyptex.pyptex" href="#pyptex.pyptex"><cod
 PypTeX is the Python Preprocessor for LaTeX. It allows one to embed Python
 code fragments in a LaTeX template file.
 
-# Requirements
+# Installation
 
-This has been tested on Mac with TeXLive 2017. PypTeX itself can be installed
-via `pip install pyptex`.
+`pip install pyptex`
+
+1. You will also need a LaTeX installation, and the default LaTeX processor is `pdflatex`.
+2. You need a Python 3 installation.
 
 # Introduction
 
@@ -150,6 +164,9 @@ When processing Python fragments, the global scope contains an object `pyp` that
 (weakref proxy for a) `pyptex.pyptex` object that makes available several helper functions
 and useful data. For example, `pyp.print(&#34;hello, world&#34;)` inserts the string `hello, world` 
 into the generated `example.pyptex` file.
+
+* The `pyptex` executable tries to locate the Python 3 executable using `/usr/bin/env python3`. 
+If this is causing you problems, try `python -u -m pyptex example.tex` instead.
 
 # Slightly bigger examples
 
@@ -230,6 +247,14 @@ scope of `a.tex` is a `dict` stored in the (private) variable `pyp.__global__`. 
 use of `weakref.proxy` avoids creating a circular data structure that would otherwise
 stymie the Python garbage collector. For most purposes, this global `pyp` variable
 acts exactly like a concrete `pyptex` instance.
+
+# TeXShop
+
+If you want to use TeXShop on Mac, put the following into `~/Library/TeXShop/Engines/pyptex.engine` and restart TeXShop:
+```
+#!/bin/bash
+pyptex $1
+```
 &#34;&#34;&#34;
 
 import sys
@@ -1482,13 +1507,14 @@ to the <code>savefig</code> function from matplotlib.</p>
 <li><a href="#author-sebastien-loisel">Author: Sébastien Loisel</a></li>
 </ul>
 </li>
-<li><a href="#requirements">Requirements</a></li>
+<li><a href="#installation">Installation</a></li>
 <li><a href="#introduction">Introduction</a></li>
 <li><a href="#slightly-bigger-examples">Slightly bigger examples</a></li>
 <li><a href="#template-preprocessing-vs-embedding">Template preprocessing vs embedding</a></li>
 <li><a href="#pretty-printing-template-strings-from-python-with-pp">Pretty-printing template strings from Python with pp(&hellip;)</a></li>
 <li><a href="#caching">Caching</a></li>
 <li><a href="#scopes">Scopes</a></li>
+<li><a href="#texshop">TeXShop</a></li>
 </ul>
 </div>
 <ul id="index">
