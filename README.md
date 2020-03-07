@@ -25,11 +25,11 @@ The command `pyptex example.tex` will generate `example.pdf` and an intermediary
 pure-LaTeX file `example.pyptex`. The resulting PDF can be found
 [here](https://github.com/sloisel/pyptex/blob/master/examples/example.pdf)
 
-# Slightly bigger example
+# Slightly bigger examples
 
-[This](https://github.com/sloisel/pyptex/blob/master/examples/matrixinverse.tex) PypTeX source file produces
-[this](https://github.com/sloisel/pyptex/blob/master/examples/matrixinverse.pdf) example of a matrix inversion by 
-augmented matrix approach.
+* 2d and 3d plotting [tex](https://github.com/sloisel/pyptex/blob/master/examples/plots.tex) [pdf](https://github.com/sloisel/pyptex/blob/master/examples/plots.pdf)
+* Matrix inverse exercise [tex](https://github.com/sloisel/pyptex/blob/master/examples/matrixinverse.tex) 
+[pdf](https://github.com/sloisel/pyptex/blob/master/examples/matrixinverse.pdf)
 
 # Documentation
 

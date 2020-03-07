@@ -1,0 +1,20 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{graphicx}
+
+@{from sympy import * }
+
+\begin{document}
+You can manually make up your filenames:
+
+@{plot(S('sin(x)+cos(pi*x)'),show=False).save('fun.eps')}
+\includegraphics[width=9cm]{fun.eps}
+
+You can automatically generate filenames:
+
+\includegraphics[width=9cm]{@{pyp.savefig(plotting.plot3d(S('x*y'),show=false),bbox_inches='tight')}}
+
+
+\end{document}
