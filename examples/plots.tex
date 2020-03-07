@@ -3,6 +3,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 \usepackage{graphicx}
+\usepackage{verbatim}
 
 @{from sympy import * }
 
@@ -13,6 +14,12 @@ You can manually make up your filenames:
 \includegraphics[width=9cm]{fun.eps}
 
 You can automatically generate filenames:
+
+\begin{verbatim}
+\includegraphics[width=9cm]{@@{pyp.savefig(
+   plotting.plot3d(S('x*y'),
+   show=false),bbox_inches='tight')}}
+\end{verbatim}
 
 \includegraphics[width=9cm]{@{pyp.savefig(plotting.plot3d(S('x*y'),show=false),bbox_inches='tight')}}
 

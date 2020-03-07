@@ -23,3 +23,4 @@ dist
 .mark
 !tests/test?/testgold?/*
 !examples/*.pdf
+!examples/brochure.png

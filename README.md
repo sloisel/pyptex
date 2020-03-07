@@ -5,6 +5,8 @@
 PypTeX is the Python Preprocessor for LaTeX. It allows one to embed Python
 code fragments in a LaTeX template file.
 
+![An example plot with PypTeX](https://github.com/sloisel/pyptex/blob/master/examples/brochure.png)
+
 # Installation
 
 `pip install pyptex`
