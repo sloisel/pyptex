@@ -33,6 +33,12 @@ When processing Python fragments, the global scope contains an object `pyp` that
 and useful data. For example, `pyp.print("hello, world")` inserts the string `hello, world` 
 into the generated `example.pyptex` file.
 
+# A slightly bigger example.
+
+[This](example/matrixinverse.tex) PypTeX source file produces
+[this](example/matrixinverse.pdf) example of a matrix inversion by 
+augmented matrix approach.
+
 # Template preprocessing vs embedding
 
 PypTeX is a template preprocessor for LaTeX based on the Python language. When Python
@@ -59,6 +65,21 @@ as a first-class citizen and everything should work as normal. Please let us kno
 debugging task somehow fails for you.
 3. Performance. Substituting using regular expressions is faster than running the
 LaTeX processor.
+
+# Pretty-printing template strings from Python with `pp(...)`
+
+The function `pp(X)` pretty-prints the template string `X` with substitutions
+from the local scope of the caller. This is useful for medium length LaTeX fragments
+containing a few Python substitutions:
+```python
+>>> from pyptex import pp
+>>> from sympy import *
+>>> p = S('x^2-2*x+3')
+>>> dpdx = p.diff(S('x'))
+>>> x0 = solve(dpdx)[0]
+>>> pp('The minimum of $y=@p$ is at $x=@x0$.')
+'The minimum of $y=x^{2} - 2 x + 3$ is at $x=1$.'
+```
 
 # Caching
 
@@ -101,6 +122,8 @@ import time
 import subprocess
 import datetime
 import weakref
+import string
+import inspect
 
 __pdoc__ = {"pyptex.compile":False,
             "pyptex.generateddir":False,
@@ -125,6 +148,42 @@ def dictdiff(A,B):
     if(len(D)==0):
         return None
     return next(iter(D))
+
+__pdoc__["mylatex"] = False
+def mylatex(X):
+    return sympy.latex(X) if X!=None else ""
+
+__pdoc__["latextemplate"] = False
+class latextemplate(string.Template):
+    delimiter = "@"
+
+__pdoc__["LatexDict"] = False
+class LatexDict:
+    def __init__(self, glob, loc):
+        self.loc = loc
+        self.glob = glob
+
+    def __getitem__(self, key):
+        return mylatex(self.loc[key] if key in self.loc else self.glob[key])
+
+def pp(Z,levels=1):
+    r"""
+    Pretty-prints the template text string `Z`, using substitutions from the local
+    scope that is `levels` calls up on the stack. The template character is @.
+
+    For example, assume the caller has the value `x=3` in its local variables. Then,
+    `pp("$x=@x$")` produces `$x=3$`.
+    """
+    foo = inspect.currentframe()
+    while(levels>0):
+        foo = foo.f_back
+        levels = levels-1
+#    foo = LatexDict({k: v for d in [foo.f_globals, foo.f_locals] for k, v in d.items()})
+    foo = LatexDict(foo.f_globals, foo.f_locals)
+    D = latextemplate(Z)
+    txt = D.substitute(foo)
+    return txt
+
 
 class pyptex:
     r"""Class `pyptex.pyptex` is used to parse an input (templated) `a.tex` file
@@ -371,7 +430,7 @@ class pyptex:
             self.outputs = []
             def appender(C,k):
                 result = self.run(C,k)
-                self.outputs.append("".join(map(lambda x: sympy.latex(x) if x!=None else "",result)))
+                self.outputs.append("".join(map(mylatex,result)))
                 return self.outputs[-1]
             self.compiled = self.process(text,runner = appender)
             writecache = True

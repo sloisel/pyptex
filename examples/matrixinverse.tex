@@ -1,0 +1,56 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+
+\author{Sébastien Loisel}
+\title{Example application: automatically generated matrix inverse problem}
+\date{}
+
+\begin{document}
+\maketitle
+
+To compute the matrix inverse, we can perform ``complete Gaussian elimination'' on the augmented matrix $[A|I]$, where $I$ is an identity.
+@{{{
+from sympy import *
+from pyptex import pp
+
+def GEinv(A):
+    n = A.shape[0]
+    I = eye(n)
+    Ak = Matrix(BlockMatrix([[A,I]]).as_explicit())
+    sol = pp("$$@Ak$$\n")
+    for j in range(n-1):
+        for k in range(j+1,n):
+             a = Ak[k,j]/Ak[j,j]
+             kk = k+1
+             jj = j+1
+             sol = sol+pp(r"""$R_{@kk} := R_{@kk} - (@a) R_{@jj}$ """)
+             Ak[k,:] = Ak[k,:] - a*Ak[j,:]
+        sol = sol + pp(r"""$$@Ak$$""")
+    for j in range(1,n):
+        for k in range(j):
+            a = Ak[k,j]/Ak[j,j]
+            kk = k+1
+            jj = j+1
+            sol = sol+pp(r"""$R_{@kk} := R_{@kk} - (@a) R_{@jj}$ """)
+            Ak[k,:] = Ak[k,:] - a*Ak[j,:]
+        sol = sol + pp(r"""$$@Ak$$""")
+    for j in range(n):
+        a = Ak[j,j]
+        jj = j+1
+        Ak[j,:] = Ak[j,:]/a;
+        sol = sol+pp(r"""$R_{@jj} := R_{@jj}/@a$ """)
+    Ainv = A.inv()
+    sol = sol+pp(" gives the final answer:\n$$A^{-1} = @Ainv.$$\n")
+            
+    return pp(r"""{\bf Problem:} Using the augmented matrix approach, 
+    compute $A^{-1}$, where $$A = @A.$$ 
+    {\bf Solution:} 
+    @sol""")
+}}}
+
+@{GEinv(Matrix([[3,-6,0],[1,4,1],[3,-3,3]]))}
+
+\end{document}

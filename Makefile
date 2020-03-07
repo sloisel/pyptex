@@ -1,6 +1,6 @@
-all: test doc hooks distro
+all: test doc hooks dist examples
 
-.PHONY: all clean test doc hooks delete-hooks reinstall-hooks distro
+.PHONY: all clean test doc hooks delete-hooks reinstall-hooks dist examples
 
 html/pyptex.html: pyptex/__init__.py
 	pdoc --html .
@@ -9,15 +9,21 @@ html/pyptex.html: pyptex/__init__.py
 	git add html/pyptex.html
 
 clean:
-	rm -rf html pyptex.egg-info tests/runtests.log dist build
+	rm -rf html pyptex.egg-info tests/runtests.log dist build examples/*.pdf examples/*.pyptex examples/*.pickle
 
 test:
 	cd tests && ./runtests
 
 doc: html/pyptex.html
 
-hooksrc = $(wildcard hooks/*)
-hookdst = $(patsubst hooks/%,.git/hooks/%,$(hooksrc))
+exsrc := $(wildcard examples/*.tex)
+exdst := $(patsubst examples/%.tex,examples/%.pdf,$(exsrc))
+examples/%.pdf: examples/%.tex
+	cd examples && pyptex `echo $< | sed 's/examples\///'`
+examples: ${exdst}
+
+hooksrc := $(wildcard hooks/*)
+hookdst := $(patsubst hooks/%,.git/hooks/%,$(hooksrc))
 
 .git/hooks/%: hooks/%
 	@(echo "Installing hooks")
@@ -36,4 +42,4 @@ dist/mark.txt: setup.py pyptex/__init__.py
 	python3 setup.py sdist
 	touch dist/mark.txt
 
-distro: dist/mark.txt
+dist: dist/mark.txt

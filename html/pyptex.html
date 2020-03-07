@@ -45,6 +45,10 @@ corresponding outputs to produce <code>example.pyptex</code>, which is then comp
 (weakref proxy for a) <a title="pyptex.pyptex" href="#pyptex.pyptex"><code>pyptex</code></a> object that makes available several helper functions
 and useful data. For example, <code>pyp.print("hello, world")</code> inserts the string <code>hello, world</code>
 into the generated <code>example.pyptex</code> file.</p>
+<h1 id="a-slightly-bigger-example">A slightly bigger example.</h1>
+<p><a href="example/matrixinverse.tex">This</a> PypTeX source file produces
+<a href="example/matrixinverse.pdf">this</a> example of a matrix inversion by
+augmented matrix approach.</p>
 <h1 id="template-preprocessing-vs-embedding">Template preprocessing vs embedding</h1>
 <p>PypTeX is a template preprocessor for LaTeX based on the Python language. When Python
 is embedded into LaTeX, Python code fragments are identified by LaTeX commands that use
@@ -68,6 +72,18 @@ as a first-class citizen and everything should work as normal. Please let us kno
 debugging task somehow fails for you.
 3. Performance. Substituting using regular expressions is faster than running the
 LaTeX processor.</p>
+<h1 id="pretty-printing-template-strings-from-python-with-pp">Pretty-printing template strings from Python with <code>pp(...)</code></h1>
+<p>The function <code>pp(X)</code> pretty-prints the template string <code>X</code> with substitutions
+from the local scope of the caller. This is useful for medium length LaTeX fragments
+containing a few Python substitutions:</p>
+<pre><code class="python">&gt;&gt;&gt; from pyptex import pp
+&gt;&gt;&gt; from sympy import *
+&gt;&gt;&gt; p = S('x^2-2*x+3')
+&gt;&gt;&gt; dpdx = p.diff(S('x'))
+&gt;&gt;&gt; x0 = solve(dpdx)[0]
+&gt;&gt;&gt; pp('The minimum of $y=@p$ is at $x=@x0$.')
+'The minimum of $y=x^{2} - 2 x + 3$ is at $x=1$.'
+</code></pre>
 <h1 id="caching">Caching</h1>
 <p>When compiling <code>a.tex</code>, PypTeX creates a cache file <code>a.pickle</code>. This file is
 automatically invalidated if the Python fragments in <code>a.tex</code> change, or if some
@@ -129,6 +145,12 @@ When processing Python fragments, the global scope contains an object `pyp` that
 and useful data. For example, `pyp.print(&#34;hello, world&#34;)` inserts the string `hello, world` 
 into the generated `example.pyptex` file.
 
+# A slightly bigger example.
+
+[This](example/matrixinverse.tex) PypTeX source file produces
+[this](example/matrixinverse.pdf) example of a matrix inversion by 
+augmented matrix approach.
+
 # Template preprocessing vs embedding
 
 PypTeX is a template preprocessor for LaTeX based on the Python language. When Python
@@ -155,6 +177,21 @@ as a first-class citizen and everything should work as normal. Please let us kno
 debugging task somehow fails for you.
 3. Performance. Substituting using regular expressions is faster than running the
 LaTeX processor.
+
+# Pretty-printing template strings from Python with `pp(...)`
+
+The function `pp(X)` pretty-prints the template string `X` with substitutions
+from the local scope of the caller. This is useful for medium length LaTeX fragments
+containing a few Python substitutions:
+```python
+&gt;&gt;&gt; from pyptex import pp
+&gt;&gt;&gt; from sympy import *
+&gt;&gt;&gt; p = S(&#39;x^2-2*x+3&#39;)
+&gt;&gt;&gt; dpdx = p.diff(S(&#39;x&#39;))
+&gt;&gt;&gt; x0 = solve(dpdx)[0]
+&gt;&gt;&gt; pp(&#39;The minimum of $y=@p$ is at $x=@x0$.&#39;)
+&#39;The minimum of $y=x^{2} - 2 x + 3$ is at $x=1$.&#39;
+```
 
 # Caching
 
@@ -197,6 +234,8 @@ import time
 import subprocess
 import datetime
 import weakref
+import string
+import inspect
 
 __pdoc__ = {&#34;pyptex.compile&#34;:False,
             &#34;pyptex.generateddir&#34;:False,
@@ -221,6 +260,42 @@ def dictdiff(A,B):
     if(len(D)==0):
         return None
     return next(iter(D))
+
+__pdoc__[&#34;mylatex&#34;] = False
+def mylatex(X):
+    return sympy.latex(X) if X!=None else &#34;&#34;
+
+__pdoc__[&#34;latextemplate&#34;] = False
+class latextemplate(string.Template):
+    delimiter = &#34;@&#34;
+
+__pdoc__[&#34;LatexDict&#34;] = False
+class LatexDict:
+    def __init__(self, glob, loc):
+        self.loc = loc
+        self.glob = glob
+
+    def __getitem__(self, key):
+        return mylatex(self.loc[key] if key in self.loc else self.glob[key])
+
+def pp(Z,levels=1):
+    r&#34;&#34;&#34;
+    Pretty-prints the template text string `Z`, using substitutions from the local
+    scope that is `levels` calls up on the stack. The template character is @.
+
+    For example, assume the caller has the value `x=3` in its local variables. Then,
+    `pp(&#34;$x=@x$&#34;)` produces `$x=3$`.
+    &#34;&#34;&#34;
+    foo = inspect.currentframe()
+    while(levels&gt;0):
+        foo = foo.f_back
+        levels = levels-1
+#    foo = LatexDict({k: v for d in [foo.f_globals, foo.f_locals] for k, v in d.items()})
+    foo = LatexDict(foo.f_globals, foo.f_locals)
+    D = latextemplate(Z)
+    txt = D.substitute(foo)
+    return txt
+
 
 class pyptex:
     r&#34;&#34;&#34;Class `pyptex.pyptex` is used to parse an input (templated) `a.tex` file
@@ -467,7 +542,7 @@ class pyptex:
             self.outputs = []
             def appender(C,k):
                 result = self.run(C,k)
-                self.outputs.append(&#34;&#34;.join(map(lambda x: sympy.latex(x) if x!=None else &#34;&#34;,result)))
+                self.outputs.append(&#34;&#34;.join(map(mylatex,result)))
                 return self.outputs[-1]
             self.compiled = self.process(text,runner = appender)
             writecache = True
@@ -621,6 +696,37 @@ def pyptexmain(argv=None):
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
+<dt id="pyptex.pp"><code class="name flex">
+<span>def <span class="ident">pp</span></span>(<span>Z, levels=1)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Pretty-prints the template text string <code>Z</code>, using substitutions from the local
+scope that is <code>levels</code> calls up on the stack. The template character is @.</p>
+<p>For example, assume the caller has the value <code>x=3</code> in its local variables. Then,
+<code>pp("$x=@x$")</code> produces <code>$x=3$</code>.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def pp(Z,levels=1):
+    r&#34;&#34;&#34;
+    Pretty-prints the template text string `Z`, using substitutions from the local
+    scope that is `levels` calls up on the stack. The template character is @.
+
+    For example, assume the caller has the value `x=3` in its local variables. Then,
+    `pp(&#34;$x=@x$&#34;)` produces `$x=3$`.
+    &#34;&#34;&#34;
+    foo = inspect.currentframe()
+    while(levels&gt;0):
+        foo = foo.f_back
+        levels = levels-1
+#    foo = LatexDict({k: v for d in [foo.f_globals, foo.f_locals] for k, v in d.items()})
+    foo = LatexDict(foo.f_globals, foo.f_locals)
+    D = latextemplate(Z)
+    txt = D.substitute(foo)
+    return txt</code></pre>
+</details>
+</dd>
 <dt id="pyptex.pyptexmain"><code class="name flex">
 <span>def <span class="ident">pyptexmain</span></span>(<span>argv=None)</span>
 </code></dt>
@@ -985,7 +1091,7 @@ never used.</li>
             self.outputs = []
             def appender(C,k):
                 result = self.run(C,k)
-                self.outputs.append(&#34;&#34;.join(map(lambda x: sympy.latex(x) if x!=None else &#34;&#34;,result)))
+                self.outputs.append(&#34;&#34;.join(map(mylatex,result)))
                 return self.outputs[-1]
             self.compiled = self.process(text,runner = appender)
             writecache = True
@@ -1364,7 +1470,9 @@ to the <code>savefig</code> function from matplotlib.</p>
 </li>
 <li><a href="#requirements">Requirements</a></li>
 <li><a href="#introduction">Introduction</a></li>
+<li><a href="#a-slightly-bigger-example">A slightly bigger example.</a></li>
 <li><a href="#template-preprocessing-vs-embedding">Template preprocessing vs embedding</a></li>
+<li><a href="#pretty-printing-template-strings-from-python-with-pp">Pretty-printing template strings from Python with pp(&hellip;)</a></li>
 <li><a href="#caching">Caching</a></li>
 <li><a href="#scopes">Scopes</a></li>
 </ul>
@@ -1372,6 +1480,7 @@ to the <code>savefig</code> function from matplotlib.</p>
 <ul id="index">
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
+<li><code><a title="pyptex.pp" href="#pyptex.pp">pp</a></code></li>
 <li><code><a title="pyptex.pyptexmain" href="#pyptex.pyptexmain">pyptexmain</a></code></li>
 </ul>
 </li>
