@@ -38,6 +38,14 @@ pure-LaTeX file `example.pyptex`. The resulting PDF can be found
 [pdf](https://github.com/sloisel/pyptex/blob/master/examples/matrixinverse.pdf)
 * The F19NB handout for numerical linear algebra at Heriot-Watt university is generated with PypTeX. [pdf](https://www.macs.hw.ac.uk/~sl398/notes.pdf)
 
+# TeXShop
+
+If you want to use TeXShop, put the following into `~/Library/TeXShop/Engines/pyptex.engine` and restart TeXShop:
+```
+#!/bin/bash
+pyptex $1
+```
+
 # Documentation
 
 Detailed documentation can be found [here](https://htmlpreview.github.io/?https://github.com/sloisel/pyptex/blob/master/html/pyptex.html)
