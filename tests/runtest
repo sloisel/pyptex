@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 clean() {
 	rm -rf *.aux *.bbl *.bib *.blg *.dvi *.cache *.log *.pdf *.pickle *.pyplog *.pyptex *.synctex.gz *-eps-converted-to.pdf *.eps *-generated *~ testgen*
 }
@@ -12,6 +12,7 @@ argv=""
 cd $1
 clean
 exec > >(tee -i runtests.log) 2>&1
+trap "failtest FATAL.$1" EXIT
 sp=`cd ../.. && pwd`
 export PYTHONPATH=$sp
 pyptex="$sp/scripts/pyptex --pdb=no"
@@ -27,7 +28,9 @@ do
 		cp -f $fn test.tex
 	fi
 	mkdir testgen$k
-	$pyptex test.tex $argv
+	thecmd="$pyptex test.tex $argv"
+	echo "runtests: $thecmd"
+	$thecmd
 	cp -r *.pyptex test-generated testgen$k
 	sed 's/\/.*\/\(__init__\.py\)/\.\.\.\/\1/g;' test.pyplog | sed 's/\([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]@[0-9:\.]*\)/(datetime)/g' | grep -v 'Output written on test.pdf' > testgen$k/test.pyplog
 	if [ -d testgold$k ]; then
@@ -70,3 +73,4 @@ do
 		$cmdl
 	fi
 done
+trap true EXIT

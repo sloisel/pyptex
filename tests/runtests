@@ -24,7 +24,7 @@ echo runtests: Summary
 GREEN=`echo -e '\033[32m'`
 NORMAL=`echo -e '\033[0m'`
 RED=`echo -e '\033[31m'`
-cat */runtests.log | grep -E 'runtests:.*(FAIL|pass)' | sed "s/FAIL/${RED}FAIL${NORMAL}/g" | sed "s/pass/${GREEN}pass${NORMAL}/"
+cat */runtests.log | grep -E 'runtests:.*(FAIL|pass)'
 fails=`cat */runtests.log | grep -E 'runtests:.*FAIL' | wc -l`
 passes=`cat */runtests.log | grep -E 'runtests:.*pass' | wc -l`
 total=`cat */runtests.log | grep -E 'runtests:.*(FAIL|pass)' | wc -l`
@@ -32,4 +32,7 @@ echo "runtests: Statistics"
 echo "runtests: total number of tests       : $total"
 echo "runtests: total number of tests passed: $passes"
 echo "runtests: total number of tests failed: $fails"
+if [ "$fails" -eq "0" ]; then
+	touch runtests.success.log
+fi
 exit $fails

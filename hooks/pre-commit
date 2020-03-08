@@ -1,8 +1,18 @@
-#!/bin/bash
+#!/bin/bash -e
 exec 1>&2
-if make; then
-	echo "pre-commit: success"
-	exit 0
+myerr(){
+	echo -e "\033[31m\033[1mpre-commit: ERROR: $@\033[0m"
+}
+if make -q; then
+	true
+else
+	myerr 'Outdated Makefile targets found. run "make".'
+	exit 1
 fi
-echo "pre-commit: ERROR. git commit is aborting."
-exit 1
+if git diff --quiet; then
+	true
+else
+	myerr 'Unstaged changes found. run "git add".'
+	exit 1
+fi
+exit 0

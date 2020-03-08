@@ -16,6 +16,7 @@ testgen*
 *.egg-info
 __pycache__
 *~
+*.orig
 doc
 build
 dist

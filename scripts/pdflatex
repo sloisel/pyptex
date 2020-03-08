@@ -1,5 +1,14 @@
 #!/bin/bash
 export PATH=$OPATH
-if cmp -s $3 $3gold && [ -f ${3%.*}.pdf ]; then echo "$3 is cached"; exit 0; fi
-(cmp -s $3 $3gold && echo "Reusing $3gold") || (cp $3 $3gold && echo "Updating $3gold")
-pdflatex $1 $2 $3gold
+fn=${3%.*}
+pyp=$fn.pyptex
+gld=$fn.pyptexgold
+pdf=$fn.pdf
+if cmp -s $pyp $gld && [ -f $pdf ]; then 
+	echo "$pdf is cached"
+	touch $pdf
+else
+	(cmp -s $pyp $gld && echo "Reusing $gld") || (cp $pyp $gld && echo "Updating $gld")
+	pdflatex $1 $2 $gld
+fi
+

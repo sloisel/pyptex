@@ -336,7 +336,7 @@ class pyptex:
         self.disable_cache = False
         self.deps = {}
         self.lc = 0
-        self.argv = [] if argv is None else []
+        self.argv = [] if argv is None else argv
         self.__sympy_plot__ = None
         self.exitcode = 0
         self.generateddir()

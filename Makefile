@@ -11,15 +11,17 @@ html/pyptex.html: pyptex/__init__.py
 clean:
 	rm -rf html pyptex.egg-info tests/runtests.log dist build examples/*.pdf examples/*.pyptex examples/*.pickle
 
-test:
+tests/runtests.success.log: Makefile pyptex/*.py scripts/pyptex tests/runtest tests/runtests tests/test?/test?.tex
 	cd tests && ./runtests
+
+test: tests/runtests.success.log
 
 doc: html/pyptex.html
 
 exsrc := $(wildcard examples/*.tex)
-exdst := $(patsubst examples/%.tex,examples/%.pyptex,$(exsrc))
+exdst := $(patsubst examples/%.tex,examples/%.pdf,$(exsrc))
 export PYTHONPATH := $(shell pwd)
-examples/%.pyptex: examples/%.tex pyptex/__init__.py
+examples/%.pdf: examples/%.tex pyptex/*.py scripts/pyptex scripts/pdflatex Makefile
 	export OPATH=$(PATH); PATH=$(PYTHONPATH)/scripts:$(PATH); cd examples; rm -f *.aux *.log *.pyplog *.pyptex *.synctex.gz; ../scripts/pyptex `echo $< | sed 's/examples\///'`
 examples: ${exdst}
 
