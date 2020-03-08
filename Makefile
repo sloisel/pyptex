@@ -17,9 +17,9 @@ test:
 doc: html/pyptex.html
 
 exsrc := $(wildcard examples/*.tex)
-exdst := $(patsubst examples/%.tex,examples/%.pdf,$(exsrc))
+exdst := $(patsubst examples/%.tex,examples/%.pyptex,$(exsrc))
 export PYTHONPATH := $(shell pwd)
-examples/%.pdf: examples/%.tex pyptex/__init__.py
+examples/%.pyptex: examples/%.tex pyptex/__init__.py
 	export OPATH=$(PATH); PATH=$(PYTHONPATH)/scripts:$(PATH); cd examples; rm -f *.aux *.log *.pyplog *.pyptex *.synctex.gz; ../scripts/pyptex `echo $< | sed 's/examples\///'`
 examples: ${exdst}
 

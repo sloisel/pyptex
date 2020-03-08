@@ -13,7 +13,7 @@ code fragments in a LaTeX template file.
 1. You will also need a LaTeX installation, and the default LaTeX processor is `pdflatex`.
 2. You need a Python 3 installation.
 
-<img alt="An example plot with PypTeX" width="500" src="https://github.com/sloisel/pyptex/blob/master/examples/brochure.png">
+<img alt="An example plot with PypTeX" width="500" src="https://raw.githubusercontent.com/sloisel/pyptex/master/examples/brochure.png">
 
 # Introduction
 
