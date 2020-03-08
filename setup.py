@@ -1,18 +1,18 @@
 from setuptools import setup, find_packages
 from distutils.command.build_scripts import build_scripts
+from pathlib import Path
 
-from os import path
-this_directory = path.abspath(path.dirname(__file__))
-with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
-    long_description = f.read()
+
+this_directory = Path(__file__).parent.absolute()
+long_description = Path(this_directory, 'README.md').read_text(encoding='utf-8')
+
 
 # don't touch my shebang
-class BSCommand (build_scripts):
+class BSCommand(build_scripts):
     def run(self):
-        """
-        Copy, chmod each script listed in 'self.scripts'
-        essentially this is the stripped 
-         distutils.command.build_scripts.copy_scripts()
+        """Copy, chmod each script listed in 'self.scripts'
+        essentially this is the stripped
+        distutils.command.build_scripts.copy_scripts()
         routine
         """
         from stat import ST_MODE
@@ -23,45 +23,44 @@ class BSCommand (build_scripts):
         self.mkpath(self.build_dir)
         outfiles = []
         for script in self.scripts:
-            outfile = os.path.join(self.build_dir, os.path.basename(script))
+            outfile = Path(self.build_dir, Path(script).stem)
             outfiles.append(outfile)
 
             if not self.force and not newer(script, outfile):
-                log.debug("not copying %s (up-to-date)", script)
+                log.debug('not copying {script} (up-to-date)')
                 continue
 
-            log.info("copying and NOT adjusting %s -> %s", script,
-                         self.build_dir)
+            log.info('copying and NOT adjusting {script} -> {self.build_dir}')
             self.copy_file(script, outfile)
 
         if os.name == 'posix':
             for file in outfiles:
                 if self.dry_run:
-                    log.info("changing mode of %s", file)
+                    log.info(f'changing mode of {file}')
                 else:
                     oldmode = os.stat(file)[ST_MODE] & 0o7777
                     newmode = (oldmode | 0o555) & 0o7777
                     if newmode != oldmode:
-                        log.info("changing mode of %s from %o to %o",
-                                 file, oldmode, newmode)
+                        log.info(f'changing mode of {file} from {oldmode} to {newmode}')
                         os.chmod(file, newmode)
 
+
 setup(
-    name="pyptex",
-    description="Python Preprocessor for (La)TeX",
-    version="0.1.4",
-	packages=find_packages(),
-	install_requires=["sympy>=1.5","numpy>=1.18","setuptools","pdoc3>=0.7"],
-	python_requires=">=3",
-    author="Sébastien Loisel",
-    author_email="sloisel@gmail.com",
+    name='pyptex',
+    description='Python Preprocessor for (La)TeX',
+    version='0.1.4',
+    packages=find_packages(),
+    install_requires=['sympy>=1.5', 'numpy>=1.18', 'setuptools', 'pdoc3>=0.7'],
+    python_requires='>=3',
+    author='Sébastien Loisel',
+    author_email='sloisel@gmail.com',
     zip_safe=False,
-    url="https://github.com/sloisel/pyptex",
+    url='https://github.com/sloisel/pyptex',
     project_urls={
-        "Documentation": "https://htmlpreview.github.io/?https://github.com/sloisel/pyptex/blob/master/html/pyptex.html",
-        "Source": "https://github.com/sloisel/pyptex",
+        'Documentation': 'https://htmlpreview.github.io/?https://github.com/sloisel/pyptex/blob/master/html/pyptex.html',
+        'Source': 'https://github.com/sloisel/pyptex',
     },
-    license="MIT",
+    license='MIT',
     scripts=['scripts/pyptex'],
     cmdclass={'build_scripts': BSCommand},
     long_description=long_description,
