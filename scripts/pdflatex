@@ -1,0 +1,5 @@
+#!/bin/bash
+export PATH=$OPATH
+if cmp -s $3 $3gold && [ -f ${3%.}.pdf ]; then exit 0; fi
+(cmp -s $3 $3gold && echo "Reusing $3gold") || (cp $3 $3gold && echo "Updating $3gold")
+pdflatex $1 $2 $3gold

@@ -30,6 +30,7 @@ code fragments in a LaTeX template file.</p>
 <li>You will also need a LaTeX installation, and the default LaTeX processor is <code>pdflatex</code>.</li>
 <li>You need a Python 3 installation.</li>
 </ol>
+<p><img alt="An example plot with PypTeX" width="500" src="https://github.com/sloisel/pyptex/blob/master/examples/brochure.png"></p>
 <h1 id="introduction">Introduction</h1>
 <p>Assume <code>example.tex</code> contains the following text:</p>
 <pre><code>\documentclass{article}
@@ -142,6 +143,8 @@ code fragments in a LaTeX template file.
 
 1. You will also need a LaTeX installation, and the default LaTeX processor is `pdflatex`.
 2. You need a Python 3 installation.
+
+&lt;img alt=&#34;An example plot with PypTeX&#34; width=&#34;500&#34; src=&#34;https://github.com/sloisel/pyptex/blob/master/examples/brochure.png&#34;&gt;
 
 # Introduction
 
@@ -421,7 +424,7 @@ class pyptex:
         * `pyp.latex = &#34;pdflatex --file-line-error --synctex=1&#34;`
           One may overwrite this in a.tex to choose a different latex engine, e.g.
           `pyp.latex = &#34;latex&#34;`
-        * `pyp.latexcommand` defaults to `False`, but the command-line version of `pyptex
+        * `pyp.latexcommand` defaults to `False`, but the command-line version of `pyptex`
           uses something like
           `r&#34;{latex} {pyptexfilename} &amp;&amp; (test ! -f {bibfilename} || bibtex {auxfilename})&#34;`
           The relevant substitutions are performed by `string.format` from `pyp.__dict__`
@@ -865,8 +868,10 @@ is executed.</p>
 <li><code>pyp.latex = "pdflatex --file-line-error --synctex=1"</code>
 One may overwrite this in a.tex to choose a different latex engine, e.g.
 <code>pyp.latex = "latex"</code></li>
-<li><code>pyp.latexcommand</code> defaults to <code>False</code>, but the command-line version of <code>pyptex
-uses something like</code>r"{latex} {pyptexfilename} &amp;&amp; (test ! -f {bibfilename} || bibtex {auxfilename})"<code>The relevant substitutions are performed by</code>string.format<code>from</code>pyp.<strong>dict</strong>`</li>
+<li><code>pyp.latexcommand</code> defaults to <code>False</code>, but the command-line version of <a title="pyptex.pyptex" href="#pyptex.pyptex"><code>pyptex</code></a>
+uses something like
+<code>r"{latex} {pyptexfilename} &amp;&amp; (test ! -f {bibfilename} || bibtex {auxfilename})"</code>
+The relevant substitutions are performed by <code>string.format</code> from <code>pyp.__dict__</code></li>
 <li><code>pyp.disable_cache = False</code>, set this to <code>True</code> if you want to disable the <code>a.pickle</code>
 cache. You shouldn't need to do this but if your Python code is nondeterministic
 or if tracking dependencies is too hard, disabling all caching will ensure
@@ -974,7 +979,7 @@ never used.</li>
         * `pyp.latex = &#34;pdflatex --file-line-error --synctex=1&#34;`
           One may overwrite this in a.tex to choose a different latex engine, e.g.
           `pyp.latex = &#34;latex&#34;`
-        * `pyp.latexcommand` defaults to `False`, but the command-line version of `pyptex
+        * `pyp.latexcommand` defaults to `False`, but the command-line version of `pyptex`
           uses something like
           `r&#34;{latex} {pyptexfilename} &amp;&amp; (test ! -f {bibfilename} || bibtex {auxfilename})&#34;`
           The relevant substitutions are performed by `string.format` from `pyp.__dict__`

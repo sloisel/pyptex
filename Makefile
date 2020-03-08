@@ -20,7 +20,7 @@ exsrc := $(wildcard examples/*.tex)
 exdst := $(patsubst examples/%.tex,examples/%.pdf,$(exsrc))
 export PYTHONPATH := $(shell pwd)
 examples/%.pdf: examples/%.tex pyptex/__init__.py
-	cd examples && ../scripts/pyptex `echo $< | sed 's/examples\///'`
+	export OPATH=$(PATH); PATH=$(PYTHONPATH)/scripts:$(PATH); cd examples; rm -f *.aux *.log *.pyplog *.pyptex *.synctex.gz; ../scripts/pyptex `echo $< | sed 's/examples\///'`
 examples: ${exdst}
 
 hooksrc := $(wildcard hooks/*)
