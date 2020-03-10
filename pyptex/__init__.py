@@ -156,6 +156,7 @@ __pdoc__ = {
 }
 
 pypparser = re.compile(r'((?<!\\)%[^\n]*\n)|(@@{)|(@{([^{}]+)}|@{{{(.*?)}}})', re.DOTALL)
+bibentryname = re.compile(r'[^{]*{([^,]*),', re.DOTALL)
 
 
 __pdoc__['format_my_nanos'] = False
@@ -335,6 +336,7 @@ class pyptex:
         self.latexcommand = latexcommand
         self.disable_cache = False
         self.deps = {}
+        self.bibs = []
         self.lc = 0
         self.argv = [] if argv is None else argv
         self.__sympy_plot__ = None
@@ -371,6 +373,10 @@ class pyptex:
 
         Many values can be printed at once with the notation `pyp.print(X, Y, ...)`."""
         self.accum.extend(argv)
+
+    def cite(self,b):
+        self.bibs.append(b)
+        return bibentryname.match(b).group(1).strip()
 
     def process(self, S, runner):
         """An internal helper function for parsing the input file."""
@@ -494,7 +500,7 @@ class pyptex:
             print(f'Running Latex command:\n{cmd}')
             self.exitcode = os.system(cmd)
 
-    def bib(self, bib):
+    def bib(self, bib=""):
         """A helper function for creating a `.bib` file. If `pyp=pyptex('a.tex')`,
         then `pyp.bib('''@book{knuth1984texbook, title={The {TEXbook}},
         author={Knuth, Donald Ervin and Bibby, Duane}}''')` creates a file
@@ -503,8 +509,9 @@ class pyptex:
         `a.tex` source. In `a.tex`, the typical way of using it is:
         `\\bibliography{@{{{pyp.bib("...")}}}}`.
         """
+        self.bibs.append(bib)
         with self.open(self.bibfilename, 'wt') as file:
-            file.write(bib)
+            file.write("\n".join(self.bibs))
         return self.filename
 
     def dep(self, filename):
@@ -607,5 +614,5 @@ def pyptexmain(argv: list = None):
             print('A Python error has occurred. Launching the debugger pdb.\n'
                   "Type 'help' for a list of commands, and 'quit' when done.")
             pdb.post_mortem()
-            sys.exit(1)
+        sys.exit(1)
     return pyp.exitcode

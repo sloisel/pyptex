@@ -287,6 +287,7 @@ __pdoc__ = {
 }
 
 pypparser = re.compile(r&#39;((?&lt;!\\)%[^\n]*\n)|(@@{)|(@{([^{}]+)}|@{{{(.*?)}}})&#39;, re.DOTALL)
+bibentryname = re.compile(r&#39;[^{]*{([^,]*),&#39;, re.DOTALL)
 
 
 __pdoc__[&#39;format_my_nanos&#39;] = False
@@ -466,6 +467,7 @@ class pyptex:
         self.latexcommand = latexcommand
         self.disable_cache = False
         self.deps = {}
+        self.bibs = []
         self.lc = 0
         self.argv = [] if argv is None else argv
         self.__sympy_plot__ = None
@@ -502,6 +504,10 @@ class pyptex:
 
         Many values can be printed at once with the notation `pyp.print(X, Y, ...)`.&#34;&#34;&#34;
         self.accum.extend(argv)
+
+    def cite(self,b):
+        self.bibs.append(b)
+        return bibentryname.match(b).group(1).strip()
 
     def process(self, S, runner):
         &#34;&#34;&#34;An internal helper function for parsing the input file.&#34;&#34;&#34;
@@ -625,7 +631,7 @@ class pyptex:
             print(f&#39;Running Latex command:\n{cmd}&#39;)
             self.exitcode = os.system(cmd)
 
-    def bib(self, bib):
+    def bib(self, bib=&#34;&#34;):
         &#34;&#34;&#34;A helper function for creating a `.bib` file. If `pyp=pyptex(&#39;a.tex&#39;)`,
         then `pyp.bib(&#39;&#39;&#39;@book{knuth1984texbook, title={The {TEXbook}},
         author={Knuth, Donald Ervin and Bibby, Duane}}&#39;&#39;&#39;)` creates a file
@@ -634,8 +640,9 @@ class pyptex:
         `a.tex` source. In `a.tex`, the typical way of using it is:
         `\\bibliography{@{{{pyp.bib(&#34;...&#34;)}}}}`.
         &#34;&#34;&#34;
+        self.bibs.append(bib)
         with self.open(self.bibfilename, &#39;wt&#39;) as file:
-            file.write(bib)
+            file.write(&#34;\n&#34;.join(self.bibs))
         return self.filename
 
     def dep(self, filename):
@@ -738,7 +745,7 @@ def pyptexmain(argv: list = None):
             print(&#39;A Python error has occurred. Launching the debugger pdb.\n&#39;
                   &#34;Type &#39;help&#39; for a list of commands, and &#39;quit&#39; when done.&#34;)
             pdb.post_mortem()
-            sys.exit(1)
+        sys.exit(1)
     return pyp.exitcode</code></pre>
 </details>
 </section>
@@ -828,7 +835,7 @@ If "&ndash;pdb=yes" is in argv, automatic pdb postmortem is enabled. This is the
             print(&#39;A Python error has occurred. Launching the debugger pdb.\n&#39;
                   &#34;Type &#39;help&#39; for a list of commands, and &#39;quit&#39; when done.&#34;)
             pdb.post_mortem()
-            sys.exit(1)
+        sys.exit(1)
     return pyp.exitcode</code></pre>
 </details>
 </dd>
@@ -1016,6 +1023,7 @@ never used.</li>
         self.latexcommand = latexcommand
         self.disable_cache = False
         self.deps = {}
+        self.bibs = []
         self.lc = 0
         self.argv = [] if argv is None else argv
         self.__sympy_plot__ = None
@@ -1052,6 +1060,10 @@ never used.</li>
 
         Many values can be printed at once with the notation `pyp.print(X, Y, ...)`.&#34;&#34;&#34;
         self.accum.extend(argv)
+
+    def cite(self,b):
+        self.bibs.append(b)
+        return bibentryname.match(b).group(1).strip()
 
     def process(self, S, runner):
         &#34;&#34;&#34;An internal helper function for parsing the input file.&#34;&#34;&#34;
@@ -1175,7 +1187,7 @@ never used.</li>
             print(f&#39;Running Latex command:\n{cmd}&#39;)
             self.exitcode = os.system(cmd)
 
-    def bib(self, bib):
+    def bib(self, bib=&#34;&#34;):
         &#34;&#34;&#34;A helper function for creating a `.bib` file. If `pyp=pyptex(&#39;a.tex&#39;)`,
         then `pyp.bib(&#39;&#39;&#39;@book{knuth1984texbook, title={The {TEXbook}},
         author={Knuth, Donald Ervin and Bibby, Duane}}&#39;&#39;&#39;)` creates a file
@@ -1184,8 +1196,9 @@ never used.</li>
         `a.tex` source. In `a.tex`, the typical way of using it is:
         `\\bibliography{@{{{pyp.bib(&#34;...&#34;)}}}}`.
         &#34;&#34;&#34;
+        self.bibs.append(bib)
         with self.open(self.bibfilename, &#39;wt&#39;) as file:
-            file.write(bib)
+            file.write(&#34;\n&#34;.join(self.bibs))
         return self.filename
 
     def dep(self, filename):
@@ -1256,7 +1269,7 @@ never used.</li>
 <h3>Methods</h3>
 <dl>
 <dt id="pyptex.pyptex.bib"><code class="name flex">
-<span>def <span class="ident">bib</span></span>(<span>self, bib)</span>
+<span>def <span class="ident">bib</span></span>(<span>self, bib='')</span>
 </code></dt>
 <dd>
 <section class="desc"><p>A helper function for creating a <code>.bib</code> file. If <code>pyp=pyptex('a.tex')</code>,
@@ -1270,7 +1283,7 @@ that makes it easier to incorporate the bibtex file straight into the
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def bib(self, bib):
+<pre><code class="python">def bib(self, bib=&#34;&#34;):
     &#34;&#34;&#34;A helper function for creating a `.bib` file. If `pyp=pyptex(&#39;a.tex&#39;)`,
     then `pyp.bib(&#39;&#39;&#39;@book{knuth1984texbook, title={The {TEXbook}},
     author={Knuth, Donald Ervin and Bibby, Duane}}&#39;&#39;&#39;)` creates a file
@@ -1279,9 +1292,24 @@ that makes it easier to incorporate the bibtex file straight into the
     `a.tex` source. In `a.tex`, the typical way of using it is:
     `\\bibliography{@{{{pyp.bib(&#34;...&#34;)}}}}`.
     &#34;&#34;&#34;
+    self.bibs.append(bib)
     with self.open(self.bibfilename, &#39;wt&#39;) as file:
-        file.write(bib)
+        file.write(&#34;\n&#34;.join(self.bibs))
     return self.filename</code></pre>
+</details>
+</dd>
+<dt id="pyptex.pyptex.cite"><code class="name flex">
+<span>def <span class="ident">cite</span></span>(<span>self, b)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def cite(self,b):
+    self.bibs.append(b)
+    return bibentryname.match(b).group(1).strip()</code></pre>
 </details>
 </dd>
 <dt id="pyptex.pyptex.dep"><code class="name flex">
@@ -1548,6 +1576,7 @@ to the <code>savefig</code> function from matplotlib.</p>
 <h4><code><a title="pyptex.pyptex" href="#pyptex.pyptex">pyptex</a></code></h4>
 <ul class="two-column">
 <li><code><a title="pyptex.pyptex.bib" href="#pyptex.pyptex.bib">bib</a></code></li>
+<li><code><a title="pyptex.pyptex.cite" href="#pyptex.pyptex.cite">cite</a></code></li>
 <li><code><a title="pyptex.pyptex.dep" href="#pyptex.pyptex.dep">dep</a></code></li>
 <li><code><a title="pyptex.pyptex.genname" href="#pyptex.pyptex.genname">genname</a></code></li>
 <li><code><a title="pyptex.pyptex.input" href="#pyptex.pyptex.input">input</a></code></li>

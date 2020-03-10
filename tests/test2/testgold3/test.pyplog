@@ -14,7 +14,7 @@ Saving to file: test.pyptex
 Dependencies are:
 {'.../__init__.py': '(datetime)'}
 Saving cache file test.pickle
-Caching: dict_keys(['filename', 'texfilename', 'cachefilename', 'bibfilename', 'pyptexfilename', 'auxfilename', 'latex', 'latexcommand', 'disable_cache', 'deps', 'lc', 'argv', 'exitcode', 'gendir', 'gencount', 'fragments', 'outputs', 'accum', 'compiled'])
+Caching: dict_keys(['filename', 'texfilename', 'cachefilename', 'bibfilename', 'pyptexfilename', 'auxfilename', 'latex', 'latexcommand', 'disable_cache', 'deps', 'bibs', 'lc', 'argv', 'exitcode', 'gendir', 'gencount', 'fragments', 'outputs', 'accum', 'compiled'])
 Running Latex command:
 pdflatex --file-line-error --synctex=1 test.pyptex && (test ! -f test.bib || bibtex test.aux)
 This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex)

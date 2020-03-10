@@ -7,18 +7,17 @@ mymsg(){
 	echo commit-msg: $@
 }
 if make -q; then 
-	mymsg All Makefile targets are up to date.
+	true
 else
 	myerr 'Outdated Makefile targets found. run "make".'
 	exit 1
 fi
 if git diff --quiet; then
-	mymsg No git unstaged changes found.
+	true
 else
 	myerr 'Unstaged changes found. run "git add".'
 	exit 1
 fi
 msg="commit-msg approval for `whoami` on `date '+%Y.%m.%d-%H:%M:%S'`"
 echo $msg >>$1
-mymsg Success
 exit 0
