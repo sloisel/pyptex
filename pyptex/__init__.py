@@ -157,6 +157,7 @@ __pdoc__ = {
 
 pypparser = re.compile(r'((?<!\\)%[^\n]*\n)|(@@{)|(@{([^{}]+)}|@{{{(.*?)}}})', re.DOTALL)
 bibentryname = re.compile(r'[^{]*{([^,]*),', re.DOTALL)
+stripext = re.compile(r'(.*?)(\.(pyp\.)?[^\.]*)?$', re.DOTALL)
 
 
 __pdoc__['format_my_nanos'] = False
@@ -326,11 +327,12 @@ class pyptex:
         """
         print(f'{texfilename}: pyptex compilation begins')
         self.__globals__ = {'__builtins__': __builtins__, 'pyp': weakref.proxy(self)}
-        self.filename = os.path.splitext(texfilename)[0]
+        self.filename = stripext.sub(lambda m: m.group(1),texfilename)
         self.texfilename = texfilename
+        foo = self.filename+'.tex'
+        self.pyptexfilename = foo if foo!=texfilename else f'{self.filename}.pyptex'
         self.cachefilename = f'{self.filename}.pickle'
         self.bibfilename = f'{self.filename}.bib'
-        self.pyptexfilename = f'{self.filename}.pyptex'
         self.auxfilename = f'{self.filename}.aux'
         self.latex = 'pdflatex --file-line-error --synctex=1'
         self.latexcommand = latexcommand
@@ -493,7 +495,6 @@ class pyptex:
                         pass
                     else:
                         cache[k] = v
-                print('Caching:', cache.keys())
                 pickle.dump(cache, file)
         if self.latexcommand:
             cmd = self.latexcommand.format(**self.__dict__)
