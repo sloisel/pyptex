@@ -48,7 +48,7 @@ class BSCommand(build_scripts):
 setup(
     name='pyptex',
     description='Python Preprocessor for (La)TeX',
-    version='0.2.0',
+    version='0.2.1',
     packages=find_packages(),
     install_requires=['sympy>=1.5', 'numpy>=1.18', 'setuptools', 'pdoc3>=0.7'],
     python_requires='>=3',
