@@ -380,7 +380,7 @@ class pyptex:
         r"""If `pyp` is an object of type `pyptex`, then `pyp.cite(X)` adds the relevant
         entry to the bibTeX file and returns the entry name. Example usage:
 
-        \cite{@{{{pyp.cite(r"@article{seb97,title=Some title etc...}")}}}}
+        `\cite{@{{{pyp.cite(r"@article{seb97,title=Some title etc...}")}}}}`
         """
         self.bibs.append(b)
         return bibentryname.match(b).group(1).strip()

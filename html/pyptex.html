@@ -511,7 +511,7 @@ class pyptex:
         r&#34;&#34;&#34;If `pyp` is an object of type `pyptex`, then `pyp.cite(X)` adds the relevant
         entry to the bibTeX file and returns the entry name. Example usage:
 
-        \cite{@{{{pyp.cite(r&#34;@article{seb97,title=Some title etc...}&#34;)}}}}
+        `\cite{@{{{pyp.cite(r&#34;@article{seb97,title=Some title etc...}&#34;)}}}}`
         &#34;&#34;&#34;
         self.bibs.append(b)
         return bibentryname.match(b).group(1).strip()
@@ -1072,7 +1072,7 @@ never used.</li>
         r&#34;&#34;&#34;If `pyp` is an object of type `pyptex`, then `pyp.cite(X)` adds the relevant
         entry to the bibTeX file and returns the entry name. Example usage:
 
-        \cite{@{{{pyp.cite(r&#34;@article{seb97,title=Some title etc...}&#34;)}}}}
+        `\cite{@{{{pyp.cite(r&#34;@article{seb97,title=Some title etc...}&#34;)}}}}`
         &#34;&#34;&#34;
         self.bibs.append(b)
         return bibentryname.match(b).group(1).strip()
@@ -1315,7 +1315,7 @@ that makes it easier to incorporate the bibtex file straight into the
 <dd>
 <section class="desc"><p>If <code>pyp</code> is an object of type <a title="pyptex.pyptex" href="#pyptex.pyptex"><code>pyptex</code></a>, then <code>pyp.cite(X)</code> adds the relevant
 entry to the bibTeX file and returns the entry name. Example usage:</p>
-<p>\cite{@{{{pyp.cite(r"@article{seb97,title=Some title etc&hellip;}")}}}}</p></section>
+<p><code>\cite{@{{{pyp.cite(r"@article{seb97,title=Some title etc...}")}}}}</code></p></section>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1324,7 +1324,7 @@ entry to the bibTeX file and returns the entry name. Example usage:</p>
     r&#34;&#34;&#34;If `pyp` is an object of type `pyptex`, then `pyp.cite(X)` adds the relevant
     entry to the bibTeX file and returns the entry name. Example usage:
 
-    \cite{@{{{pyp.cite(r&#34;@article{seb97,title=Some title etc...}&#34;)}}}}
+    `\cite{@{{{pyp.cite(r&#34;@article{seb97,title=Some title etc...}&#34;)}}}}`
     &#34;&#34;&#34;
     self.bibs.append(b)
     return bibentryname.match(b).group(1).strip()</code></pre>

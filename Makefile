@@ -16,6 +16,7 @@ tests/runtests.success.log: Makefile pyptex/*.py scripts/pyptex tests/runtest te
 
 scripts/pyptex: setup.py Makefile
 	python3 setup.py --help > /dev/null
+	touch scripts/pyptex
 
 test: tests/runtests.success.log
 
