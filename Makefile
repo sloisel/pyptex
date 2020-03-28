@@ -14,6 +14,9 @@ clean:
 tests/runtests.success.log: Makefile pyptex/*.py scripts/pyptex tests/runtest tests/runtests tests/test?/test?.tex
 	cd tests && ./runtests
 
+scripts/pyptex: setup.py Makefile
+	python3 setup.py --help > /dev/null
+
 test: tests/runtests.success.log
 
 doc: html/pyptex.html
