@@ -2,17 +2,28 @@ from setuptools import setup, find_packages
 from distutils.command.build_scripts import build_scripts
 from pathlib import Path
 import sys,os
+from contextlib import suppress
 
 
 this_directory = Path(__file__).parent.absolute()
 long_description = Path(this_directory, 'README.md').read_text(encoding='utf-8')
 
+def ensureFile(scriptname,thescript):
+    writeScript = True
+    with suppress(Exception):
+        with open(scriptname,"rt") as file:
+            if(file.read()==thescript):
+                writeScript = False
+    if(writeScript):
+        with open(scriptname,"wt") as file:
+            file.write(thescript)
 
-with open("scripts/pyptex","wt") as file:
-    file.write(r"""#!/bin/sh
+ensureFile("scripts/pyptex",r"""#!/bin/sh
 {} -u -m pyptex $@
-""".format(sys.executable))
-    os.system("chmod a+rx scripts/pyptex")
+""".format(sys.executable)
+)
+os.system("chmod a+rx scripts/pyptex")
+
 
 setup(
     name='pyptex',

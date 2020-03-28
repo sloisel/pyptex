@@ -9,7 +9,7 @@ html/pyptex.html: pyptex/__init__.py
 	git add html/pyptex.html
 
 clean:
-	rm -rf html pyptex.egg-info tests/runtests.log dist build examples/*.pdf examples/*.pyptex examples/*.pickle
+	rm -rf html pyptex.egg-info tests/runtests.log dist build examples/*.pdf examples/*.pyptex examples/*.pickle scripts/pyptex
 
 tests/runtests.success.log: Makefile pyptex/*.py scripts/pyptex tests/runtest tests/runtests tests/test?/test?.tex
 	cd tests && ./runtests

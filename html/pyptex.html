@@ -508,6 +508,11 @@ class pyptex:
         self.accum.extend(argv)
 
     def cite(self,b):
+        r&#34;&#34;&#34;If `pyp` is an object of type `pyptex`, then `pyp.cite(X)` adds the relevant
+        entry to the bibTeX file and returns the entry name. Example usage:
+
+        \cite{@{{{pyp.cite(r&#34;@article{seb97,title=Some title etc...}&#34;)}}}}
+        &#34;&#34;&#34;
         self.bibs.append(b)
         return bibentryname.match(b).group(1).strip()
 
@@ -1064,6 +1069,11 @@ never used.</li>
         self.accum.extend(argv)
 
     def cite(self,b):
+        r&#34;&#34;&#34;If `pyp` is an object of type `pyptex`, then `pyp.cite(X)` adds the relevant
+        entry to the bibTeX file and returns the entry name. Example usage:
+
+        \cite{@{{{pyp.cite(r&#34;@article{seb97,title=Some title etc...}&#34;)}}}}
+        &#34;&#34;&#34;
         self.bibs.append(b)
         return bibentryname.match(b).group(1).strip()
 
@@ -1303,12 +1313,19 @@ that makes it easier to incorporate the bibtex file straight into the
 <span>def <span class="ident">cite</span></span>(<span>self, b)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>If <code>pyp</code> is an object of type <a title="pyptex.pyptex" href="#pyptex.pyptex"><code>pyptex</code></a>, then <code>pyp.cite(X)</code> adds the relevant
+entry to the bibTeX file and returns the entry name. Example usage:</p>
+<p>\cite{@{{{pyp.cite(r"@article{seb97,title=Some title etc&hellip;}")}}}}</p></section>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def cite(self,b):
+    r&#34;&#34;&#34;If `pyp` is an object of type `pyptex`, then `pyp.cite(X)` adds the relevant
+    entry to the bibTeX file and returns the entry name. Example usage:
+
+    \cite{@{{{pyp.cite(r&#34;@article{seb97,title=Some title etc...}&#34;)}}}}
+    &#34;&#34;&#34;
     self.bibs.append(b)
     return bibentryname.match(b).group(1).strip()</code></pre>
 </details>
