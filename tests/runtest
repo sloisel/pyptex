@@ -32,6 +32,12 @@ do
 	echo "runtests: $thecmd"
 	$thecmd
 	cp -r *.pyptex test-generated testgen$k
+	if [ -f test.pdf ]; then
+		rm -f test.ppm*
+		pdftoppm test.pdf test -f 1 -singlefile && gzip -n test.ppm
+		cp test.ppm.gz testgen$k
+	fi
+	sed -i '' '/^This is [a-zA-Z]*, Version/,$d' test.pyplog
 	sed 's/\/.*\/\(__init__\.py\)/\.\.\.\/\1/g;' test.pyplog | sed 's/\([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]@[0-9:\.]*\)/(datetime)/g' | grep -v 'Output written on test.pdf' > testgen$k/test.pyplog
 	if [ -d testgold$k ]; then
 		echo "runtests: Gold image already exists"

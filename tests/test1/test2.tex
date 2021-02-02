@@ -1,5 +1,26 @@
 \documentclass{article}
 
+
+@{{{
+aaa = 1
+pyp.freeze()
+bbb = 2
+print(aaa,bbb)
+pyp.clear()
+print(aaa)
+try:
+	print(bbb)
+except:
+	print("As expected, bbb is now undefined.")
+}}}
+@{{{
+try:
+	print(bbb)
+except:
+	print("As expected again, bbb is still undefined.")
+}}}
+
+
 % This doesn't actually work.
 \pdfinfoomitdate1
 \pdfsuppressptexinfo-1

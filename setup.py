@@ -28,9 +28,9 @@ os.system("chmod a+rx scripts/pyptex")
 setup(
     name='pyptex',
     description='Python Preprocessor for (La)TeX',
-    version='1.0.1',
+    version='1.1.0',
     packages=find_packages(),
-    install_requires=['sympy>=1.5', 'numpy>=1.18', 'setuptools', 'pdoc3>=0.7'],
+    install_requires=['sympy>=1.5', 'numpy>=1.18', 'setuptools', 'pdoc3>=0.7','matplotlib'],
     python_requires='>=3',
     author='Sébastien Loisel',
     author_email='sloisel@gmail.com',

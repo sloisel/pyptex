@@ -11,6 +11,8 @@
 *.pyplog
 *.synctex.gz
 *.txt
+*.ppm
+*.ppm.gz
 test.tex
 testgen*
 *.egg-info

@@ -155,7 +155,7 @@ __pdoc__ = {
     'pyptex.run': False,
 }
 
-pypparser = re.compile(r'((?<!\\)%[^\n]*\n)|(@@{)|(@{([^{}]+)}|@{{{(.*?)}}})', re.DOTALL)
+pypparser = re.compile(r'((?<!\\)%[^\n]*\n)|(@@)|(@(\[([a-zA-Z]*)\])?{([^{}]+)}|@(\[([a-zA-Z]*)\])?{{{(.*?)}}})', re.DOTALL)
 bibentryname = re.compile(r'[^{]*{([^,]*),', re.DOTALL)
 stripext = re.compile(r'(.*?)(\.(pyp\.)?[^\.]*)?$', re.DOTALL)
 
@@ -180,7 +180,11 @@ def dictdiff(A, B):
 
 __pdoc__['mylatex'] = False
 def mylatex(X):
-    return sympy.latex(X) if X is not None else ''
+    if X is None:
+        return ''
+    if isinstance(X, str):
+        return X
+    return sympy.latex(X)
 
 
 __pdoc__['latextemplate'] = False
@@ -277,6 +281,52 @@ class pyptex:
         if not os.path.exists(self.gendir):
             os.makedirs(self.gendir)
         self.gencount = 0
+    def freeze(self):
+        """'Freezes' the global scope of the caller by performing a shallow copy and copying it to 
+        pyp.__frozen__
+
+        See also pyptex.clear()"""
+        self.__frozen__ = inspect.stack()[1][0].f_globals.copy()
+    def clear(self):
+        """Clears all global variable.
+
+        pyptex.clear() clears all the global variables of the caller. Example usage:
+        ```python
+        a = 1
+        print(a)      # this prints 1
+        pyp.clear()
+        print(a)      # this raises an exception because a is now undefined.
+        ```
+        
+        The global scope is restored from the dictionary pyp.__frozen__, which initially only contains
+        the pyp object and the __builtins__ module. One can add more items to the __frozen__ dict, e.g.
+        by importing some standard module. For example,
+
+        ```python
+        my_variable = 78
+        import sys
+        pyp.freeze()     # This freezes my_variable and sys from the global scope.
+        foo = 1          # Now foo is defined...
+        pyp.clear()
+        # ...Now foo is undefined, but my_variable is still 78, and the sys module is still available.
+
+        Note that pyp.freeze() performs a shallow copy, so:
+        ```python
+        a = [1,2,3]
+        pyp.freeze()  # a = [1,2,3] is now in the frozen scope.
+        a[1] = 7      # Now a = [1,7,3] in the global scope.
+        pyp.clear()
+        # Still a = [1,7,3] because the frozen scope copy was shallow.
+        ```
+        """
+        foo = self.__frozen__
+        bar = inspect.stack()[1][0].f_globals
+        for k,v in foo.items():
+            bar[k] = v
+        kk = list(bar.keys())
+        for k in kk:
+            if k not in foo:
+                del bar[k]
 
     def __init__(self, texfilename, argv=None, latexcommand=False):
         r"""`pyp = pyptex('a.tex')` reads in the LaTeX file a.tex and locates all
@@ -327,6 +377,7 @@ class pyptex:
         """
         print(f'{texfilename}: pyptex compilation begins')
         self.__globals__ = {'__builtins__': __builtins__, 'pyp': weakref.proxy(self)}
+        self.__frozen__ = self.__globals__.copy()
         self.filename = stripext.sub(lambda m: m.group(1),texfilename)
         self.texfilename = texfilename
         foo = self.filename+'.tex'
@@ -394,14 +445,16 @@ class pyptex:
             if m.start(1) >= 0:
                 return m.group(0)
             if m.start(2) >= 0:
-                return '@{'
-            for k in range(4, 6):
+                return '@'
+            for k in [6,9]:
                 if m.start(k) >= 0:
                     z = m.group(k)
                     z0 = m.start(k)
                     z1 = m.end(k)
+                    o = m.group(k-1) or ''
+                    break
             self.lc += ln[z1] - ln[z0] + 1
-            return runner(z, ln[z0])
+            return runner(z, ln[z0], o)
 
         return pypparser.sub(do_work, S)
 
@@ -426,8 +479,9 @@ class pyptex:
                 cache[k] = v
         self.fragments = []
 
-        def scanner(C, k):
+        def scanner(C, k, o):
             self.fragments.append(C)
+            assert(o in ['','verbatim'],"Invalid option: "+o)
             return ''
 
         self.process(text, runner=scanner)
@@ -466,9 +520,12 @@ class pyptex:
                 self.__dict__[k] = v
             self.subcount = -1
 
-            def subber(C, k):
+            def subber(C, k, o):
                 self.subcount += 1
-                return self.outputs[self.subcount]
+                if(o==''):
+                    return self.outputs[self.subcount]
+                if(o=='verbatim'):
+                    return C
 
             self.compiled = self.process(text, runner=subber)
         else:
@@ -476,10 +533,13 @@ class pyptex:
             self.deps = saveddeps
             self.outputs = []
 
-            def appender(C, k):
+            def appender(C, k, o):
                 result = self.run(C, k)
                 self.outputs.append(''.join(map(mylatex, result)))
-                return self.outputs[-1]
+                if(o==''):
+                    return self.outputs[-1]
+                if(o=='verbatim'):
+                    return C
 
             self.compiled = self.process(text, runner=appender)
         sys.stdout.flush()

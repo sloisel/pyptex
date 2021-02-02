@@ -21,18 +21,3 @@ Dependencies are:
 Saving cache file test.pickle
 Running Latex command:
 pdflatex --file-line-error --synctex=1 test.pyptex && (test ! -f test.bib || bibtex test.aux)
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex)
- restricted \write18 enabled.
-entering extended mode
-(./test.pyptex
-LaTeX2e <2017-04-15>
-Babel <3.10> and hyphenation patterns for 84 language(s) loaded.
-(/usr/local/texlive/2017/texmf-dist/tex/latex/base/article.cls
-Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
-(/usr/local/texlive/2017/texmf-dist/tex/latex/base/size10.clo)) (./test.aux)
-[1{/usr/local/texlive/2017/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-(./test.aux) )</usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/c
-m/cmr10.pfb>
-SyncTeX written on test.synctex.gz.
-Transcript written on test.log.
-test.tex: pyptex compilation ends

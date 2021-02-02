@@ -3,21 +3,23 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.7.5" />
+<meta name="generator" content="pdoc 0.9.2" />
 <title>pyptex API documentation</title>
 <meta name="description" content="PypTeX: the Python Preprocessor for TeX …" />
-<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
-<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
-<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
-<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
 <style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
 </head>
 <body>
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>pyptex</code></h1>
+<h1 class="title">Package <code>pyptex</code></h1>
 </header>
 <section id="section-intro">
 <h2 id="pyptex-the-python-preprocessor-for-tex">PypTeX: the Python Preprocessor for TeX</h2>
@@ -25,7 +27,7 @@
 <p>PypTeX is the Python Preprocessor for LaTeX. It allows one to embed Python
 code fragments in a LaTeX template file.</p>
 <h1 id="installation">Installation</h1>
-<p><code>pip install pyptex</code></p>
+<p><code>pip install <a title="pyptex.pyptex" href="#pyptex.pyptex">pyptex</a></code></p>
 <ol>
 <li>You will also need a LaTeX installation, and the default LaTeX processor is <code>pdflatex</code>.</li>
 <li>You need a Python 3 installation.</li>
@@ -39,18 +41,18 @@ code fragments in a LaTeX template file.</p>
 $$\int x^3\,dx = @{S('integrate(x^3,x)')}+C$$
 \end{document}
 </code></pre>
-<p>The command <code>pyptex example.tex</code> will generate <code>example.pdf</code>,
+<p>The command <code><a title="pyptex.pyptex" href="#pyptex.pyptex">pyptex</a> example.tex</code> will generate <code>example.pdf</code>,
 as well as the intermediary file <code>example.pyptex</code>. PypTeX works by extracting Python
 fragments in <code>example.tex</code> indicated by either <code>@{...}</code> or <code>@{{{...}}}</code> and substituting the
 corresponding outputs to produce <code>example.pyptex</code>, which is then compiled with
 <code>pdflatex example.pyptex</code>, although one can use any desired LaTeX processor in lieu of
 <code>pdflatex</code>. The intermediary file <code>example.pyptex</code> is pure LaTeX.</p>
 <p>When processing Python fragments, the global scope contains an object <code>pyp</code> that is a
-(weakref proxy for a) <a title="pyptex.pyptex" href="#pyptex.pyptex"><code>pyptex</code></a> object that makes available several helper functions
+(weakref proxy for a) <code><a title="pyptex.pyptex" href="#pyptex.pyptex">pyptex</a></code> object that makes available several helper functions
 and useful data. For example, <code>pyp.print("hello, world")</code> inserts the string <code>hello, world</code>
 into the generated <code>example.pyptex</code> file.</p>
 <ul>
-<li>The <a title="pyptex.pyptex" href="#pyptex.pyptex"><code>pyptex</code></a> executable tries to locate the Python 3 executable using <code>/usr/bin/env python3</code>.
+<li>The <code><a title="pyptex.pyptex" href="#pyptex.pyptex">pyptex</a></code> executable tries to locate the Python 3 executable using <code>/usr/bin/env python3</code>.
 If this is causing you problems, try <code>python -u -m pyptex example.tex</code> instead.</li>
 </ul>
 <h1 id="slightly-bigger-examples">Slightly bigger examples</h1>
@@ -86,11 +88,11 @@ as a first-class citizen and everything should work as normal. Please let us kno
 debugging task somehow fails for you.
 3. Performance. Substituting using regular expressions is faster than running the
 LaTeX processor.</p>
-<h1 id="pretty-printing-template-strings-from-python-with-pp">Pretty-printing template strings from Python with <code>pp(...)</code></h1>
-<p>The function <code>pp(X)</code> pretty-prints the template string <code>X</code> with substitutions
+<h1 id="pretty-printing-template-strings-from-python-with-pp">Pretty-printing template strings from Python with <code><a title="pyptex.pp" href="#pyptex.pp">pp()</a>(&hellip;)</code></h1>
+<p>The function <code><a title="pyptex.pp" href="#pyptex.pp">pp()</a>(X)</code> pretty-prints the template string <code>X</code> with substitutions
 from the local scope of the caller. This is useful for medium length LaTeX fragments
 containing a few Python substitutions:</p>
-<pre><code class="python">&gt;&gt;&gt; from pyptex import pp
+<pre><code class="language-python">&gt;&gt;&gt; from pyptex import pp
 &gt;&gt;&gt; from sympy import *
 &gt;&gt;&gt; p = S('x^2-2*x+3')
 &gt;&gt;&gt; dpdx = p.diff(S('x'))
@@ -102,7 +104,7 @@ containing a few Python substitutions:</p>
 <p>When compiling <code>a.tex</code>, PypTeX creates a cache file <code>a.pickle</code>. This file is
 automatically invalidated if the Python fragments in <code>a.tex</code> change, or if some
 other dependencies have changed. Dependencies can be declared from inside <code>a.tex</code> via
-<code>pyp.dep(...)</code>. Caching can be completely disabled with <code>pyp.disable_cache=True</code>,
+<code>pyp.dep(&hellip;)</code>. Caching can be completely disabled with <code>pyp.disable_cache=True</code>,
 and users can delete <code>a.pickle</code> as necessary.</p>
 <h1 id="scopes">Scopes</h1>
 <p>For each template file <code>a.tex</code>, <code>b.tex</code>, &hellip; a private global scope is created for
@@ -119,7 +121,7 @@ to the <code>pyptex('a.tex')</code> instance. We use a <code>weakref.proxy</code
 scope of <code>a.tex</code> is a <code>dict</code> stored in the (private) variable <code>pyp.__global__</code>. The
 use of <code>weakref.proxy</code> avoids creating a circular data structure that would otherwise
 stymie the Python garbage collector. For most purposes, this global <code>pyp</code> variable
-acts exactly like a concrete <a title="pyptex.pyptex" href="#pyptex.pyptex"><code>pyptex</code></a> instance.</p>
+acts exactly like a concrete <code><a title="pyptex.pyptex" href="#pyptex.pyptex">pyptex</a></code> instance.</p>
 <h1 id="texshop">TeXShop</h1>
 <p>If you want to use TeXShop on Mac, put the following into <code>~/Library/TeXShop/Engines/pyptex.engine</code> and restart TeXShop:</p>
 <pre><code>#!/bin/bash
@@ -286,7 +288,7 @@ __pdoc__ = {
     &#39;pyptex.run&#39;: False,
 }
 
-pypparser = re.compile(r&#39;((?&lt;!\\)%[^\n]*\n)|(@@{)|(@{([^{}]+)}|@{{{(.*?)}}})&#39;, re.DOTALL)
+pypparser = re.compile(r&#39;((?&lt;!\\)%[^\n]*\n)|(@@)|(@(\[([a-zA-Z]*)\])?{([^{}]+)}|@(\[([a-zA-Z]*)\])?{{{(.*?)}}})&#39;, re.DOTALL)
 bibentryname = re.compile(r&#39;[^{]*{([^,]*),&#39;, re.DOTALL)
 stripext = re.compile(r&#39;(.*?)(\.(pyp\.)?[^\.]*)?$&#39;, re.DOTALL)
 
@@ -311,7 +313,11 @@ def dictdiff(A, B):
 
 __pdoc__[&#39;mylatex&#39;] = False
 def mylatex(X):
-    return sympy.latex(X) if X is not None else &#39;&#39;
+    if X is None:
+        return &#39;&#39;
+    if isinstance(X, str):
+        return X
+    return sympy.latex(X)
 
 
 __pdoc__[&#39;latextemplate&#39;] = False
@@ -408,6 +414,52 @@ class pyptex:
         if not os.path.exists(self.gendir):
             os.makedirs(self.gendir)
         self.gencount = 0
+    def freeze(self):
+        &#34;&#34;&#34;&#39;Freezes&#39; the global scope of the caller by performing a shallow copy and copying it to 
+        pyp.__frozen__
+
+        See also pyptex.clear()&#34;&#34;&#34;
+        self.__frozen__ = inspect.stack()[1][0].f_globals.copy()
+    def clear(self):
+        &#34;&#34;&#34;Clears all global variable.
+
+        pyptex.clear() clears all the global variables of the caller. Example usage:
+        ```python
+        a = 1
+        print(a)      # this prints 1
+        pyp.clear()
+        print(a)      # this raises an exception because a is now undefined.
+        ```
+        
+        The global scope is restored from the dictionary pyp.__frozen__, which initially only contains
+        the pyp object and the __builtins__ module. One can add more items to the __frozen__ dict, e.g.
+        by importing some standard module. For example,
+
+        ```python
+        my_variable = 78
+        import sys
+        pyp.freeze()     # This freezes my_variable and sys from the global scope.
+        foo = 1          # Now foo is defined...
+        pyp.clear()
+        # ...Now foo is undefined, but my_variable is still 78, and the sys module is still available.
+
+        Note that pyp.freeze() performs a shallow copy, so:
+        ```python
+        a = [1,2,3]
+        pyp.freeze()  # a = [1,2,3] is now in the frozen scope.
+        a[1] = 7      # Now a = [1,7,3] in the global scope.
+        pyp.clear()
+        # Still a = [1,7,3] because the frozen scope copy was shallow.
+        ```
+        &#34;&#34;&#34;
+        foo = self.__frozen__
+        bar = inspect.stack()[1][0].f_globals
+        for k,v in foo.items():
+            bar[k] = v
+        kk = list(bar.keys())
+        for k in kk:
+            if k not in foo:
+                del bar[k]
 
     def __init__(self, texfilename, argv=None, latexcommand=False):
         r&#34;&#34;&#34;`pyp = pyptex(&#39;a.tex&#39;)` reads in the LaTeX file a.tex and locates all
@@ -458,6 +510,7 @@ class pyptex:
         &#34;&#34;&#34;
         print(f&#39;{texfilename}: pyptex compilation begins&#39;)
         self.__globals__ = {&#39;__builtins__&#39;: __builtins__, &#39;pyp&#39;: weakref.proxy(self)}
+        self.__frozen__ = self.__globals__.copy()
         self.filename = stripext.sub(lambda m: m.group(1),texfilename)
         self.texfilename = texfilename
         foo = self.filename+&#39;.tex&#39;
@@ -525,14 +578,16 @@ class pyptex:
             if m.start(1) &gt;= 0:
                 return m.group(0)
             if m.start(2) &gt;= 0:
-                return &#39;@{&#39;
-            for k in range(4, 6):
+                return &#39;@&#39;
+            for k in [6,9]:
                 if m.start(k) &gt;= 0:
                     z = m.group(k)
                     z0 = m.start(k)
                     z1 = m.end(k)
+                    o = m.group(k-1) or &#39;&#39;
+                    break
             self.lc += ln[z1] - ln[z0] + 1
-            return runner(z, ln[z0])
+            return runner(z, ln[z0], o)
 
         return pypparser.sub(do_work, S)
 
@@ -557,8 +612,9 @@ class pyptex:
                 cache[k] = v
         self.fragments = []
 
-        def scanner(C, k):
+        def scanner(C, k, o):
             self.fragments.append(C)
+            assert(o in [&#39;&#39;,&#39;verbatim&#39;],&#34;Invalid option: &#34;+o)
             return &#39;&#39;
 
         self.process(text, runner=scanner)
@@ -597,9 +653,12 @@ class pyptex:
                 self.__dict__[k] = v
             self.subcount = -1
 
-            def subber(C, k):
+            def subber(C, k, o):
                 self.subcount += 1
-                return self.outputs[self.subcount]
+                if(o==&#39;&#39;):
+                    return self.outputs[self.subcount]
+                if(o==&#39;verbatim&#39;):
+                    return C
 
             self.compiled = self.process(text, runner=subber)
         else:
@@ -607,10 +666,13 @@ class pyptex:
             self.deps = saveddeps
             self.outputs = []
 
-            def appender(C, k):
+            def appender(C, k, o):
                 result = self.run(C, k)
                 self.outputs.append(&#39;&#39;.join(map(mylatex, result)))
-                return self.outputs[-1]
+                if(o==&#39;&#39;):
+                    return self.outputs[-1]
+                if(o==&#39;verbatim&#39;):
+                    return C
 
             self.compiled = self.process(text, runner=appender)
         sys.stdout.flush()
@@ -763,13 +825,13 @@ def pyptexmain(argv: list = None):
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pyptex.pp"><code class="name flex">
-<span>def <span class="ident">pp</span></span>(<span>Z, levels=1)</span>
+<span>def <span class="ident">pp</span></span>(<span>Z, levels: int = 1)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Pretty-prints the template text string <code>Z</code>, using substitutions from the local
+<div class="desc"><p>Pretty-prints the template text string <code>Z</code>, using substitutions from the local
 scope that is <code>levels</code> calls up on the stack. The template character is @.</p>
 <p>For example, assume the caller has the value <code>x=3</code> in its local variables. Then,
-<code>pp("$x=@x$")</code> produces <code>$x=3$</code>.</p></section>
+<code>pp("$x=@x$")</code> produces <code>$x=3$</code>.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -793,16 +855,16 @@ scope that is <code>levels</code> calls up on the stack. The template character 
 </details>
 </dd>
 <dt id="pyptex.pyptexmain"><code class="name flex">
-<span>def <span class="ident">pyptexmain</span></span>(<span>argv=None)</span>
+<span>def <span class="ident">pyptexmain</span></span>(<span>argv: list = None)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>This function parses an input file a.tex to produce a.pyptex and a.pdf, by
+<div class="desc"><p>This function parses an input file a.tex to produce a.pyptex and a.pdf, by
 doing pyp = pyptex('a.tex', &hellip;) object. The filename a.tex must be in argv[1];
 if argv is not provided, it is taken from sys.argv.
 The default pyp.latexcommand invokes pdflatex and, if a.bib is present, also bibtex.
 If an exception occurs, pdb is automatically invoked in postmortem mode.
 If "&ndash;pdb=no" is in argv, it is removed from argv and automatic pdb postmortem is disabled.
-If "&ndash;pdb=yes" is in argv, automatic pdb postmortem is enabled. This is the default.</p></section>
+If "&ndash;pdb=yes" is in argv, automatic pdb postmortem is enabled. This is the default.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -855,7 +917,7 @@ If "&ndash;pdb=yes" is in argv, automatic pdb postmortem is enabled. This is the
 <span>(</span><span>texfilename, argv=None, latexcommand=False)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Class <a title="pyptex.pyptex" href="#pyptex.pyptex"><code>pyptex</code></a> is used to parse an input (templated) <code>a.tex</code> file
+<div class="desc"><p>Class <code><a title="pyptex.pyptex" href="#pyptex.pyptex">pyptex</a></code> is used to parse an input (templated) <code>a.tex</code> file
 and produce an output <code>a.pyptex</code> file, and can be used as follows:
 <code>pyp = pyptex('a.tex')</code>
 The constructor reads <code>a.tex</code>, executes Python fragments and performs relevant
@@ -886,7 +948,7 @@ is executed.</p>
 <li><code>pyp.latex = "pdflatex --file-line-error --synctex=1"</code>.
 One may overwrite this in a.tex to choose a different latex engine, e.g.
 <code>pyp.latex = "latex"</code>.</li>
-<li><code>pyp.latexcommand</code> defaults to <code>False</code>, but the command-line version of <a title="pyptex.pyptex" href="#pyptex.pyptex"><code>pyptex</code></a>
+<li><code>pyp.latexcommand</code> defaults to <code>False</code>, but the command-line version of <code><a title="pyptex.pyptex" href="#pyptex.pyptex">pyptex</a></code>
 uses something like.
 <code>r"{latex} {pyptexfilename} &amp;&amp; (test ! -f {bibfilename} || bibtex {auxfilename})"</code>
 The relevant substitutions are performed by <code>string.format</code> from <code>pyp.__dict__</code>.</li>
@@ -903,7 +965,7 @@ never used.</li>
 <li><code>pyp.fragments</code> is the list of Python fragments extracted from a.tex.</li>
 <li><code>pyp.outputs</code> is the matching outputs.</li>
 <li><code>pyp.compiled</code> is the string that is written to <code>a.pyptex</code>.</li>
-</ul></section>
+</ul></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -969,6 +1031,52 @@ never used.</li>
         if not os.path.exists(self.gendir):
             os.makedirs(self.gendir)
         self.gencount = 0
+    def freeze(self):
+        &#34;&#34;&#34;&#39;Freezes&#39; the global scope of the caller by performing a shallow copy and copying it to 
+        pyp.__frozen__
+
+        See also pyptex.clear()&#34;&#34;&#34;
+        self.__frozen__ = inspect.stack()[1][0].f_globals.copy()
+    def clear(self):
+        &#34;&#34;&#34;Clears all global variable.
+
+        pyptex.clear() clears all the global variables of the caller. Example usage:
+        ```python
+        a = 1
+        print(a)      # this prints 1
+        pyp.clear()
+        print(a)      # this raises an exception because a is now undefined.
+        ```
+        
+        The global scope is restored from the dictionary pyp.__frozen__, which initially only contains
+        the pyp object and the __builtins__ module. One can add more items to the __frozen__ dict, e.g.
+        by importing some standard module. For example,
+
+        ```python
+        my_variable = 78
+        import sys
+        pyp.freeze()     # This freezes my_variable and sys from the global scope.
+        foo = 1          # Now foo is defined...
+        pyp.clear()
+        # ...Now foo is undefined, but my_variable is still 78, and the sys module is still available.
+
+        Note that pyp.freeze() performs a shallow copy, so:
+        ```python
+        a = [1,2,3]
+        pyp.freeze()  # a = [1,2,3] is now in the frozen scope.
+        a[1] = 7      # Now a = [1,7,3] in the global scope.
+        pyp.clear()
+        # Still a = [1,7,3] because the frozen scope copy was shallow.
+        ```
+        &#34;&#34;&#34;
+        foo = self.__frozen__
+        bar = inspect.stack()[1][0].f_globals
+        for k,v in foo.items():
+            bar[k] = v
+        kk = list(bar.keys())
+        for k in kk:
+            if k not in foo:
+                del bar[k]
 
     def __init__(self, texfilename, argv=None, latexcommand=False):
         r&#34;&#34;&#34;`pyp = pyptex(&#39;a.tex&#39;)` reads in the LaTeX file a.tex and locates all
@@ -1019,6 +1127,7 @@ never used.</li>
         &#34;&#34;&#34;
         print(f&#39;{texfilename}: pyptex compilation begins&#39;)
         self.__globals__ = {&#39;__builtins__&#39;: __builtins__, &#39;pyp&#39;: weakref.proxy(self)}
+        self.__frozen__ = self.__globals__.copy()
         self.filename = stripext.sub(lambda m: m.group(1),texfilename)
         self.texfilename = texfilename
         foo = self.filename+&#39;.tex&#39;
@@ -1086,14 +1195,16 @@ never used.</li>
             if m.start(1) &gt;= 0:
                 return m.group(0)
             if m.start(2) &gt;= 0:
-                return &#39;@{&#39;
-            for k in range(4, 6):
+                return &#39;@&#39;
+            for k in [6,9]:
                 if m.start(k) &gt;= 0:
                     z = m.group(k)
                     z0 = m.start(k)
                     z1 = m.end(k)
+                    o = m.group(k-1) or &#39;&#39;
+                    break
             self.lc += ln[z1] - ln[z0] + 1
-            return runner(z, ln[z0])
+            return runner(z, ln[z0], o)
 
         return pypparser.sub(do_work, S)
 
@@ -1118,8 +1229,9 @@ never used.</li>
                 cache[k] = v
         self.fragments = []
 
-        def scanner(C, k):
+        def scanner(C, k, o):
             self.fragments.append(C)
+            assert(o in [&#39;&#39;,&#39;verbatim&#39;],&#34;Invalid option: &#34;+o)
             return &#39;&#39;
 
         self.process(text, runner=scanner)
@@ -1158,9 +1270,12 @@ never used.</li>
                 self.__dict__[k] = v
             self.subcount = -1
 
-            def subber(C, k):
+            def subber(C, k, o):
                 self.subcount += 1
-                return self.outputs[self.subcount]
+                if(o==&#39;&#39;):
+                    return self.outputs[self.subcount]
+                if(o==&#39;verbatim&#39;):
+                    return C
 
             self.compiled = self.process(text, runner=subber)
         else:
@@ -1168,10 +1283,13 @@ never used.</li>
             self.deps = saveddeps
             self.outputs = []
 
-            def appender(C, k):
+            def appender(C, k, o):
                 result = self.run(C, k)
                 self.outputs.append(&#39;&#39;.join(map(mylatex, result)))
-                return self.outputs[-1]
+                if(o==&#39;&#39;):
+                    return self.outputs[-1]
+                if(o==&#39;verbatim&#39;):
+                    return C
 
             self.compiled = self.process(text, runner=appender)
         sys.stdout.flush()
@@ -1283,13 +1401,13 @@ never used.</li>
 <span>def <span class="ident">bib</span></span>(<span>self, bib='')</span>
 </code></dt>
 <dd>
-<section class="desc"><p>A helper function for creating a <code>.bib</code> file. If <code>pyp=pyptex('a.tex')</code>,
+<div class="desc"><p>A helper function for creating a <code>.bib</code> file. If <code>pyp=pyptex('a.tex')</code>,
 then <code>pyp.bib('''@book{knuth1984texbook, title={The {TEXbook}},
 author={Knuth, Donald Ervin and Bibby, Duane}}''')</code> creates a file
 <code>a.bib</code> with the given text. This is just a convenience function
 that makes it easier to incorporate the bibtex file straight into the
 <code>a.tex</code> source. In <code>a.tex</code>, the typical way of using it is:
-<code>\bibliography{@{{{pyp.bib("...")}}}}</code>.</p></section>
+<code>\bibliography{@{{{pyp.bib("...")}}}}</code>.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1313,9 +1431,9 @@ that makes it easier to incorporate the bibtex file straight into the
 <span>def <span class="ident">cite</span></span>(<span>self, b)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>If <code>pyp</code> is an object of type <a title="pyptex.pyptex" href="#pyptex.pyptex"><code>pyptex</code></a>, then <code>pyp.cite(X)</code> adds the relevant
+<div class="desc"><p>If <code>pyp</code> is an object of type <code><a title="pyptex.pyptex" href="#pyptex.pyptex">pyptex</a></code>, then <code>pyp.cite(X)</code> adds the relevant
 entry to the bibTeX file and returns the entry name. Example usage:</p>
-<p><code>\cite{@{{{pyp.cite(r"@article{seb97,title=Some title etc...}")}}}}</code></p></section>
+<p><code>\cite{@{{{pyp.cite(r"@article{seb97,title=Some title etc...}")}}}}</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1330,23 +1448,98 @@ entry to the bibTeX file and returns the entry name. Example usage:</p>
     return bibentryname.match(b).group(1).strip()</code></pre>
 </details>
 </dd>
+<dt id="pyptex.pyptex.clear"><code class="name flex">
+<span>def <span class="ident">clear</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Clears all global variable.</p>
+<p>pyptex.clear() clears all the global variables of the caller. Example usage:</p>
+<pre><code class="language-python">a = 1
+print(a)      # this prints 1
+pyp.clear()
+print(a)      # this raises an exception because a is now undefined.
+</code></pre>
+<p>The global scope is restored from the dictionary pyp.<strong>frozen</strong>, which initially only contains
+the pyp object and the <strong>builtins</strong> module. One can add more items to the <strong>frozen</strong> dict, e.g.
+by importing some standard module. For example,</p>
+<pre><code class="language-python">my_variable = 78
+import sys
+pyp.freeze()     # This freezes my_variable and sys from the global scope.
+foo = 1          # Now foo is defined...
+pyp.clear()
+# ...Now foo is undefined, but my_variable is still 78, and the sys module is still available.
+
+Note that pyp.freeze() performs a shallow copy, so:
+```python
+a = [1,2,3]
+pyp.freeze()  # a = [1,2,3] is now in the frozen scope.
+a[1] = 7      # Now a = [1,7,3] in the global scope.
+pyp.clear()
+# Still a = [1,7,3] because the frozen scope copy was shallow.
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def clear(self):
+    &#34;&#34;&#34;Clears all global variable.
+
+    pyptex.clear() clears all the global variables of the caller. Example usage:
+    ```python
+    a = 1
+    print(a)      # this prints 1
+    pyp.clear()
+    print(a)      # this raises an exception because a is now undefined.
+    ```
+    
+    The global scope is restored from the dictionary pyp.__frozen__, which initially only contains
+    the pyp object and the __builtins__ module. One can add more items to the __frozen__ dict, e.g.
+    by importing some standard module. For example,
+
+    ```python
+    my_variable = 78
+    import sys
+    pyp.freeze()     # This freezes my_variable and sys from the global scope.
+    foo = 1          # Now foo is defined...
+    pyp.clear()
+    # ...Now foo is undefined, but my_variable is still 78, and the sys module is still available.
+
+    Note that pyp.freeze() performs a shallow copy, so:
+    ```python
+    a = [1,2,3]
+    pyp.freeze()  # a = [1,2,3] is now in the frozen scope.
+    a[1] = 7      # Now a = [1,7,3] in the global scope.
+    pyp.clear()
+    # Still a = [1,7,3] because the frozen scope copy was shallow.
+    ```
+    &#34;&#34;&#34;
+    foo = self.__frozen__
+    bar = inspect.stack()[1][0].f_globals
+    for k,v in foo.items():
+        bar[k] = v
+    kk = list(bar.keys())
+    for k in kk:
+        if k not in foo:
+            del bar[k]</code></pre>
+</details>
+</dd>
 <dt id="pyptex.pyptex.dep"><code class="name flex">
 <span>def <span class="ident">dep</span></span>(<span>self, filename)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>If <code>pyp=pyptex('a.tex')</code>, then <code>pyp.dep(filename)</code> declares that the Python code
+<div class="desc"><p>If <code>pyp=pyptex('a.tex')</code>, then <code>pyp.dep(filename)</code> declares that the Python code
 in <code>a.tex</code> depends on the file designated by <code>filename</code>. When the object
 <code>pyptex('a.tex')</code> is constructed, the file <code>a.pickle</code> will be loaded (if it exists).
 <code>a.pickle</code> is a cache of the results of the Python calculations in <code>a.tex</code>.
-If the cache is deemed valid, the <a title="pyptex.pyptex" href="#pyptex.pyptex"><code>pyptex</code></a> constructor does not rerun all
+If the cache is deemed valid, the <code><a title="pyptex.pyptex" href="#pyptex.pyptex">pyptex</a></code> constructor does not rerun all
 the Python fragments in <code>a.tex</code> but instead uses the previously cached outputs.</p>
 <p>The cache is invalidated under the following scenarios:
 1. The new Python fragments in <code>a.tex</code> are not identical to the cached fragments.
 2. The "last modification" timestamp on dependencies is not the same as in the cache.
 3. <code>pyp.disable_cache==True</code>.</p>
-<p>The list of dependencies defaults to only the <a title="pyptex.pyptex" href="#pyptex.pyptex"><code>pyptex</code></a> executable. Additional
+<p>The list of dependencies defaults to only the <code><a title="pyptex.pyptex" href="#pyptex.pyptex">pyptex</a></code> executable. Additional
 dependencies can be manually declared via <code>pyp.dep(filename)</code>.</p>
-<p>For convenience, <code>pyp.dep(filename)</code> returns filename.</p></section>
+<p>For convenience, <code>pyp.dep(filename)</code> returns filename.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1373,13 +1566,32 @@ dependencies can be manually declared via <code>pyp.dep(filename)</code>.</p>
     return filename</code></pre>
 </details>
 </dd>
-<dt id="pyptex.pyptex.genname"><code class="name flex">
-<span>def <span class="ident">genname</span></span>(<span>self, pattern='fig{gencount}.eps')</span>
+<dt id="pyptex.pyptex.freeze"><code class="name flex">
+<span>def <span class="ident">freeze</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Generate a filename</p>
+<div class="desc"><p>'Freezes' the global scope of the caller by performing a shallow copy and copying it to
+pyp.<strong>frozen</strong></p>
+<p>See also pyptex.clear()</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def freeze(self):
+    &#34;&#34;&#34;&#39;Freezes&#39; the global scope of the caller by performing a shallow copy and copying it to 
+    pyp.__frozen__
+
+    See also pyptex.clear()&#34;&#34;&#34;
+    self.__frozen__ = inspect.stack()[1][0].f_globals.copy()</code></pre>
+</details>
+</dd>
+<dt id="pyptex.pyptex.genname"><code class="name flex">
+<span>def <span class="ident">genname</span></span>(<span>self, pattern: str = 'fig{gencount}.eps')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Generate a filename</p>
 <p>To produce an automatically generated filename, use the statement
-<code>pyp.genname()</code>, where <code>pyp</code> is an object of type <a title="pyptex.pyptex" href="#pyptex.pyptex"><code>pyptex</code></a>, for parsing a
+<code>pyp.genname()</code>, where <code>pyp</code> is an object of type <code><a title="pyptex.pyptex" href="#pyptex.pyptex">pyptex</a></code>, for parsing a
 given file <code>a.tex</code>. By default, this will generate the name
 <code>'a-generated/fig{gencount}.eps'</code>.
 The subdirectory can be overridden by overwriting <code>pyp.gendir</code>,
@@ -1389,7 +1601,7 @@ for example:
 will return something like <code>'a-generated/hello-X-Y.txt'</code>, where
 <code>X</code> is <code>pyp.gencount</code> and <code>Y</code> is <code>pyp.thing</code>.</p>
 <p><code>pyp.genname()</code> does not actually create the file. <code>pyp.genname()</code> increments
-<code>pyp.gencount</code> every time it is called.</p></section>
+<code>pyp.gencount</code> every time it is called.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1419,7 +1631,7 @@ will return something like <code>'a-generated/hello-X-Y.txt'</code>, where
 <span>def <span class="ident">input</span></span>(<span>self, filename, argv=False)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>If <code>pyp = pyptex('a.tex')</code> then
+<div class="desc"><p>If <code>pyp = pyptex('a.tex')</code> then
 <code>pyp.input('b.tex')</code>
 return the string <code>\input{"b.pyptex"}</code>. The common way of using this is to
 put <code>@{pyp.input('b.tex')}</code> somewhere in <code>a.tex</code>.
@@ -1430,14 +1642,14 @@ calculations, variables and functions defined in <code>a.tex</code> live in a gl
 that is private to <code>a.tex</code>, much like each Python module has a private global
 scope. In a similar fashion, <code>b.tex</code> has its own private global scope.
 The global <code>pyp</code> objects in <code>a.tex</code> and <code>b.tex</code> are also different instances
-of the <a title="pyptex.pyptex" href="#pyptex.pyptex"><code>pyptex</code></a> class. This is similar to the notion of "compilation units" in
+of the <code><a title="pyptex.pyptex" href="#pyptex.pyptex">pyptex</a></code> class. This is similar to the notion of "compilation units" in
 the C programming language.</p>
 <p>If one wishes to pass some parameters from <code>a.tex</code> to <code>b.tex</code>, one may use
 the notation <code>pyp.input('b.tex', argv)</code>, which will initialize the global
 <code>pyp</code> object of <code>b.tex</code> so that it contains the field <code>pyp.argv=argv</code>.</p>
 <p>If one absolutely needs to export variables from <code>b.tex</code> back to <code>a.tex</code>, one
-should directly use the <a title="pyptex.pyptex" href="#pyptex.pyptex"><code>pyptex</code></a> constructor, e.g. <code>pyp_b = pyptex('b.tex', argv)</code>;
-one can then retrieve values from the <code>b.tex</code> scope, e.g. with <code>pyp_b.fragments[0]</code>.</p></section>
+should directly use the <code><a title="pyptex.pyptex" href="#pyptex.pyptex">pyptex</a></code> constructor, e.g. <code>pyp_b = pyptex('b.tex', argv)</code>;
+one can then retrieve values from the <code>b.tex</code> scope, e.g. with <code>pyp_b.fragments[0]</code>.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1474,9 +1686,9 @@ one can then retrieve values from the <code>b.tex</code> scope, e.g. with <code>
 <span>def <span class="ident">open</span></span>(<span>self, filename, *argv, **kwargs)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>If pyp = pyptex('a.tex') then pyp.open(filename, &hellip;) is a wrapper for
+<div class="desc"><p>If pyp = pyptex('a.tex') then pyp.open(filename, &hellip;) is a wrapper for
 the builtin function open(filename, &hellip;) that further adds filename to
-the list of dependencies via pyp.dep(filename).</p></section>
+the list of dependencies via pyp.dep(filename).</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1494,11 +1706,11 @@ the list of dependencies via pyp.dep(filename).</p></section>
 <span>def <span class="ident">print</span></span>(<span>self, *argv)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>If <code>pyp</code> is an object of type <a title="pyptex.pyptex" href="#pyptex.pyptex"><code>pyptex</code></a>, <code>pyp.print(X)</code> causes <code>X</code> to be converted
+<div class="desc"><p>If <code>pyp</code> is an object of type <code><a title="pyptex.pyptex" href="#pyptex.pyptex">pyptex</a></code>, <code>pyp.print(X)</code> causes <code>X</code> to be converted
 to its latex representation and substituted into the <code>a.pyptex</code> output file.
 The conversion is given by <code>sympy.latex(X)</code>, except that <code>None</code> is converted
 to the empty string.</p>
-<p>Many values can be printed at once with the notation <code>pyp.print(X, Y, ...)</code>.</p></section>
+<p>Many values can be printed at once with the notation <code>pyp.print(X, Y, &hellip;)</code>.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1514,19 +1726,19 @@ to the empty string.</p>
 </details>
 </dd>
 <dt id="pyptex.pyptex.savefig"><code class="name flex">
-<span>def <span class="ident">savefig</span></span>(<span>self, fig, pattern='fig{gencount}.eps', **kwargs)</span>
+<span>def <span class="ident">savefig</span></span>(<span>self, fig, pattern: str = 'fig{gencount}.eps', **kwargs)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Save a figure to the a-generated/* subdirectory.</p>
-<p>If <code>pyp</code> is an object of type <a title="pyptex.pyptex" href="#pyptex.pyptex"><code>pyptex</code></a>:
+<div class="desc"><p>Save a figure to the a-generated/* subdirectory.</p>
+<p>If <code>pyp</code> is an object of type <code><a title="pyptex.pyptex" href="#pyptex.pyptex">pyptex</a></code>:
 <code>pyp.savefig(fig)</code> saves a SymPy or matplotlib figure to the <code>a-generated/*</code>
-subdirectory, using the <a title="pyptex.pyptex.genname" href="#pyptex.pyptex.genname"><code>pyptex.genname()</code></a> automatically generated filename.
+subdirectory, using the <code><a title="pyptex.pyptex.genname" href="#pyptex.pyptex.genname">pyptex.genname()</a></code> automatically generated filename.
 <code>pyp.savefig(fig, pattern)</code> further specifies the filename pattern of the
 generated name, see <code>genname()</code>.
-<code>pyp.savefig(fig, pattern, ...)</code> passes any further keyword arguments directly
+<code>pyp.savefig(fig, pattern, &hellip;)</code> passes any further keyword arguments directly
 to the <code>savefig</code> function from matplotlib.</p>
 <p>A typical way of using this from a TeX file is:
-<code>\includegraphics{@{pyp.savefig(...)}}</code></p></section>
+<code>\includegraphics{@{pyp.savefig(...)}}</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1595,7 +1807,9 @@ to the <code>savefig</code> function from matplotlib.</p>
 <ul class="two-column">
 <li><code><a title="pyptex.pyptex.bib" href="#pyptex.pyptex.bib">bib</a></code></li>
 <li><code><a title="pyptex.pyptex.cite" href="#pyptex.pyptex.cite">cite</a></code></li>
+<li><code><a title="pyptex.pyptex.clear" href="#pyptex.pyptex.clear">clear</a></code></li>
 <li><code><a title="pyptex.pyptex.dep" href="#pyptex.pyptex.dep">dep</a></code></li>
+<li><code><a title="pyptex.pyptex.freeze" href="#pyptex.pyptex.freeze">freeze</a></code></li>
 <li><code><a title="pyptex.pyptex.genname" href="#pyptex.pyptex.genname">genname</a></code></li>
 <li><code><a title="pyptex.pyptex.input" href="#pyptex.pyptex.input">input</a></code></li>
 <li><code><a title="pyptex.pyptex.open" href="#pyptex.pyptex.open">open</a></code></li>
@@ -1609,9 +1823,7 @@ to the <code>savefig</code> function from matplotlib.</p>
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.7.5</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
 </footer>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
-<script>hljs.initHighlightingOnLoad()</script>
 </body>
 </html>
