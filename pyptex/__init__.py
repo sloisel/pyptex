@@ -295,7 +295,8 @@ class pyptex:
         a = 1
         print(a)      # this prints 1
         pyp.clear()
-        print(a)      # this raises an exception because a is now undefined.
+        print(a)      # this raises an exception because
+                      # a is now undefined.
         ```
         
         The global scope is restored from the dictionary pyp.__frozen__, which initially only contains
@@ -305,10 +306,12 @@ class pyptex:
         ```python
         my_variable = 78
         import sys
-        pyp.freeze()     # This freezes my_variable and sys from the global scope.
+        pyp.freeze()     # This freezes my_variable and sys.
         foo = 1          # Now foo is defined...
         pyp.clear()
-        # ...Now foo is undefined, but my_variable is still 78, and the sys module is still available.
+        # ...Now foo is undefined, but my_variable is still 78,
+        # and the sys module is still available.
+        ```
 
         Note that pyp.freeze() performs a shallow copy, so:
         ```python
@@ -316,7 +319,7 @@ class pyptex:
         pyp.freeze()  # a = [1,2,3] is now in the frozen scope.
         a[1] = 7      # Now a = [1,7,3] in the global scope.
         pyp.clear()
-        # Still a = [1,7,3] because the frozen scope copy was shallow.
+        # Still a = [1,7,3] because the scope copy was shallow.
         ```
         """
         foo = self.__frozen__

@@ -428,7 +428,8 @@ class pyptex:
         a = 1
         print(a)      # this prints 1
         pyp.clear()
-        print(a)      # this raises an exception because a is now undefined.
+        print(a)      # this raises an exception because
+                      # a is now undefined.
         ```
         
         The global scope is restored from the dictionary pyp.__frozen__, which initially only contains
@@ -438,10 +439,12 @@ class pyptex:
         ```python
         my_variable = 78
         import sys
-        pyp.freeze()     # This freezes my_variable and sys from the global scope.
+        pyp.freeze()     # This freezes my_variable and sys.
         foo = 1          # Now foo is defined...
         pyp.clear()
-        # ...Now foo is undefined, but my_variable is still 78, and the sys module is still available.
+        # ...Now foo is undefined, but my_variable is still 78,
+        # and the sys module is still available.
+        ```
 
         Note that pyp.freeze() performs a shallow copy, so:
         ```python
@@ -449,7 +452,7 @@ class pyptex:
         pyp.freeze()  # a = [1,2,3] is now in the frozen scope.
         a[1] = 7      # Now a = [1,7,3] in the global scope.
         pyp.clear()
-        # Still a = [1,7,3] because the frozen scope copy was shallow.
+        # Still a = [1,7,3] because the scope copy was shallow.
         ```
         &#34;&#34;&#34;
         foo = self.__frozen__
@@ -1045,7 +1048,8 @@ never used.</li>
         a = 1
         print(a)      # this prints 1
         pyp.clear()
-        print(a)      # this raises an exception because a is now undefined.
+        print(a)      # this raises an exception because
+                      # a is now undefined.
         ```
         
         The global scope is restored from the dictionary pyp.__frozen__, which initially only contains
@@ -1055,10 +1059,12 @@ never used.</li>
         ```python
         my_variable = 78
         import sys
-        pyp.freeze()     # This freezes my_variable and sys from the global scope.
+        pyp.freeze()     # This freezes my_variable and sys.
         foo = 1          # Now foo is defined...
         pyp.clear()
-        # ...Now foo is undefined, but my_variable is still 78, and the sys module is still available.
+        # ...Now foo is undefined, but my_variable is still 78,
+        # and the sys module is still available.
+        ```
 
         Note that pyp.freeze() performs a shallow copy, so:
         ```python
@@ -1066,7 +1072,7 @@ never used.</li>
         pyp.freeze()  # a = [1,2,3] is now in the frozen scope.
         a[1] = 7      # Now a = [1,7,3] in the global scope.
         pyp.clear()
-        # Still a = [1,7,3] because the frozen scope copy was shallow.
+        # Still a = [1,7,3] because the scope copy was shallow.
         ```
         &#34;&#34;&#34;
         foo = self.__frozen__
@@ -1457,25 +1463,26 @@ entry to the bibTeX file and returns the entry name. Example usage:</p>
 <pre><code class="language-python">a = 1
 print(a)      # this prints 1
 pyp.clear()
-print(a)      # this raises an exception because a is now undefined.
+print(a)      # this raises an exception because
+              # a is now undefined.
 </code></pre>
 <p>The global scope is restored from the dictionary pyp.<strong>frozen</strong>, which initially only contains
 the pyp object and the <strong>builtins</strong> module. One can add more items to the <strong>frozen</strong> dict, e.g.
 by importing some standard module. For example,</p>
 <pre><code class="language-python">my_variable = 78
 import sys
-pyp.freeze()     # This freezes my_variable and sys from the global scope.
+pyp.freeze()     # This freezes my_variable and sys.
 foo = 1          # Now foo is defined...
 pyp.clear()
-# ...Now foo is undefined, but my_variable is still 78, and the sys module is still available.
-
-Note that pyp.freeze() performs a shallow copy, so:
-```python
-a = [1,2,3]
+# ...Now foo is undefined, but my_variable is still 78,
+# and the sys module is still available.
+</code></pre>
+<p>Note that pyp.freeze() performs a shallow copy, so:</p>
+<pre><code class="language-python">a = [1,2,3]
 pyp.freeze()  # a = [1,2,3] is now in the frozen scope.
 a[1] = 7      # Now a = [1,7,3] in the global scope.
 pyp.clear()
-# Still a = [1,7,3] because the frozen scope copy was shallow.
+# Still a = [1,7,3] because the scope copy was shallow.
 </code></pre></div>
 <details class="source">
 <summary>
@@ -1489,7 +1496,8 @@ pyp.clear()
     a = 1
     print(a)      # this prints 1
     pyp.clear()
-    print(a)      # this raises an exception because a is now undefined.
+    print(a)      # this raises an exception because
+                  # a is now undefined.
     ```
     
     The global scope is restored from the dictionary pyp.__frozen__, which initially only contains
@@ -1499,10 +1507,12 @@ pyp.clear()
     ```python
     my_variable = 78
     import sys
-    pyp.freeze()     # This freezes my_variable and sys from the global scope.
+    pyp.freeze()     # This freezes my_variable and sys.
     foo = 1          # Now foo is defined...
     pyp.clear()
-    # ...Now foo is undefined, but my_variable is still 78, and the sys module is still available.
+    # ...Now foo is undefined, but my_variable is still 78,
+    # and the sys module is still available.
+    ```
 
     Note that pyp.freeze() performs a shallow copy, so:
     ```python
@@ -1510,7 +1520,7 @@ pyp.clear()
     pyp.freeze()  # a = [1,2,3] is now in the frozen scope.
     a[1] = 7      # Now a = [1,7,3] in the global scope.
     pyp.clear()
-    # Still a = [1,7,3] because the frozen scope copy was shallow.
+    # Still a = [1,7,3] because the scope copy was shallow.
     ```
     &#34;&#34;&#34;
     foo = self.__frozen__
