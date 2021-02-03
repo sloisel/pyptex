@@ -28,7 +28,7 @@ os.system("chmod a+rx scripts/pyptex")
 setup(
     name='pyptex',
     description='Python Preprocessor for (La)TeX',
-    version='1.1.0',
+    version='1.1.1',
     packages=find_packages(),
     install_requires=['sympy>=1.5', 'numpy>=1.18', 'setuptools', 'pdoc3>=0.7','matplotlib'],
     python_requires='>=3',
@@ -37,7 +37,7 @@ setup(
     zip_safe=False,
     url='https://github.com/sloisel/pyptex',
     project_urls={
-        'Documentation': 'https://htmlpreview.github.io/?https://github.com/sloisel/pyptex/blob/master/html/pyptex.html',
+        'Documentation': 'https://htmlpreview.github.io/?https://github.com/sloisel/pyptex/blob/master/pyptex.html',
         'Source': 'https://github.com/sloisel/pyptex',
     },
     license='MIT',

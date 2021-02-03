@@ -13,7 +13,7 @@ code fragments in a LaTeX template file.
 1. You will also need a LaTeX installation, and the default LaTeX processor is `pdflatex`.
 2. You need a Python 3 installation.
 
-<img alt="An example plot with PypTeX" width="500" src="https://raw.githubusercontent.com/sloisel/pyptex/master/examples/brochure.png">
+<img alt="An example plot with PypTeX" width="500" src="examples/brochure.png">
 
 # Introduction
 
@@ -42,12 +42,12 @@ If this is causing you problems, try `python -u -m pyptex example.tex` instead.
 
 # Slightly bigger examples
 
-* 2d and 3d plotting [tex](https://github.com/sloisel/pyptex/blob/master/examples/plots.tex)
+* 2d and 3d plotting [tex](examples/plots.tex)
 |
-[pdf](https://github.com/sloisel/pyptex/blob/master/examples/plots.pdf)
-* Matrix inverse exercise [tex](https://github.com/sloisel/pyptex/blob/master/examples/matrixinverse.tex)
+[pdf](examples/plots.pdf)
+* Matrix inverse exercise [tex](examples/matrixinverse.tex)
 |
-[pdf](https://github.com/sloisel/pyptex/blob/master/examples/matrixinverse.pdf)
+[pdf](examples/matrixinverse.pdf)
 * The F19NB handout for numerical linear algebra at Heriot-Watt university is generated with PypTeX. [pdf](https://www.macs.hw.ac.uk/~sl398/notes.pdf)
 
 # Template preprocessing vs embedding
@@ -77,9 +77,9 @@ debugging task somehow fails for you.
 3. Performance. Substituting using regular expressions is faster than running the
 LaTeX processor.
 
-# Pretty-printing template strings from Python with `pp(...)`
+# Pretty-printing template strings from Python with `pp`
 
-The function `pp(X)` pretty-prints the template string `X` with substitutions
+The function ```pp(X)``` pretty-prints the template string `X` with substitutions
 from the local scope of the caller. This is useful for medium length LaTeX fragments
 containing a few Python substitutions:
 ```python
@@ -283,9 +283,9 @@ class pyptex:
         self.gencount = 0
     def freeze(self):
         """'Freezes' the global scope of the caller by performing a shallow copy and copying it to 
-        pyp.__frozen__
+        `pyp.__frozen__`
 
-        See also pyptex.clear()"""
+        See also `pyptex.clear()`"""
         self.__frozen__ = inspect.stack()[1][0].f_globals.copy()
     def clear(self):
         """Clears all global variable.
@@ -299,8 +299,8 @@ class pyptex:
                       # a is now undefined.
         ```
         
-        The global scope is restored from the dictionary pyp.__frozen__, which initially only contains
-        the pyp object and the __builtins__ module. One can add more items to the __frozen__ dict, e.g.
+        The global scope is restored from the dictionary `pyp.__frozen__`, which initially only contains
+        the pyp object and the `__builtins__` module. One can add more items to the `__frozen__` dict, e.g.
         by importing some standard module. For example,
 
         ```python
@@ -313,7 +313,7 @@ class pyptex:
         # and the sys module is still available.
         ```
 
-        Note that pyp.freeze() performs a shallow copy, so:
+        Note that `pyp.freeze()` performs a shallow copy, so:
         ```python
         a = [1,2,3]
         pyp.freeze()  # a = [1,2,3] is now in the frozen scope.
@@ -616,7 +616,7 @@ class pyptex:
     def input(self, filename, argv=False):
         r"""If `pyp = pyptex('a.tex')` then
         `pyp.input('b.tex')`
-        return the string `\input{"b.pyptex"}`. The common way of using this is to
+        returns the string `\input{"b.pyptex"}`. The common way of using this is to
         put `@{pyp.input('b.tex')}` somewhere in `a.tex`.
         The function `pyp.input('b.tex')` internally calls the constructor
         `pyptex('b.tex')` so that `b.pyptex` is compiled from `b.tex`.

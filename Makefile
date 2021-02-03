@@ -2,11 +2,11 @@ all: test doc hooks dist examples
 
 .PHONY: all clean test doc hooks delete-hooks reinstall-hooks dist examples pypi
 
-html/pyptex.html: pyptex/__init__.py
+pyptex.html: pyptex/__init__.py
 	pdoc --html .
-	cp -f html/pyptex/index.html html/pyptex.html
-	rm -rf html/pyptex
-	git add html/pyptex.html
+	cp -f html/pyptex/index.html pyptex.html
+	rm -rf html
+	git add pyptex.html
 
 clean:
 	rm -rf html pyptex.egg-info tests/runtests.log dist build examples/*.pdf examples/*.pyptex examples/*.pickle scripts/pyptex
@@ -20,7 +20,7 @@ scripts/pyptex: setup.py Makefile
 
 test: tests/runtests.success.log
 
-doc: html/pyptex.html
+doc: pyptex.html
 
 exsrc := $(wildcard examples/*.tex)
 exdst := $(patsubst examples/%.tex,examples/%.pdf,$(exsrc))

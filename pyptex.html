@@ -32,7 +32,7 @@ code fragments in a LaTeX template file.</p>
 <li>You will also need a LaTeX installation, and the default LaTeX processor is <code>pdflatex</code>.</li>
 <li>You need a Python 3 installation.</li>
 </ol>
-<p><img alt="An example plot with PypTeX" width="500" src="https://raw.githubusercontent.com/sloisel/pyptex/master/examples/brochure.png"></p>
+<p><img alt="An example plot with PypTeX" width="500" src="examples/brochure.png"></p>
 <h1 id="introduction">Introduction</h1>
 <p>Assume <code>example.tex</code> contains the following text:</p>
 <pre><code>\documentclass{article}
@@ -57,12 +57,12 @@ If this is causing you problems, try <code>python -u -m pyptex example.tex</code
 </ul>
 <h1 id="slightly-bigger-examples">Slightly bigger examples</h1>
 <ul>
-<li>2d and 3d plotting <a href="https://github.com/sloisel/pyptex/blob/master/examples/plots.tex">tex</a>
+<li>2d and 3d plotting <a href="examples/plots.tex">tex</a>
 |
-<a href="https://github.com/sloisel/pyptex/blob/master/examples/plots.pdf">pdf</a></li>
-<li>Matrix inverse exercise <a href="https://github.com/sloisel/pyptex/blob/master/examples/matrixinverse.tex">tex</a>
+<a href="examples/plots.pdf">pdf</a></li>
+<li>Matrix inverse exercise <a href="examples/matrixinverse.tex">tex</a>
 |
-<a href="https://github.com/sloisel/pyptex/blob/master/examples/matrixinverse.pdf">pdf</a></li>
+<a href="examples/matrixinverse.pdf">pdf</a></li>
 <li>The F19NB handout for numerical linear algebra at Heriot-Watt university is generated with PypTeX. <a href="https://www.macs.hw.ac.uk/~sl398/notes.pdf">pdf</a></li>
 </ul>
 <h1 id="template-preprocessing-vs-embedding">Template preprocessing vs embedding</h1>
@@ -88,8 +88,8 @@ as a first-class citizen and everything should work as normal. Please let us kno
 debugging task somehow fails for you.
 3. Performance. Substituting using regular expressions is faster than running the
 LaTeX processor.</p>
-<h1 id="pretty-printing-template-strings-from-python-with-pp">Pretty-printing template strings from Python with <code><a title="pyptex.pp" href="#pyptex.pp">pp()</a>(&hellip;)</code></h1>
-<p>The function <code><a title="pyptex.pp" href="#pyptex.pp">pp()</a>(X)</code> pretty-prints the template string <code>X</code> with substitutions
+<h1 id="pretty-printing-template-strings-from-python-with-pp">Pretty-printing template strings from Python with <code><a title="pyptex.pp" href="#pyptex.pp">pp()</a></code></h1>
+<p>The function <code>pp(X)</code> pretty-prints the template string <code>X</code> with substitutions
 from the local scope of the caller. This is useful for medium length LaTeX fragments
 containing a few Python substitutions:</p>
 <pre><code class="language-python">&gt;&gt;&gt; from pyptex import pp
@@ -146,7 +146,7 @@ code fragments in a LaTeX template file.
 1. You will also need a LaTeX installation, and the default LaTeX processor is `pdflatex`.
 2. You need a Python 3 installation.
 
-&lt;img alt=&#34;An example plot with PypTeX&#34; width=&#34;500&#34; src=&#34;https://raw.githubusercontent.com/sloisel/pyptex/master/examples/brochure.png&#34;&gt;
+&lt;img alt=&#34;An example plot with PypTeX&#34; width=&#34;500&#34; src=&#34;examples/brochure.png&#34;&gt;
 
 # Introduction
 
@@ -175,12 +175,12 @@ If this is causing you problems, try `python -u -m pyptex example.tex` instead.
 
 # Slightly bigger examples
 
-* 2d and 3d plotting [tex](https://github.com/sloisel/pyptex/blob/master/examples/plots.tex)
+* 2d and 3d plotting [tex](examples/plots.tex)
 |
-[pdf](https://github.com/sloisel/pyptex/blob/master/examples/plots.pdf)
-* Matrix inverse exercise [tex](https://github.com/sloisel/pyptex/blob/master/examples/matrixinverse.tex)
+[pdf](examples/plots.pdf)
+* Matrix inverse exercise [tex](examples/matrixinverse.tex)
 |
-[pdf](https://github.com/sloisel/pyptex/blob/master/examples/matrixinverse.pdf)
+[pdf](examples/matrixinverse.pdf)
 * The F19NB handout for numerical linear algebra at Heriot-Watt university is generated with PypTeX. [pdf](https://www.macs.hw.ac.uk/~sl398/notes.pdf)
 
 # Template preprocessing vs embedding
@@ -210,9 +210,9 @@ debugging task somehow fails for you.
 3. Performance. Substituting using regular expressions is faster than running the
 LaTeX processor.
 
-# Pretty-printing template strings from Python with `pp(...)`
+# Pretty-printing template strings from Python with `pp`
 
-The function `pp(X)` pretty-prints the template string `X` with substitutions
+The function ```pp(X)``` pretty-prints the template string `X` with substitutions
 from the local scope of the caller. This is useful for medium length LaTeX fragments
 containing a few Python substitutions:
 ```python
@@ -416,9 +416,9 @@ class pyptex:
         self.gencount = 0
     def freeze(self):
         &#34;&#34;&#34;&#39;Freezes&#39; the global scope of the caller by performing a shallow copy and copying it to 
-        pyp.__frozen__
+        `pyp.__frozen__`
 
-        See also pyptex.clear()&#34;&#34;&#34;
+        See also `pyptex.clear()`&#34;&#34;&#34;
         self.__frozen__ = inspect.stack()[1][0].f_globals.copy()
     def clear(self):
         &#34;&#34;&#34;Clears all global variable.
@@ -432,8 +432,8 @@ class pyptex:
                       # a is now undefined.
         ```
         
-        The global scope is restored from the dictionary pyp.__frozen__, which initially only contains
-        the pyp object and the __builtins__ module. One can add more items to the __frozen__ dict, e.g.
+        The global scope is restored from the dictionary `pyp.__frozen__`, which initially only contains
+        the pyp object and the `__builtins__` module. One can add more items to the `__frozen__` dict, e.g.
         by importing some standard module. For example,
 
         ```python
@@ -446,7 +446,7 @@ class pyptex:
         # and the sys module is still available.
         ```
 
-        Note that pyp.freeze() performs a shallow copy, so:
+        Note that `pyp.freeze()` performs a shallow copy, so:
         ```python
         a = [1,2,3]
         pyp.freeze()  # a = [1,2,3] is now in the frozen scope.
@@ -749,7 +749,7 @@ class pyptex:
     def input(self, filename, argv=False):
         r&#34;&#34;&#34;If `pyp = pyptex(&#39;a.tex&#39;)` then
         `pyp.input(&#39;b.tex&#39;)`
-        return the string `\input{&#34;b.pyptex&#34;}`. The common way of using this is to
+        returns the string `\input{&#34;b.pyptex&#34;}`. The common way of using this is to
         put `@{pyp.input(&#39;b.tex&#39;)}` somewhere in `a.tex`.
         The function `pyp.input(&#39;b.tex&#39;)` internally calls the constructor
         `pyptex(&#39;b.tex&#39;)` so that `b.pyptex` is compiled from `b.tex`.
@@ -1036,9 +1036,9 @@ never used.</li>
         self.gencount = 0
     def freeze(self):
         &#34;&#34;&#34;&#39;Freezes&#39; the global scope of the caller by performing a shallow copy and copying it to 
-        pyp.__frozen__
+        `pyp.__frozen__`
 
-        See also pyptex.clear()&#34;&#34;&#34;
+        See also `pyptex.clear()`&#34;&#34;&#34;
         self.__frozen__ = inspect.stack()[1][0].f_globals.copy()
     def clear(self):
         &#34;&#34;&#34;Clears all global variable.
@@ -1052,8 +1052,8 @@ never used.</li>
                       # a is now undefined.
         ```
         
-        The global scope is restored from the dictionary pyp.__frozen__, which initially only contains
-        the pyp object and the __builtins__ module. One can add more items to the __frozen__ dict, e.g.
+        The global scope is restored from the dictionary `pyp.__frozen__`, which initially only contains
+        the pyp object and the `__builtins__` module. One can add more items to the `__frozen__` dict, e.g.
         by importing some standard module. For example,
 
         ```python
@@ -1066,7 +1066,7 @@ never used.</li>
         # and the sys module is still available.
         ```
 
-        Note that pyp.freeze() performs a shallow copy, so:
+        Note that `pyp.freeze()` performs a shallow copy, so:
         ```python
         a = [1,2,3]
         pyp.freeze()  # a = [1,2,3] is now in the frozen scope.
@@ -1369,7 +1369,7 @@ never used.</li>
     def input(self, filename, argv=False):
         r&#34;&#34;&#34;If `pyp = pyptex(&#39;a.tex&#39;)` then
         `pyp.input(&#39;b.tex&#39;)`
-        return the string `\input{&#34;b.pyptex&#34;}`. The common way of using this is to
+        returns the string `\input{&#34;b.pyptex&#34;}`. The common way of using this is to
         put `@{pyp.input(&#39;b.tex&#39;)}` somewhere in `a.tex`.
         The function `pyp.input(&#39;b.tex&#39;)` internally calls the constructor
         `pyptex(&#39;b.tex&#39;)` so that `b.pyptex` is compiled from `b.tex`.
@@ -1466,8 +1466,8 @@ pyp.clear()
 print(a)      # this raises an exception because
               # a is now undefined.
 </code></pre>
-<p>The global scope is restored from the dictionary pyp.<strong>frozen</strong>, which initially only contains
-the pyp object and the <strong>builtins</strong> module. One can add more items to the <strong>frozen</strong> dict, e.g.
+<p>The global scope is restored from the dictionary <code>pyp.__frozen__</code>, which initially only contains
+the pyp object and the <code>__builtins__</code> module. One can add more items to the <code>__frozen__</code> dict, e.g.
 by importing some standard module. For example,</p>
 <pre><code class="language-python">my_variable = 78
 import sys
@@ -1477,7 +1477,7 @@ pyp.clear()
 # ...Now foo is undefined, but my_variable is still 78,
 # and the sys module is still available.
 </code></pre>
-<p>Note that pyp.freeze() performs a shallow copy, so:</p>
+<p>Note that <code>pyp.freeze()</code> performs a shallow copy, so:</p>
 <pre><code class="language-python">a = [1,2,3]
 pyp.freeze()  # a = [1,2,3] is now in the frozen scope.
 a[1] = 7      # Now a = [1,7,3] in the global scope.
@@ -1500,8 +1500,8 @@ pyp.clear()
                   # a is now undefined.
     ```
     
-    The global scope is restored from the dictionary pyp.__frozen__, which initially only contains
-    the pyp object and the __builtins__ module. One can add more items to the __frozen__ dict, e.g.
+    The global scope is restored from the dictionary `pyp.__frozen__`, which initially only contains
+    the pyp object and the `__builtins__` module. One can add more items to the `__frozen__` dict, e.g.
     by importing some standard module. For example,
 
     ```python
@@ -1514,7 +1514,7 @@ pyp.clear()
     # and the sys module is still available.
     ```
 
-    Note that pyp.freeze() performs a shallow copy, so:
+    Note that `pyp.freeze()` performs a shallow copy, so:
     ```python
     a = [1,2,3]
     pyp.freeze()  # a = [1,2,3] is now in the frozen scope.
@@ -1581,17 +1581,17 @@ dependencies can be manually declared via <code>pyp.dep(filename)</code>.</p>
 </code></dt>
 <dd>
 <div class="desc"><p>'Freezes' the global scope of the caller by performing a shallow copy and copying it to
-pyp.<strong>frozen</strong></p>
-<p>See also pyptex.clear()</p></div>
+<code>pyp.__frozen__</code></p>
+<p>See also <code><a title="pyptex.pyptex.clear" href="#pyptex.pyptex.clear">pyptex.clear()</a></code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def freeze(self):
     &#34;&#34;&#34;&#39;Freezes&#39; the global scope of the caller by performing a shallow copy and copying it to 
-    pyp.__frozen__
+    `pyp.__frozen__`
 
-    See also pyptex.clear()&#34;&#34;&#34;
+    See also `pyptex.clear()`&#34;&#34;&#34;
     self.__frozen__ = inspect.stack()[1][0].f_globals.copy()</code></pre>
 </details>
 </dd>
@@ -1643,7 +1643,7 @@ will return something like <code>'a-generated/hello-X-Y.txt'</code>, where
 <dd>
 <div class="desc"><p>If <code>pyp = pyptex('a.tex')</code> then
 <code>pyp.input('b.tex')</code>
-return the string <code>\input{"b.pyptex"}</code>. The common way of using this is to
+returns the string <code>\input{"b.pyptex"}</code>. The common way of using this is to
 put <code>@{pyp.input('b.tex')}</code> somewhere in <code>a.tex</code>.
 The function <code>pyp.input('b.tex')</code> internally calls the constructor
 <code>pyptex('b.tex')</code> so that <code>b.pyptex</code> is compiled from <code>b.tex</code>.</p>
@@ -1667,7 +1667,7 @@ one can then retrieve values from the <code>b.tex</code> scope, e.g. with <code>
 <pre><code class="python">def input(self, filename, argv=False):
     r&#34;&#34;&#34;If `pyp = pyptex(&#39;a.tex&#39;)` then
     `pyp.input(&#39;b.tex&#39;)`
-    return the string `\input{&#34;b.pyptex&#34;}`. The common way of using this is to
+    returns the string `\input{&#34;b.pyptex&#34;}`. The common way of using this is to
     put `@{pyp.input(&#39;b.tex&#39;)}` somewhere in `a.tex`.
     The function `pyp.input(&#39;b.tex&#39;)` internally calls the constructor
     `pyptex(&#39;b.tex&#39;)` so that `b.pyptex` is compiled from `b.tex`.
@@ -1797,7 +1797,7 @@ to the <code>savefig</code> function from matplotlib.</p>
 <li><a href="#introduction">Introduction</a></li>
 <li><a href="#slightly-bigger-examples">Slightly bigger examples</a></li>
 <li><a href="#template-preprocessing-vs-embedding">Template preprocessing vs embedding</a></li>
-<li><a href="#pretty-printing-template-strings-from-python-with-pp">Pretty-printing template strings from Python with pp(&hellip;)</a></li>
+<li><a href="#pretty-printing-template-strings-from-python-with-pp">Pretty-printing template strings from Python with pp</a></li>
 <li><a href="#caching">Caching</a></li>
 <li><a href="#scopes">Scopes</a></li>
 <li><a href="#texshop">TeXShop</a></li>
