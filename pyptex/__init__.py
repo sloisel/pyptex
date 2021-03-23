@@ -674,6 +674,9 @@ def pyptexmain(argv: list = None):
         tee = subprocess.Popen(['tee', f'{os.path.splitext(argv[1])[0]}.pyplog'], stdin=subprocess.PIPE)
         os.dup2(tee.stdin.fileno(), sys.stdout.fileno())
         os.dup2(tee.stdin.fileno(), sys.stderr.fileno())
+    except Exception:
+        print("Logging is disabled: perhaps 'tee' is not installed?")
+    try:
         pyp = pyptex(argv[1], argv[2:],
             latexcommand=r'{latex} {pyptexfilename} && (test ! -f {bibfilename} || bibtex {auxfilename})')
     except Exception:

@@ -807,6 +807,9 @@ def pyptexmain(argv: list = None):
         tee = subprocess.Popen([&#39;tee&#39;, f&#39;{os.path.splitext(argv[1])[0]}.pyplog&#39;], stdin=subprocess.PIPE)
         os.dup2(tee.stdin.fileno(), sys.stdout.fileno())
         os.dup2(tee.stdin.fileno(), sys.stderr.fileno())
+    except Exception:
+        print(&#34;Logging is disabled: perhaps &#39;tee&#39; is not installed?&#34;)
+    try:
         pyp = pyptex(argv[1], argv[2:],
             latexcommand=r&#39;{latex} {pyptexfilename} &amp;&amp; (test ! -f {bibfilename} || bibtex {auxfilename})&#39;)
     except Exception:
@@ -897,6 +900,9 @@ If "&ndash;pdb=yes" is in argv, automatic pdb postmortem is enabled. This is the
         tee = subprocess.Popen([&#39;tee&#39;, f&#39;{os.path.splitext(argv[1])[0]}.pyplog&#39;], stdin=subprocess.PIPE)
         os.dup2(tee.stdin.fileno(), sys.stdout.fileno())
         os.dup2(tee.stdin.fileno(), sys.stderr.fileno())
+    except Exception:
+        print(&#34;Logging is disabled: perhaps &#39;tee&#39; is not installed?&#34;)
+    try:
         pyp = pyptex(argv[1], argv[2:],
             latexcommand=r&#39;{latex} {pyptexfilename} &amp;&amp; (test ! -f {bibfilename} || bibtex {auxfilename})&#39;)
     except Exception:
