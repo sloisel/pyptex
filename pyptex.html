@@ -275,7 +275,7 @@ import sys
 import time
 import traceback
 import weakref
-
+import streamcapture
 import numpy
 import sympy
 
@@ -802,24 +802,26 @@ def pyptexmain(argv: list = None):
     if len(argv) &lt; 2:
         print(&#39;Usage: pyptex &lt;filename.tex&gt; ...&#39;)
         sys.exit(1)
-    try:
-        # logging inspired by Jacob Gabrielson on Stackoverflow
-        tee = subprocess.Popen([&#39;tee&#39;, f&#39;{os.path.splitext(argv[1])[0]}.pyplog&#39;], stdin=subprocess.PIPE)
-        os.dup2(tee.stdin.fileno(), sys.stdout.fileno())
-        os.dup2(tee.stdin.fileno(), sys.stderr.fileno())
-    except Exception:
-        print(&#34;Logging is disabled: perhaps &#39;tee&#39; is not installed?&#34;)
-    try:
-        pyp = pyptex(argv[1], argv[2:],
-            latexcommand=r&#39;{latex} {pyptexfilename} &amp;&amp; (test ! -f {bibfilename} || bibtex {auxfilename})&#39;)
-    except Exception:
-        import pdb
-        traceback.print_exc(file=sys.stdout)
-        if dopdb:
-            print(&#39;A Python error has occurred. Launching the debugger pdb.\n&#39;
-                  &#34;Type &#39;help&#39; for a list of commands, and &#39;quit&#39; when done.&#34;)
-            pdb.post_mortem()
-        sys.exit(1)
+    writer = open(f&#39;{os.path.splitext(argv[1])[0]}.pyplog&#39;,&#39;wb&#39;)
+    writer._close = writer.close
+    writer.counter = 0
+    def close():
+        writer.counter += 1
+        if(writer.counter&gt;=2):
+            writer._close()
+    writer.close = close
+    with streamcapture.StreamCapture(sys.stdout,writer), streamcapture.StreamCapture(sys.stderr,writer):
+        try:
+            pyp = pyptex(argv[1], argv[2:],
+                latexcommand=r&#39;{latex} {pyptexfilename} &amp;&amp; (test ! -f {bibfilename} || bibtex {auxfilename})&#39;)
+        except Exception:
+            import pdb
+            traceback.print_exc(file=sys.stdout)
+            if dopdb:
+                print(&#39;A Python error has occurred. Launching the debugger pdb.\n&#39;
+                      &#34;Type &#39;help&#39; for a list of commands, and &#39;quit&#39; when done.&#34;)
+                pdb.post_mortem()
+            sys.exit(1)
     return pyp.exitcode</code></pre>
 </details>
 </section>
@@ -895,24 +897,26 @@ If "&ndash;pdb=yes" is in argv, automatic pdb postmortem is enabled. This is the
     if len(argv) &lt; 2:
         print(&#39;Usage: pyptex &lt;filename.tex&gt; ...&#39;)
         sys.exit(1)
-    try:
-        # logging inspired by Jacob Gabrielson on Stackoverflow
-        tee = subprocess.Popen([&#39;tee&#39;, f&#39;{os.path.splitext(argv[1])[0]}.pyplog&#39;], stdin=subprocess.PIPE)
-        os.dup2(tee.stdin.fileno(), sys.stdout.fileno())
-        os.dup2(tee.stdin.fileno(), sys.stderr.fileno())
-    except Exception:
-        print(&#34;Logging is disabled: perhaps &#39;tee&#39; is not installed?&#34;)
-    try:
-        pyp = pyptex(argv[1], argv[2:],
-            latexcommand=r&#39;{latex} {pyptexfilename} &amp;&amp; (test ! -f {bibfilename} || bibtex {auxfilename})&#39;)
-    except Exception:
-        import pdb
-        traceback.print_exc(file=sys.stdout)
-        if dopdb:
-            print(&#39;A Python error has occurred. Launching the debugger pdb.\n&#39;
-                  &#34;Type &#39;help&#39; for a list of commands, and &#39;quit&#39; when done.&#34;)
-            pdb.post_mortem()
-        sys.exit(1)
+    writer = open(f&#39;{os.path.splitext(argv[1])[0]}.pyplog&#39;,&#39;wb&#39;)
+    writer._close = writer.close
+    writer.counter = 0
+    def close():
+        writer.counter += 1
+        if(writer.counter&gt;=2):
+            writer._close()
+    writer.close = close
+    with streamcapture.StreamCapture(sys.stdout,writer), streamcapture.StreamCapture(sys.stderr,writer):
+        try:
+            pyp = pyptex(argv[1], argv[2:],
+                latexcommand=r&#39;{latex} {pyptexfilename} &amp;&amp; (test ! -f {bibfilename} || bibtex {auxfilename})&#39;)
+        except Exception:
+            import pdb
+            traceback.print_exc(file=sys.stdout)
+            if dopdb:
+                print(&#39;A Python error has occurred. Launching the debugger pdb.\n&#39;
+                      &#34;Type &#39;help&#39; for a list of commands, and &#39;quit&#39; when done.&#34;)
+                pdb.post_mortem()
+            sys.exit(1)
     return pyp.exitcode</code></pre>
 </details>
 </dd>

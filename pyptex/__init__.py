@@ -142,7 +142,7 @@ import sys
 import time
 import traceback
 import weakref
-
+import streamcapture
 import numpy
 import sympy
 
@@ -669,22 +669,24 @@ def pyptexmain(argv: list = None):
     if len(argv) < 2:
         print('Usage: pyptex <filename.tex> ...')
         sys.exit(1)
-    try:
-        # logging inspired by Jacob Gabrielson on Stackoverflow
-        tee = subprocess.Popen(['tee', f'{os.path.splitext(argv[1])[0]}.pyplog'], stdin=subprocess.PIPE)
-        os.dup2(tee.stdin.fileno(), sys.stdout.fileno())
-        os.dup2(tee.stdin.fileno(), sys.stderr.fileno())
-    except Exception:
-        print("Logging is disabled: perhaps 'tee' is not installed?")
-    try:
-        pyp = pyptex(argv[1], argv[2:],
-            latexcommand=r'{latex} {pyptexfilename} && (test ! -f {bibfilename} || bibtex {auxfilename})')
-    except Exception:
-        import pdb
-        traceback.print_exc(file=sys.stdout)
-        if dopdb:
-            print('A Python error has occurred. Launching the debugger pdb.\n'
-                  "Type 'help' for a list of commands, and 'quit' when done.")
-            pdb.post_mortem()
-        sys.exit(1)
+    writer = open(f'{os.path.splitext(argv[1])[0]}.pyplog','wb')
+    writer._close = writer.close
+    writer.counter = 0
+    def close():
+        writer.counter += 1
+        if(writer.counter>=2):
+            writer._close()
+    writer.close = close
+    with streamcapture.StreamCapture(sys.stdout,writer), streamcapture.StreamCapture(sys.stderr,writer):
+        try:
+            pyp = pyptex(argv[1], argv[2:],
+                latexcommand=r'{latex} {pyptexfilename} && (test ! -f {bibfilename} || bibtex {auxfilename})')
+        except Exception:
+            import pdb
+            traceback.print_exc(file=sys.stdout)
+            if dopdb:
+                print('A Python error has occurred. Launching the debugger pdb.\n'
+                      "Type 'help' for a list of commands, and 'quit' when done.")
+                pdb.post_mortem()
+            sys.exit(1)
     return pyp.exitcode

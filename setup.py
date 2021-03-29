@@ -30,7 +30,7 @@ setup(
     description='Python Preprocessor for (La)TeX',
     version='1.1.3',
     packages=find_packages(),
-    install_requires=['sympy>=1.5', 'numpy>=1.18', 'setuptools', 'pdoc3>=0.7','matplotlib'],
+    install_requires=['sympy>=1.5', 'numpy>=1.18', 'setuptools', 'pdoc3>=0.7','matplotlib','streamcapture'],
     python_requires='>=3',
     author='Sébastien Loisel',
     author_email='sloisel@gmail.com',
