@@ -72,7 +72,7 @@ The PypTeX backend takes care of generating <code>.eps</code> files and importin
 The precise "includegraphics" command can be set, e.g. by
 <code>pyp.includegraphics=r"\includegraphics[width=0.9\textwidth]"</code>.</p>
 <p>To create a plot with <code>sympy</code>, one can do:</p>
-<pre><code class="language-python">sympy.plot(S('sin(x)+cos(pi*x)'))
+<pre><code class="language-python">sympy.plot(sympy.S('sin(x)+cos(pi*x)'))
 </code></pre>
 <p>By default, <code>sympy</code> will immediately attempt to <code>show()</code> this plot. When it does, it ultimately calls the
 underlying <code>matplotlib</code> <code>show()</code> command, which is provided by the PypTeX backend. The PypTeX backend
@@ -210,7 +210,7 @@ The precise &#34;includegraphics&#34; command can be set, e.g. by
 
 To create a plot with `sympy`, one can do:
 ```python
-sympy.plot(S(&#39;sin(x)+cos(pi*x)&#39;))
+sympy.plot(sympy.S(&#39;sin(x)+cos(pi*x)&#39;))
 ```
 By default, `sympy` will immediately attempt to `show()` this plot. When it does, it ultimately calls the
 underlying `matplotlib` `show()` command, which is provided by the PypTeX backend. The PypTeX backend

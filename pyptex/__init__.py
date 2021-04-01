@@ -60,7 +60,7 @@ The precise "includegraphics" command can be set, e.g. by
 
 To create a plot with `sympy`, one can do:
 ```python
-sympy.plot(S('sin(x)+cos(pi*x)'))
+sympy.plot(sympy.S('sin(x)+cos(pi*x)'))
 ```
 By default, `sympy` will immediately attempt to `show()` this plot. When it does, it ultimately calls the
 underlying `matplotlib` `show()` command, which is provided by the PypTeX backend. The PypTeX backend
