@@ -336,6 +336,8 @@ __pdoc__ = {
     &#39;pyptex.process&#39;: False,
     &#39;pyptex.resolvedeps&#39;: False,
     &#39;pyptex.run&#39;: False,
+    &#39;FigureManager&#39;: False,
+    &#39;FigureManager.show&#39;: False,
 }
 
 __pdoc__[&#39;show&#39;] = False
@@ -1001,88 +1003,6 @@ If "&ndash;pdb=yes" is in argv, automatic pdb postmortem is enabled. This is the
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="pyptex.FigureManager"><code class="flex name class">
-<span>class <span class="ident">FigureManager</span></span>
-<span>(</span><span>canvas, num)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>A backend-independent abstraction of a figure container and controller.</p>
-<p>The figure manager is used by pyplot to interact with the window in a
-backend-independent way. It's an adapter for the real (GUI) framework that
-represents the visual figure on screen.</p>
-<p>GUI backends define from this class to translate common operations such
-as <em>show</em> or <em>resize</em> to the GUI-specific code. Non-GUI backends do not
-support these operations an can just use the base class.</p>
-<p>This following basic operations are accessible:</p>
-<p><strong>Window operations</strong></p>
-<ul>
-<li><code>~.FigureManagerBase.show</code></li>
-<li><code>~.FigureManagerBase.destroy</code></li>
-<li><code>~.FigureManagerBase.full_screen_toggle</code></li>
-<li><code>~.FigureManagerBase.resize</code></li>
-<li><code>~.FigureManagerBase.get_window_title</code></li>
-<li><code>~.FigureManagerBase.set_window_title</code></li>
-</ul>
-<p><strong>Key and mouse button press handling</strong></p>
-<p>The figure manager sets up default key and mouse button press handling by
-hooking up the <code>.key_press_handler</code> to the matplotlib event system. This
-ensures the same shortcuts and mouse actions across backends.</p>
-<p><strong>Other operations</strong></p>
-<p>Subclasses will have additional attributes and functions to access
-additional functionality. This is of course backend-specific. For example,
-most GUI backends have <code>window</code> and <code>toolbar</code> attributes that give
-access to the native GUI widgets of the respective framework.</p>
-<h2 id="attributes">Attributes</h2>
-<dl>
-<dt><strong><code>canvas</code></strong> :&ensp;<code>FigureCanvasBase</code></dt>
-<dd>The backend-specific canvas instance.</dd>
-<dt><strong><code>num</code></strong> :&ensp;<code>int</code> or <code>str</code></dt>
-<dd>The figure number.</dd>
-<dt><strong><code>key_press_handler_id</code></strong> :&ensp;<code>int</code></dt>
-<dd>The default key handler cid, when using the toolmanager.
-To disable the default key press handling use::<pre><code>figure.canvas.mpl_disconnect(
-    figure.canvas.manager.key_press_handler_id)
-</code></pre>
-</dd>
-<dt><strong><code>button_press_handler_id</code></strong> :&ensp;<code>int</code></dt>
-<dd>The default mouse button handler cid, when using the toolmanager.
-To disable the default button press handling use::<pre><code>figure.canvas.mpl_disconnect(
-    figure.canvas.manager.button_press_handler_id)
-</code></pre>
-</dd>
-</dl></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class FigureManager(FigureManagerBase):
-    def show(self):
-        self.canvas.figure.savefig(_getfigname[-1]())</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li>matplotlib.backend_bases.FigureManagerBase</li>
-</ul>
-<h3>Methods</h3>
-<dl>
-<dt id="pyptex.FigureManager.show"><code class="name flex">
-<span>def <span class="ident">show</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>For GUI backends, show the figure window and redraw.
-For non-GUI backends, raise an exception, unless running headless (i.e.
-on Linux with an unset DISPLAY); this exception is converted to a
-warning in <code>.Figure.show</code>.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def show(self):
-    self.canvas.figure.savefig(_getfigname[-1]())</code></pre>
-</details>
-</dd>
-</dl>
-</dd>
 <dt id="pyptex.pyptex"><code class="flex name class">
 <span>class <span class="ident">pyptex</span></span>
 <span>(</span><span>texfilename, argv=None, latexcommand=False)</span>
@@ -1995,12 +1915,6 @@ to the <code>savefig</code> function from matplotlib.</p>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
-<li>
-<h4><code><a title="pyptex.FigureManager" href="#pyptex.FigureManager">FigureManager</a></code></h4>
-<ul class="">
-<li><code><a title="pyptex.FigureManager.show" href="#pyptex.FigureManager.show">show</a></code></li>
-</ul>
-</li>
 <li>
 <h4><code><a title="pyptex.pyptex" href="#pyptex.pyptex">pyptex</a></code></h4>
 <ul class="two-column">

@@ -186,6 +186,8 @@ __pdoc__ = {
     'pyptex.process': False,
     'pyptex.resolvedeps': False,
     'pyptex.run': False,
+    'FigureManager': False,
+    'FigureManager.show': False,
 }
 
 __pdoc__['show'] = False
