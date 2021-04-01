@@ -1,0 +1,29 @@
+\documentclass{article}
+
+\usepackage{graphicx}
+\usepackage{amsmath}
+
+@{{{
+import sympy
+import matplotlib.pyplot as plt
+}}}
+
+\begin{document}
+@{{{
+sympy.plot(sympy.S('sin(x)'))
+}}}
+
+@{{{
+plt.plot([1,2,3],[2,1,4])
+plt.show()
+}}}
+
+@{{{
+
+fig = plt.figure()
+fig.gca().plot([1,2,3],[3,3,1])
+fig.show()
+pyp.print("\n\n")
+fig.show()
+}}}
+\end{document}

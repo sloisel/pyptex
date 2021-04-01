@@ -9,6 +9,7 @@
 *.blg
 *.log
 *.pyplog
+*.pyptexgold
 *.synctex.gz
 *.txt
 *.ppm

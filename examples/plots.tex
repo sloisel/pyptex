@@ -5,23 +5,22 @@
 \usepackage{graphicx}
 \usepackage{verbatim}
 
-@{from sympy import * }
+@{
+from sympy import *
+pyp.includegraphics=r"\includegraphics[width=0.9\textwidth]"
+ }
 
 \begin{document}
-You can manually make up your filenames:
+Here's a 2d sympy plot:
 
-@{plot(S('sin(x)+cos(pi*x)'),show=False).save('fun.eps')}
-\includegraphics[width=9cm]{fun.eps}
+@{plot(S('sin(x)+cos(pi*x)'))}
 
-You can automatically generate filenames:
+Here's a 3d sympy plot:
 
 \begin{verbatim}
-\includegraphics[width=9cm]{@@{pyp.savefig(
-   plotting.plot3d(S('x*y'),
-   show=false),bbox_inches='tight')}}
+@@{plotting.plot3d(S('x*y'))}
 \end{verbatim}
 
-\includegraphics[width=9cm]{@{pyp.savefig(plotting.plot3d(S('x*y'),show=false),bbox_inches='tight')}}
-
+@{plotting.plot3d(S('x*y'))}
 
 \end{document}

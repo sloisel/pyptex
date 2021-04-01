@@ -50,6 +50,29 @@ If this is causing you problems, try `python -u -m pyptex example.tex` instead.
 [pdf](examples/matrixinverse.pdf)
 * The F19NB handout for numerical linear algebra at Heriot-Watt university is generated with PypTeX. [pdf](https://www.macs.hw.ac.uk/~sl398/notes.pdf)
 
+# Plotting with `sympy` and `matplotlib`
+
+PypTeX implements its own `matplotlib` backend, a thin wrapper around the built-in postscript backend.
+The PypTeX backend takes care of generating `.eps` files and importing them into your document via
+`\includegraphics`. In that scenario, you must do `\usepackage{graphicx}` in your LaTeX preamble.
+The precise "includegraphics" command can be set, e.g. by
+`pyp.includegraphics=r"\includegraphics[width=0.9\textwidth]"`.
+
+To create a plot with `sympy`, one can do:
+```python
+sympy.plot(S('sin(x)+cos(pi*x)'))
+```
+By default, `sympy` will immediately attempt to `show()` this plot. When it does, it ultimately calls the
+underlying `matplotlib` `show()` command, which is provided by the PypTeX backend. The PypTeX backend
+show command will in fact use the `save()` command to export the figure to an `.eps` file, and then insert
+the appropriate `\includegraphics{...}` command into your document. You can also directly use various
+`matplotlib` plotting facilities:
+
+```python
+plt.plot([1,2,3],[2,1,4])
+plt.show()
+```
+
 # Template preprocessing vs embedding
 
 PypTeX is a template preprocessor for LaTeX based on the Python language. When Python
@@ -145,7 +168,17 @@ import weakref
 import streamcapture
 import numpy
 import sympy
+import types
+import matplotlib
+import matplotlib.pyplot
+from matplotlib.backend_bases import Gcf, FigureManagerBase
+from matplotlib.backends.backend_ps import FigureCanvasPS
 
+FigureCanvas = FigureCanvasPS
+class FigureManager(FigureManagerBase):
+    def show(self):
+        self.canvas.figure.savefig(_getfigname[-1]())
+_getfigname = []
 
 __pdoc__ = {
     'pyptex.compile': False,
@@ -154,6 +187,20 @@ __pdoc__ = {
     'pyptex.resolvedeps': False,
     'pyptex.run': False,
 }
+
+__pdoc__['show'] = False
+def show(*args, **kwargs):
+    global _getfigname
+    if('__SETUP__' in kwargs):
+        foo = kwargs['__SETUP__']
+        if foo is None:
+            _getfigname.pop()
+        else:
+            _getfigname.append(foo)
+        return
+    for num, figmanager in enumerate(Gcf.get_all_fig_managers()):
+        figmanager.canvas.figure.savefig(_getfigname[-1]())
+    matplotlib.pyplot.close()
 
 pypparser = re.compile(r'((?<!\\)%[^\n]*\n)|(@@)|(@(\[([a-zA-Z]*)\])?{([^{}]+)}|@(\[([a-zA-Z]*)\])?{{{(.*?)}}})', re.DOTALL)
 bibentryname = re.compile(r'[^{]*{([^,]*),', re.DOTALL)
@@ -213,7 +260,6 @@ def pp(Z, levels: int = 1):
     while levels > 0:
         foo = foo.f_back
         levels -= 1
-#    foo = LatexDict({k: v for d in [foo.f_globals, foo.f_locals] for k, v in d.items()})
     foo = LatexDict(foo.f_globals, foo.f_locals)
     D = latextemplate(Z)
     txt = D.substitute(foo)
@@ -378,16 +424,26 @@ class pyptex:
         * `pyp.outputs` is the matching outputs.
         * `pyp.compiled` is the string that is written to `a.pyptex`.
         """
+        global _getfigname
         print(f'{texfilename}: pyptex compilation begins')
-        self.__globals__ = {'__builtins__': __builtins__, 'pyp': weakref.proxy(self)}
+        self.__globals__ = {'__builtins__': __builtins__, 'pyp': weakref.proxy(self) }
         self.__frozen__ = self.__globals__.copy()
         self.filename = stripext.sub(lambda m: m.group(1),texfilename)
         self.texfilename = texfilename
+        self.plotted = False
+        matplotlib.use("module://pyptex")
+        def _genname():
+            figname = self.genname()
+            self.plotted = True
+            self.print(self.includegraphics+'{'+figname+'}')
+            return figname
+        matplotlib.pyplot.show(__SETUP__=_genname)
         foo = self.filename+'.tex'
         self.pyptexfilename = foo if foo!=texfilename else f'{self.filename}.pyptex'
         self.cachefilename = f'{self.filename}.pickle'
         self.bibfilename = f'{self.filename}.bib'
         self.auxfilename = f'{self.filename}.aux'
+        self.includegraphics = r'\includegraphics[width=\textwidth]'
         self.latex = 'pdflatex --file-line-error --synctex=1'
         self.latexcommand = latexcommand
         self.disable_cache = False
@@ -400,6 +456,7 @@ class pyptex:
         self.generateddir()
         self.dep(__file__)
         self.compile()
+        matplotlib.pyplot.show(__SETUP__=None)
         print(f'{texfilename}: pyptex compilation ends')
 
     def run(self, S, k):
@@ -412,8 +469,11 @@ class pyptex:
         with suppress(Exception):
             C = compile(S, self.texfilename, mode='eval')
             doeval = True
+        self.plotted = False
         if doeval:
             ret = eval(C, glob_)
+            if(self.plotted):
+                ret = ''
             self.accum.append(ret)
         else:
             C = compile(S, self.texfilename, mode='exec')
@@ -484,7 +544,7 @@ class pyptex:
 
         def scanner(C, k, o):
             self.fragments.append(C)
-            assert(o in ['','verbatim'],"Invalid option: "+o)
+            assert o in ['','verbatim'],"Invalid option: "+o
             return ''
 
         self.process(text, runner=scanner)

@@ -1,5 +1,0 @@
-\documentclass{article}
-
-\begin{document}
-$$\int x^3\,dx = \frac{x^{4}}{4}+C$$
-\end{document}

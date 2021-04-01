@@ -65,6 +65,23 @@ If this is causing you problems, try <code>python -u -m pyptex example.tex</code
 <a href="examples/matrixinverse.pdf">pdf</a></li>
 <li>The F19NB handout for numerical linear algebra at Heriot-Watt university is generated with PypTeX. <a href="https://www.macs.hw.ac.uk/~sl398/notes.pdf">pdf</a></li>
 </ul>
+<h1 id="plotting-with-sympy-and-matplotlib">Plotting with <code>sympy</code> and <code>matplotlib</code></h1>
+<p>PypTeX implements its own <code>matplotlib</code> backend, a thin wrapper around the built-in postscript backend.
+The PypTeX backend takes care of generating <code>.eps</code> files and importing them into your document via
+<code>\includegraphics</code>. In that scenario, you must do <code>\usepackage{graphicx}</code> in your LaTeX preamble.
+The precise "includegraphics" command can be set, e.g. by
+<code>pyp.includegraphics=r"\includegraphics[width=0.9\textwidth]"</code>.</p>
+<p>To create a plot with <code>sympy</code>, one can do:</p>
+<pre><code class="language-python">sympy.plot(S('sin(x)+cos(pi*x)'))
+</code></pre>
+<p>By default, <code>sympy</code> will immediately attempt to <code>show()</code> this plot. When it does, it ultimately calls the
+underlying <code>matplotlib</code> <code>show()</code> command, which is provided by the PypTeX backend. The PypTeX backend
+show command will in fact use the <code>save()</code> command to export the figure to an <code>.eps</code> file, and then insert
+the appropriate <code>\includegraphics{...}</code> command into your document. You can also directly use various
+<code>matplotlib</code> plotting facilities:</p>
+<pre><code class="language-python">plt.plot([1,2,3],[2,1,4])
+plt.show()
+</code></pre>
 <h1 id="template-preprocessing-vs-embedding">Template preprocessing vs embedding</h1>
 <p>PypTeX is a template preprocessor for LaTeX based on the Python language. When Python
 is embedded into LaTeX, Python code fragments are identified by LaTeX commands that use
@@ -183,6 +200,29 @@ If this is causing you problems, try `python -u -m pyptex example.tex` instead.
 [pdf](examples/matrixinverse.pdf)
 * The F19NB handout for numerical linear algebra at Heriot-Watt university is generated with PypTeX. [pdf](https://www.macs.hw.ac.uk/~sl398/notes.pdf)
 
+# Plotting with `sympy` and `matplotlib`
+
+PypTeX implements its own `matplotlib` backend, a thin wrapper around the built-in postscript backend.
+The PypTeX backend takes care of generating `.eps` files and importing them into your document via
+`\includegraphics`. In that scenario, you must do `\usepackage{graphicx}` in your LaTeX preamble.
+The precise &#34;includegraphics&#34; command can be set, e.g. by
+`pyp.includegraphics=r&#34;\includegraphics[width=0.9\textwidth]&#34;`.
+
+To create a plot with `sympy`, one can do:
+```python
+sympy.plot(S(&#39;sin(x)+cos(pi*x)&#39;))
+```
+By default, `sympy` will immediately attempt to `show()` this plot. When it does, it ultimately calls the
+underlying `matplotlib` `show()` command, which is provided by the PypTeX backend. The PypTeX backend
+show command will in fact use the `save()` command to export the figure to an `.eps` file, and then insert
+the appropriate `\includegraphics{...}` command into your document. You can also directly use various
+`matplotlib` plotting facilities:
+
+```python
+plt.plot([1,2,3],[2,1,4])
+plt.show()
+```
+
 # Template preprocessing vs embedding
 
 PypTeX is a template preprocessor for LaTeX based on the Python language. When Python
@@ -278,7 +318,17 @@ import weakref
 import streamcapture
 import numpy
 import sympy
+import types
+import matplotlib
+import matplotlib.pyplot
+from matplotlib.backend_bases import Gcf, FigureManagerBase
+from matplotlib.backends.backend_ps import FigureCanvasPS
 
+FigureCanvas = FigureCanvasPS
+class FigureManager(FigureManagerBase):
+    def show(self):
+        self.canvas.figure.savefig(_getfigname[-1]())
+_getfigname = []
 
 __pdoc__ = {
     &#39;pyptex.compile&#39;: False,
@@ -287,6 +337,20 @@ __pdoc__ = {
     &#39;pyptex.resolvedeps&#39;: False,
     &#39;pyptex.run&#39;: False,
 }
+
+__pdoc__[&#39;show&#39;] = False
+def show(*args, **kwargs):
+    global _getfigname
+    if(&#39;__SETUP__&#39; in kwargs):
+        foo = kwargs[&#39;__SETUP__&#39;]
+        if foo is None:
+            _getfigname.pop()
+        else:
+            _getfigname.append(foo)
+        return
+    for num, figmanager in enumerate(Gcf.get_all_fig_managers()):
+        figmanager.canvas.figure.savefig(_getfigname[-1]())
+    matplotlib.pyplot.close()
 
 pypparser = re.compile(r&#39;((?&lt;!\\)%[^\n]*\n)|(@@)|(@(\[([a-zA-Z]*)\])?{([^{}]+)}|@(\[([a-zA-Z]*)\])?{{{(.*?)}}})&#39;, re.DOTALL)
 bibentryname = re.compile(r&#39;[^{]*{([^,]*),&#39;, re.DOTALL)
@@ -346,7 +410,6 @@ def pp(Z, levels: int = 1):
     while levels &gt; 0:
         foo = foo.f_back
         levels -= 1
-#    foo = LatexDict({k: v for d in [foo.f_globals, foo.f_locals] for k, v in d.items()})
     foo = LatexDict(foo.f_globals, foo.f_locals)
     D = latextemplate(Z)
     txt = D.substitute(foo)
@@ -511,16 +574,26 @@ class pyptex:
         * `pyp.outputs` is the matching outputs.
         * `pyp.compiled` is the string that is written to `a.pyptex`.
         &#34;&#34;&#34;
+        global _getfigname
         print(f&#39;{texfilename}: pyptex compilation begins&#39;)
-        self.__globals__ = {&#39;__builtins__&#39;: __builtins__, &#39;pyp&#39;: weakref.proxy(self)}
+        self.__globals__ = {&#39;__builtins__&#39;: __builtins__, &#39;pyp&#39;: weakref.proxy(self) }
         self.__frozen__ = self.__globals__.copy()
         self.filename = stripext.sub(lambda m: m.group(1),texfilename)
         self.texfilename = texfilename
+        self.plotted = False
+        matplotlib.use(&#34;module://pyptex&#34;)
+        def _genname():
+            figname = self.genname()
+            self.plotted = True
+            self.print(self.includegraphics+&#39;{&#39;+figname+&#39;}&#39;)
+            return figname
+        matplotlib.pyplot.show(__SETUP__=_genname)
         foo = self.filename+&#39;.tex&#39;
         self.pyptexfilename = foo if foo!=texfilename else f&#39;{self.filename}.pyptex&#39;
         self.cachefilename = f&#39;{self.filename}.pickle&#39;
         self.bibfilename = f&#39;{self.filename}.bib&#39;
         self.auxfilename = f&#39;{self.filename}.aux&#39;
+        self.includegraphics = r&#39;\includegraphics[width=\textwidth]&#39;
         self.latex = &#39;pdflatex --file-line-error --synctex=1&#39;
         self.latexcommand = latexcommand
         self.disable_cache = False
@@ -533,6 +606,7 @@ class pyptex:
         self.generateddir()
         self.dep(__file__)
         self.compile()
+        matplotlib.pyplot.show(__SETUP__=None)
         print(f&#39;{texfilename}: pyptex compilation ends&#39;)
 
     def run(self, S, k):
@@ -545,8 +619,11 @@ class pyptex:
         with suppress(Exception):
             C = compile(S, self.texfilename, mode=&#39;eval&#39;)
             doeval = True
+        self.plotted = False
         if doeval:
             ret = eval(C, glob_)
+            if(self.plotted):
+                ret = &#39;&#39;
             self.accum.append(ret)
         else:
             C = compile(S, self.texfilename, mode=&#39;exec&#39;)
@@ -617,7 +694,7 @@ class pyptex:
 
         def scanner(C, k, o):
             self.fragments.append(C)
-            assert(o in [&#39;&#39;,&#39;verbatim&#39;],&#34;Invalid option: &#34;+o)
+            assert o in [&#39;&#39;,&#39;verbatim&#39;],&#34;Invalid option: &#34;+o
             return &#39;&#39;
 
         self.process(text, runner=scanner)
@@ -855,7 +932,6 @@ scope that is <code>levels</code> calls up on the stack. The template character 
     while levels &gt; 0:
         foo = foo.f_back
         levels -= 1
-#    foo = LatexDict({k: v for d in [foo.f_globals, foo.f_locals] for k, v in d.items()})
     foo = LatexDict(foo.f_globals, foo.f_locals)
     D = latextemplate(Z)
     txt = D.substitute(foo)
@@ -925,6 +1001,88 @@ If "&ndash;pdb=yes" is in argv, automatic pdb postmortem is enabled. This is the
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
+<dt id="pyptex.FigureManager"><code class="flex name class">
+<span>class <span class="ident">FigureManager</span></span>
+<span>(</span><span>canvas, num)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A backend-independent abstraction of a figure container and controller.</p>
+<p>The figure manager is used by pyplot to interact with the window in a
+backend-independent way. It's an adapter for the real (GUI) framework that
+represents the visual figure on screen.</p>
+<p>GUI backends define from this class to translate common operations such
+as <em>show</em> or <em>resize</em> to the GUI-specific code. Non-GUI backends do not
+support these operations an can just use the base class.</p>
+<p>This following basic operations are accessible:</p>
+<p><strong>Window operations</strong></p>
+<ul>
+<li><code>~.FigureManagerBase.show</code></li>
+<li><code>~.FigureManagerBase.destroy</code></li>
+<li><code>~.FigureManagerBase.full_screen_toggle</code></li>
+<li><code>~.FigureManagerBase.resize</code></li>
+<li><code>~.FigureManagerBase.get_window_title</code></li>
+<li><code>~.FigureManagerBase.set_window_title</code></li>
+</ul>
+<p><strong>Key and mouse button press handling</strong></p>
+<p>The figure manager sets up default key and mouse button press handling by
+hooking up the <code>.key_press_handler</code> to the matplotlib event system. This
+ensures the same shortcuts and mouse actions across backends.</p>
+<p><strong>Other operations</strong></p>
+<p>Subclasses will have additional attributes and functions to access
+additional functionality. This is of course backend-specific. For example,
+most GUI backends have <code>window</code> and <code>toolbar</code> attributes that give
+access to the native GUI widgets of the respective framework.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>canvas</code></strong> :&ensp;<code>FigureCanvasBase</code></dt>
+<dd>The backend-specific canvas instance.</dd>
+<dt><strong><code>num</code></strong> :&ensp;<code>int</code> or <code>str</code></dt>
+<dd>The figure number.</dd>
+<dt><strong><code>key_press_handler_id</code></strong> :&ensp;<code>int</code></dt>
+<dd>The default key handler cid, when using the toolmanager.
+To disable the default key press handling use::<pre><code>figure.canvas.mpl_disconnect(
+    figure.canvas.manager.key_press_handler_id)
+</code></pre>
+</dd>
+<dt><strong><code>button_press_handler_id</code></strong> :&ensp;<code>int</code></dt>
+<dd>The default mouse button handler cid, when using the toolmanager.
+To disable the default button press handling use::<pre><code>figure.canvas.mpl_disconnect(
+    figure.canvas.manager.button_press_handler_id)
+</code></pre>
+</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class FigureManager(FigureManagerBase):
+    def show(self):
+        self.canvas.figure.savefig(_getfigname[-1]())</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>matplotlib.backend_bases.FigureManagerBase</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="pyptex.FigureManager.show"><code class="name flex">
+<span>def <span class="ident">show</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>For GUI backends, show the figure window and redraw.
+For non-GUI backends, raise an exception, unless running headless (i.e.
+on Linux with an unset DISPLAY); this exception is converted to a
+warning in <code>.Figure.show</code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def show(self):
+    self.canvas.figure.savefig(_getfigname[-1]())</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
 <dt id="pyptex.pyptex"><code class="flex name class">
 <span>class <span class="ident">pyptex</span></span>
 <span>(</span><span>texfilename, argv=None, latexcommand=False)</span>
@@ -1141,16 +1299,26 @@ never used.</li>
         * `pyp.outputs` is the matching outputs.
         * `pyp.compiled` is the string that is written to `a.pyptex`.
         &#34;&#34;&#34;
+        global _getfigname
         print(f&#39;{texfilename}: pyptex compilation begins&#39;)
-        self.__globals__ = {&#39;__builtins__&#39;: __builtins__, &#39;pyp&#39;: weakref.proxy(self)}
+        self.__globals__ = {&#39;__builtins__&#39;: __builtins__, &#39;pyp&#39;: weakref.proxy(self) }
         self.__frozen__ = self.__globals__.copy()
         self.filename = stripext.sub(lambda m: m.group(1),texfilename)
         self.texfilename = texfilename
+        self.plotted = False
+        matplotlib.use(&#34;module://pyptex&#34;)
+        def _genname():
+            figname = self.genname()
+            self.plotted = True
+            self.print(self.includegraphics+&#39;{&#39;+figname+&#39;}&#39;)
+            return figname
+        matplotlib.pyplot.show(__SETUP__=_genname)
         foo = self.filename+&#39;.tex&#39;
         self.pyptexfilename = foo if foo!=texfilename else f&#39;{self.filename}.pyptex&#39;
         self.cachefilename = f&#39;{self.filename}.pickle&#39;
         self.bibfilename = f&#39;{self.filename}.bib&#39;
         self.auxfilename = f&#39;{self.filename}.aux&#39;
+        self.includegraphics = r&#39;\includegraphics[width=\textwidth]&#39;
         self.latex = &#39;pdflatex --file-line-error --synctex=1&#39;
         self.latexcommand = latexcommand
         self.disable_cache = False
@@ -1163,6 +1331,7 @@ never used.</li>
         self.generateddir()
         self.dep(__file__)
         self.compile()
+        matplotlib.pyplot.show(__SETUP__=None)
         print(f&#39;{texfilename}: pyptex compilation ends&#39;)
 
     def run(self, S, k):
@@ -1175,8 +1344,11 @@ never used.</li>
         with suppress(Exception):
             C = compile(S, self.texfilename, mode=&#39;eval&#39;)
             doeval = True
+        self.plotted = False
         if doeval:
             ret = eval(C, glob_)
+            if(self.plotted):
+                ret = &#39;&#39;
             self.accum.append(ret)
         else:
             C = compile(S, self.texfilename, mode=&#39;exec&#39;)
@@ -1247,7 +1419,7 @@ never used.</li>
 
         def scanner(C, k, o):
             self.fragments.append(C)
-            assert(o in [&#39;&#39;,&#39;verbatim&#39;],&#34;Invalid option: &#34;+o)
+            assert o in [&#39;&#39;,&#39;verbatim&#39;],&#34;Invalid option: &#34;+o
             return &#39;&#39;
 
         self.process(text, runner=scanner)
@@ -1806,6 +1978,7 @@ to the <code>savefig</code> function from matplotlib.</p>
 <li><a href="#installation">Installation</a></li>
 <li><a href="#introduction">Introduction</a></li>
 <li><a href="#slightly-bigger-examples">Slightly bigger examples</a></li>
+<li><a href="#plotting-with-sympy-and-matplotlib">Plotting with sympy and matplotlib</a></li>
 <li><a href="#template-preprocessing-vs-embedding">Template preprocessing vs embedding</a></li>
 <li><a href="#pretty-printing-template-strings-from-python-with-pp">Pretty-printing template strings from Python with pp</a></li>
 <li><a href="#caching">Caching</a></li>
@@ -1822,6 +1995,12 @@ to the <code>savefig</code> function from matplotlib.</p>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
+<li>
+<h4><code><a title="pyptex.FigureManager" href="#pyptex.FigureManager">FigureManager</a></code></h4>
+<ul class="">
+<li><code><a title="pyptex.FigureManager.show" href="#pyptex.FigureManager.show">show</a></code></li>
+</ul>
+</li>
 <li>
 <h4><code><a title="pyptex.pyptex" href="#pyptex.pyptex">pyptex</a></code></h4>
 <ul class="two-column">
