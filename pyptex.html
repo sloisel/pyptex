@@ -881,14 +881,7 @@ def pyptexmain(argv: list = None):
     if len(argv) &lt; 2:
         print(&#39;Usage: pyptex &lt;filename.tex&gt; ...&#39;)
         sys.exit(1)
-    writer = open(f&#39;{os.path.splitext(argv[1])[0]}.pyplog&#39;,&#39;wb&#39;)
-    writer._close = writer.close
-    writer.counter = 0
-    def close():
-        writer.counter += 1
-        if(writer.counter&gt;=2):
-            writer._close()
-    writer.close = close
+    writer = streamcapture.Writer(open(f&#39;{os.path.splitext(argv[1])[0]}.pyplog&#39;,&#39;wb&#39;),2)
     with streamcapture.StreamCapture(sys.stdout,writer), streamcapture.StreamCapture(sys.stderr,writer):
         try:
             pyp = pyptex(argv[1], argv[2:],
@@ -975,14 +968,7 @@ If "&ndash;pdb=yes" is in argv, automatic pdb postmortem is enabled. This is the
     if len(argv) &lt; 2:
         print(&#39;Usage: pyptex &lt;filename.tex&gt; ...&#39;)
         sys.exit(1)
-    writer = open(f&#39;{os.path.splitext(argv[1])[0]}.pyplog&#39;,&#39;wb&#39;)
-    writer._close = writer.close
-    writer.counter = 0
-    def close():
-        writer.counter += 1
-        if(writer.counter&gt;=2):
-            writer._close()
-    writer.close = close
+    writer = streamcapture.Writer(open(f&#39;{os.path.splitext(argv[1])[0]}.pyplog&#39;,&#39;wb&#39;),2)
     with streamcapture.StreamCapture(sys.stdout,writer), streamcapture.StreamCapture(sys.stderr,writer):
         try:
             pyp = pyptex(argv[1], argv[2:],

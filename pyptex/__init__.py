@@ -731,14 +731,7 @@ def pyptexmain(argv: list = None):
     if len(argv) < 2:
         print('Usage: pyptex <filename.tex> ...')
         sys.exit(1)
-    writer = open(f'{os.path.splitext(argv[1])[0]}.pyplog','wb')
-    writer._close = writer.close
-    writer.counter = 0
-    def close():
-        writer.counter += 1
-        if(writer.counter>=2):
-            writer._close()
-    writer.close = close
+    writer = streamcapture.Writer(open(f'{os.path.splitext(argv[1])[0]}.pyplog','wb'),2)
     with streamcapture.StreamCapture(sys.stdout,writer), streamcapture.StreamCapture(sys.stderr,writer):
         try:
             pyp = pyptex(argv[1], argv[2:],
