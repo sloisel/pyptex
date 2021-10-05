@@ -1,0 +1,35 @@
+test.tex: pyptex compilation begins
+Found 3 lines of Python.
+disable_cache=True
+Cache is invalidated.
+Executing Python code:
+from sympy import *
+Python result:
+[]
+Executing Python code:
+pyp.input('sub.tex').hello
+sub.tex: pyptex compilation begins
+Found 1 lines of Python.
+disable_cache=True
+Cache is invalidated.
+Executing Python code:
+hello = "Hello, world"
+Python result:
+[]
+Saving to file: sub.pyptex
+Dependencies are:
+{'.../__init__.py': '(datetime)'}
+Saving cache file sub.pickle
+sub.tex: pyptex compilation ends
+Python result:
+['Hello, world']
+Executing Python code:
+plot(S('sin(x)+cos(pi*x)'))
+Python result:
+['\\includegraphics[width=\\textwidth]{test-generated/fig1.eps}', '']
+Saving to file: test.pyptex
+Dependencies are:
+{'.../__init__.py': '(datetime)'}
+Saving cache file test.pickle
+Running Latex command:
+pdflatex --file-line-error --synctex=1 test.pyptex && (test ! -f test.bib || bibtex test.aux)

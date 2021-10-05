@@ -1,0 +1,7 @@
+\documentclass{article}
+\usepackage{graphicx}
+\begin{document}
+
+Hello, world
+\includegraphics[width=\textwidth]{test-generated/fig1.eps}
+\end{document}
