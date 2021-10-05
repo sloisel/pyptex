@@ -1,6 +1,6 @@
 #!/bin/bash -e
 clean() {
-	rm -rf *.aux *.bbl *.bib *.blg *.dvi *.cache *.log *.pdf *.pickle *.pyplog *.pyptex *.synctex.gz *-eps-converted-to.pdf *.eps *-generated *~ testgen*
+	rm -rf *.aux *.png *.bbl *.bib *.blg *.dvi *.cache *.log *.pdf *.pickle *.pyplog *.pyptex *.synctex.gz *-eps-converted-to.pdf *.eps *-generated *~ testgen*
 }
 failtest() {
 	echo "runtests: $1: FAIL"
@@ -33,9 +33,9 @@ do
 	$thecmd
 	cp -r *.pyptex test-generated testgen$k
 	if [ -f test.pdf ]; then
-		rm -f test.ppm*
-		pdftoppm test.pdf test -f 1 -singlefile && gzip -n test.ppm
-		cp test.ppm.gz testgen$k
+		rm -f test.png*
+		pdftoppm -png test.pdf test -f 1 -singlefile
+		cp test.png testgen$k
 	fi
 	sed -i '' '/^This is [a-zA-Z]*, Version/,$d' test.pyplog
 	sed 's/\/.*\/\(__init__\.py\)/\.\.\.\/\1/g;' test.pyplog | sed 's/\([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]@[0-9:\.]*\)/(datetime)/g' | grep -v 'Output written on test.pdf' > testgen$k/test.pyplog
@@ -45,8 +45,11 @@ do
 		echo "runtests: Generating gold image"
 		cp -r testgen$k testgold$k
 	fi
-	diffcmd="diff -r testgen$k testgold$k"
-	if $diffcmd; then
+#	diffcmd="diff -r testgen$k testgold$k"
+	diffcmd="diff testgen$k/test.pyptex testgold$k/test.pyptex && diff testgen$k/test.pyplog testgold$k/test.pyplog && magick compare -metric AE testgen$k/test.png testgold$k/test.png testgen$k/difference.png"
+	echo $diffcmd
+#	if $diffcmd; then
+	if diff testgen$k/test.pyptex testgold$k/test.pyptex && diff testgen$k/test.pyplog testgold$k/test.pyplog && magick compare -metric AE testgen$k/test.png testgold$k/test.png testgen$k/difference.png >/dev/null 2>&1; then
 		passtest $name
 	else
 		failtest $name

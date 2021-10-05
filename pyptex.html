@@ -340,6 +340,18 @@ __pdoc__ = {
     &#39;FigureManager.show&#39;: False,
 }
 
+class myNameSpace:
+    def __init__(self,d):
+        self.__dict__.update(d)
+    def __str__(self):
+        return fr&#39;\input{{{self.pyp.pyptexfilename}}}&#39;
+    def __repr__(self):
+        return repr(str(self))
+    def __eq__(self, other):
+        if isinstance(self, myNameSpace) and isinstance(other, myNameSpace):
+           return self.__dict__ == other.__dict__
+        return NotImplemented
+
 __pdoc__[&#39;show&#39;] = False
 def show(*args, **kwargs):
     global _getfigname
@@ -383,6 +395,8 @@ def mylatex(X):
         return &#39;&#39;
     if isinstance(X, str):
         return X
+    if isinstance(X,myNameSpace):
+        return str(X)
     return sympy.latex(X)
 
 
@@ -578,7 +592,8 @@ class pyptex:
         &#34;&#34;&#34;
         global _getfigname
         print(f&#39;{texfilename}: pyptex compilation begins&#39;)
-        self.__globals__ = {&#39;__builtins__&#39;: __builtins__, &#39;pyp&#39;: weakref.proxy(self) }
+#        self.__globals__ = {&#39;__builtins__&#39;: __builtins__, &#39;pyp&#39;: weakref.proxy(self) }
+        self.__globals__ = {&#39;__builtins__&#39;: __builtins__, &#39;pyp&#39;: self }
         self.__frozen__ = self.__globals__.copy()
         self.filename = stripext.sub(lambda m: m.group(1),texfilename)
         self.texfilename = texfilename
@@ -850,7 +865,9 @@ class pyptex:
         one can then retrieve values from the `b.tex` scope, e.g. with `pyp_b.fragments[0]`.
         &#34;&#34;&#34;
         ret = pyptex(filename, argv or self.argv, False)
-        return fr&#39;\input{{{ret.pyptexfilename}}}&#39;
+        ret2 = myNameSpace(ret.__globals__)
+        return ret2
+#        return fr&#39;\input{{{ret.pyptexfilename}}}&#39;
 
     def open(self, filename, *argv, **kwargs):
         &#34;&#34;&#34;If pyp = pyptex(&#39;a.tex&#39;) then pyp.open(filename, ...) is a wrapper for
@@ -989,6 +1006,29 @@ If "&ndash;pdb=yes" is in argv, automatic pdb postmortem is enabled. This is the
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
+<dt id="pyptex.myNameSpace"><code class="flex name class">
+<span>class <span class="ident">myNameSpace</span></span>
+<span>(</span><span>d)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class myNameSpace:
+    def __init__(self,d):
+        self.__dict__.update(d)
+    def __str__(self):
+        return fr&#39;\input{{{self.pyp.pyptexfilename}}}&#39;
+    def __repr__(self):
+        return repr(str(self))
+    def __eq__(self, other):
+        if isinstance(self, myNameSpace) and isinstance(other, myNameSpace):
+           return self.__dict__ == other.__dict__
+        return NotImplemented</code></pre>
+</details>
+</dd>
 <dt id="pyptex.pyptex"><code class="flex name class">
 <span>class <span class="ident">pyptex</span></span>
 <span>(</span><span>texfilename, argv=None, latexcommand=False)</span>
@@ -1207,7 +1247,8 @@ never used.</li>
         &#34;&#34;&#34;
         global _getfigname
         print(f&#39;{texfilename}: pyptex compilation begins&#39;)
-        self.__globals__ = {&#39;__builtins__&#39;: __builtins__, &#39;pyp&#39;: weakref.proxy(self) }
+#        self.__globals__ = {&#39;__builtins__&#39;: __builtins__, &#39;pyp&#39;: weakref.proxy(self) }
+        self.__globals__ = {&#39;__builtins__&#39;: __builtins__, &#39;pyp&#39;: self }
         self.__frozen__ = self.__globals__.copy()
         self.filename = stripext.sub(lambda m: m.group(1),texfilename)
         self.texfilename = texfilename
@@ -1479,7 +1520,9 @@ never used.</li>
         one can then retrieve values from the `b.tex` scope, e.g. with `pyp_b.fragments[0]`.
         &#34;&#34;&#34;
         ret = pyptex(filename, argv or self.argv, False)
-        return fr&#39;\input{{{ret.pyptexfilename}}}&#39;
+        ret2 = myNameSpace(ret.__globals__)
+        return ret2
+#        return fr&#39;\input{{{ret.pyptexfilename}}}&#39;
 
     def open(self, filename, *argv, **kwargs):
         &#34;&#34;&#34;If pyp = pyptex(&#39;a.tex&#39;) then pyp.open(filename, ...) is a wrapper for
@@ -1777,7 +1820,8 @@ one can then retrieve values from the <code>b.tex</code> scope, e.g. with <code>
     one can then retrieve values from the `b.tex` scope, e.g. with `pyp_b.fragments[0]`.
     &#34;&#34;&#34;
     ret = pyptex(filename, argv or self.argv, False)
-    return fr&#39;\input{{{ret.pyptexfilename}}}&#39;</code></pre>
+    ret2 = myNameSpace(ret.__globals__)
+    return ret2</code></pre>
 </details>
 </dd>
 <dt id="pyptex.pyptex.open"><code class="name flex">
@@ -1901,6 +1945,9 @@ to the <code>savefig</code> function from matplotlib.</p>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
+<li>
+<h4><code><a title="pyptex.myNameSpace" href="#pyptex.myNameSpace">myNameSpace</a></code></h4>
+</li>
 <li>
 <h4><code><a title="pyptex.pyptex" href="#pyptex.pyptex">pyptex</a></code></h4>
 <ul class="two-column">
