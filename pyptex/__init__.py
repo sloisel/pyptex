@@ -190,7 +190,8 @@ __pdoc__ = {
     'FigureManager.show': False,
 }
 
-class myNameSpace:
+__pdoc__['pyptexNameSpace'] = False
+class pyptexNameSpace:
     def __init__(self,d):
         self.__dict__.update(d)
     def __str__(self):
@@ -198,7 +199,7 @@ class myNameSpace:
     def __repr__(self):
         return repr(str(self))
     def __eq__(self, other):
-        if isinstance(self, myNameSpace) and isinstance(other, myNameSpace):
+        if isinstance(self, pyptexNameSpace) and isinstance(other, pyptexNameSpace):
            return self.__dict__ == other.__dict__
         return NotImplemented
 
@@ -245,7 +246,7 @@ def mylatex(X):
         return ''
     if isinstance(X, str):
         return X
-    if isinstance(X,myNameSpace):
+    if isinstance(X,pyptexNameSpace):
         return str(X)
     return sympy.latex(X)
 
@@ -715,7 +716,7 @@ class pyptex:
         one can then retrieve values from the `b.tex` scope, e.g. with `pyp_b.fragments[0]`.
         """
         ret = pyptex(filename, argv or self.argv, False)
-        ret2 = myNameSpace(ret.__globals__)
+        ret2 = pyptexNameSpace(ret.__globals__)
         return ret2
 #        return fr'\input{{{ret.pyptexfilename}}}'
 

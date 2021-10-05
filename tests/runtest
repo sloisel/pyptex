@@ -46,10 +46,10 @@ do
 		cp -r testgen$k testgold$k
 	fi
 #	diffcmd="diff -r testgen$k testgold$k"
-	diffcmd="diff testgen$k/test.pyptex testgold$k/test.pyptex && diff testgen$k/test.pyplog testgold$k/test.pyplog && magick compare -metric AE testgen$k/test.png testgold$k/test.png testgen$k/difference.png"
+	diffcmd="diff testgen$k/test.pyptex testgold$k/test.pyptex && diff testgen$k/test.pyplog testgold$k/test.pyplog && magick compare -metric AE -fuzz 75% testgen$k/test.png testgold$k/test.png testgen$k/difference.png"
 	echo $diffcmd
 #	if $diffcmd; then
-	if diff testgen$k/test.pyptex testgold$k/test.pyptex && diff testgen$k/test.pyplog testgold$k/test.pyplog && magick compare -metric AE testgen$k/test.png testgold$k/test.png testgen$k/difference.png >/dev/null 2>&1; then
+	if diff testgen$k/test.pyptex testgold$k/test.pyptex && diff testgen$k/test.pyplog testgold$k/test.pyplog && magick compare -metric AE -fuzz 75% testgen$k/test.png testgold$k/test.png testgen$k/difference.png >/dev/null 2>&1; then
 		passtest $name
 	else
 		failtest $name

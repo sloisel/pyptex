@@ -340,7 +340,8 @@ __pdoc__ = {
     &#39;FigureManager.show&#39;: False,
 }
 
-class myNameSpace:
+__pdoc__[&#39;pyptexNameSpace&#39;] = False
+class pyptexNameSpace:
     def __init__(self,d):
         self.__dict__.update(d)
     def __str__(self):
@@ -348,7 +349,7 @@ class myNameSpace:
     def __repr__(self):
         return repr(str(self))
     def __eq__(self, other):
-        if isinstance(self, myNameSpace) and isinstance(other, myNameSpace):
+        if isinstance(self, pyptexNameSpace) and isinstance(other, pyptexNameSpace):
            return self.__dict__ == other.__dict__
         return NotImplemented
 
@@ -395,7 +396,7 @@ def mylatex(X):
         return &#39;&#39;
     if isinstance(X, str):
         return X
-    if isinstance(X,myNameSpace):
+    if isinstance(X,pyptexNameSpace):
         return str(X)
     return sympy.latex(X)
 
@@ -865,7 +866,7 @@ class pyptex:
         one can then retrieve values from the `b.tex` scope, e.g. with `pyp_b.fragments[0]`.
         &#34;&#34;&#34;
         ret = pyptex(filename, argv or self.argv, False)
-        ret2 = myNameSpace(ret.__globals__)
+        ret2 = pyptexNameSpace(ret.__globals__)
         return ret2
 #        return fr&#39;\input{{{ret.pyptexfilename}}}&#39;
 
@@ -1006,29 +1007,6 @@ If "&ndash;pdb=yes" is in argv, automatic pdb postmortem is enabled. This is the
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="pyptex.myNameSpace"><code class="flex name class">
-<span>class <span class="ident">myNameSpace</span></span>
-<span>(</span><span>d)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class myNameSpace:
-    def __init__(self,d):
-        self.__dict__.update(d)
-    def __str__(self):
-        return fr&#39;\input{{{self.pyp.pyptexfilename}}}&#39;
-    def __repr__(self):
-        return repr(str(self))
-    def __eq__(self, other):
-        if isinstance(self, myNameSpace) and isinstance(other, myNameSpace):
-           return self.__dict__ == other.__dict__
-        return NotImplemented</code></pre>
-</details>
-</dd>
 <dt id="pyptex.pyptex"><code class="flex name class">
 <span>class <span class="ident">pyptex</span></span>
 <span>(</span><span>texfilename, argv=None, latexcommand=False)</span>
@@ -1520,7 +1498,7 @@ never used.</li>
         one can then retrieve values from the `b.tex` scope, e.g. with `pyp_b.fragments[0]`.
         &#34;&#34;&#34;
         ret = pyptex(filename, argv or self.argv, False)
-        ret2 = myNameSpace(ret.__globals__)
+        ret2 = pyptexNameSpace(ret.__globals__)
         return ret2
 #        return fr&#39;\input{{{ret.pyptexfilename}}}&#39;
 
@@ -1820,7 +1798,7 @@ one can then retrieve values from the <code>b.tex</code> scope, e.g. with <code>
     one can then retrieve values from the `b.tex` scope, e.g. with `pyp_b.fragments[0]`.
     &#34;&#34;&#34;
     ret = pyptex(filename, argv or self.argv, False)
-    ret2 = myNameSpace(ret.__globals__)
+    ret2 = pyptexNameSpace(ret.__globals__)
     return ret2</code></pre>
 </details>
 </dd>
@@ -1945,9 +1923,6 @@ to the <code>savefig</code> function from matplotlib.</p>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
-<li>
-<h4><code><a title="pyptex.myNameSpace" href="#pyptex.myNameSpace">myNameSpace</a></code></h4>
-</li>
 <li>
 <h4><code><a title="pyptex.pyptex" href="#pyptex.pyptex">pyptex</a></code></h4>
 <ul class="two-column">
