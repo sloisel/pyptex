@@ -857,13 +857,16 @@ class pyptex:
         of the `pyptex` class. This is similar to the notion of &#34;compilation units&#34; in
         the C programming language.
 
+        From `a.tex`, one can retrieve global variables of `b.tex` as follows. If
+        `foo = pyp.input(&#39;b.tex&#39;)`, and if `b.tex` defines a global variable `x`,
+        then it can be retrieved by `foo.x`. The `foo` variable is an instance of a
+        `pyptexNameSpace` that contains the global scope of `b.tex`. This type has a
+        custom string representation, so that `str(foo)` or `@{foo}` is
+        `&#39;\input{b.pyptex}&#39;`.
+
         If one wishes to pass some parameters from `a.tex` to `b.tex`, one may use
         the notation `pyp.input(&#39;b.tex&#39;, argv)`, which will initialize the global
         `pyp` object of `b.tex` so that it contains the field `pyp.argv=argv`.
-
-        If one absolutely needs to export variables from `b.tex` back to `a.tex`, one
-        should directly use the `pyptex` constructor, e.g. `pyp_b = pyptex(&#39;b.tex&#39;, argv)`;
-        one can then retrieve values from the `b.tex` scope, e.g. with `pyp_b.fragments[0]`.
         &#34;&#34;&#34;
         ret = pyptex(filename, argv or self.argv, False)
         ret2 = pyptexNameSpace(ret.__globals__)
@@ -1489,13 +1492,16 @@ never used.</li>
         of the `pyptex` class. This is similar to the notion of &#34;compilation units&#34; in
         the C programming language.
 
+        From `a.tex`, one can retrieve global variables of `b.tex` as follows. If
+        `foo = pyp.input(&#39;b.tex&#39;)`, and if `b.tex` defines a global variable `x`,
+        then it can be retrieved by `foo.x`. The `foo` variable is an instance of a
+        `pyptexNameSpace` that contains the global scope of `b.tex`. This type has a
+        custom string representation, so that `str(foo)` or `@{foo}` is
+        `&#39;\input{b.pyptex}&#39;`.
+
         If one wishes to pass some parameters from `a.tex` to `b.tex`, one may use
         the notation `pyp.input(&#39;b.tex&#39;, argv)`, which will initialize the global
         `pyp` object of `b.tex` so that it contains the field `pyp.argv=argv`.
-
-        If one absolutely needs to export variables from `b.tex` back to `a.tex`, one
-        should directly use the `pyptex` constructor, e.g. `pyp_b = pyptex(&#39;b.tex&#39;, argv)`;
-        one can then retrieve values from the `b.tex` scope, e.g. with `pyp_b.fragments[0]`.
         &#34;&#34;&#34;
         ret = pyptex(filename, argv or self.argv, False)
         ret2 = pyptexNameSpace(ret.__globals__)
@@ -1763,12 +1769,15 @@ scope. In a similar fashion, <code>b.tex</code> has its own private global scope
 The global <code>pyp</code> objects in <code>a.tex</code> and <code>b.tex</code> are also different instances
 of the <code><a title="pyptex.pyptex" href="#pyptex.pyptex">pyptex</a></code> class. This is similar to the notion of "compilation units" in
 the C programming language.</p>
+<p>From <code>a.tex</code>, one can retrieve global variables of <code>b.tex</code> as follows. If
+<code>foo = pyp.input('b.tex')</code>, and if <code>b.tex</code> defines a global variable <code>x</code>,
+then it can be retrieved by <code>foo.x</code>. The <code>foo</code> variable is an instance of a
+<code>pyptexNameSpace</code> that contains the global scope of <code>b.tex</code>. This type has a
+custom string representation, so that <code>str(foo)</code> or <code>@{foo}</code> is
+<code>'\input{b.pyptex}'</code>.</p>
 <p>If one wishes to pass some parameters from <code>a.tex</code> to <code>b.tex</code>, one may use
 the notation <code>pyp.input('b.tex', argv)</code>, which will initialize the global
-<code>pyp</code> object of <code>b.tex</code> so that it contains the field <code>pyp.argv=argv</code>.</p>
-<p>If one absolutely needs to export variables from <code>b.tex</code> back to <code>a.tex</code>, one
-should directly use the <code><a title="pyptex.pyptex" href="#pyptex.pyptex">pyptex</a></code> constructor, e.g. <code>pyp_b = pyptex('b.tex', argv)</code>;
-one can then retrieve values from the <code>b.tex</code> scope, e.g. with <code>pyp_b.fragments[0]</code>.</p></div>
+<code>pyp</code> object of <code>b.tex</code> so that it contains the field <code>pyp.argv=argv</code>.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1789,13 +1798,16 @@ one can then retrieve values from the <code>b.tex</code> scope, e.g. with <code>
     of the `pyptex` class. This is similar to the notion of &#34;compilation units&#34; in
     the C programming language.
 
+    From `a.tex`, one can retrieve global variables of `b.tex` as follows. If
+    `foo = pyp.input(&#39;b.tex&#39;)`, and if `b.tex` defines a global variable `x`,
+    then it can be retrieved by `foo.x`. The `foo` variable is an instance of a
+    `pyptexNameSpace` that contains the global scope of `b.tex`. This type has a
+    custom string representation, so that `str(foo)` or `@{foo}` is
+    `&#39;\input{b.pyptex}&#39;`.
+
     If one wishes to pass some parameters from `a.tex` to `b.tex`, one may use
     the notation `pyp.input(&#39;b.tex&#39;, argv)`, which will initialize the global
     `pyp` object of `b.tex` so that it contains the field `pyp.argv=argv`.
-
-    If one absolutely needs to export variables from `b.tex` back to `a.tex`, one
-    should directly use the `pyptex` constructor, e.g. `pyp_b = pyptex(&#39;b.tex&#39;, argv)`;
-    one can then retrieve values from the `b.tex` scope, e.g. with `pyp_b.fragments[0]`.
     &#34;&#34;&#34;
     ret = pyptex(filename, argv or self.argv, False)
     ret2 = pyptexNameSpace(ret.__globals__)
