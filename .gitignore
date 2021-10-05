@@ -16,6 +16,7 @@
 *.ppm.gz
 *.png
 *.fls
+*.fdb_latexmk
 test.tex
 testgen*
 *.egg-info
