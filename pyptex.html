@@ -74,13 +74,12 @@ The precise "includegraphics" command can be set, e.g. by
 <p>To create a plot with <code>sympy</code>, one can do:</p>
 <pre><code class="language-python">sympy.plot(sympy.S('sin(x)+cos(pi*x)'))
 </code></pre>
-<p>By default, <code>sympy</code> will immediately attempt to <code>show()</code> this plot. When it does, it ultimately calls the
-underlying <code>matplotlib</code> <code>show()</code> command, which is provided by the PypTeX backend. The PypTeX backend
-show command will in fact use the <code>save()</code> command to export the figure to an <code>.eps</code> file, and then insert
-the appropriate <code>\includegraphics{...}</code> command into your document. You can also directly use various
-<code>matplotlib</code> plotting facilities:</p>
+<p>At the end of each Python fragment <code>@{...}</code>, PypTeX saves each generated figure to a
+<code>x.eps</code> file, and these figures are then inserted via <code>includegraphics</code> into the generated
+<code>.tex</code> file. Once a figure has been auto-showed in this manner, it will not be
+auto-showed again. The auto-show behavior can be disabled by setting <code>pyp.autoshow = False</code>.
+Figures can also be displayed manually via <code>pyp.pp('{myfig})</code>.</p>
 <pre><code class="language-python">plt.plot([1,2,3],[2,1,4])
-plt.show()
 </code></pre>
 <h1 id="template-preprocessing-vs-embedding">Template preprocessing vs embedding</h1>
 <p>PypTeX is a template preprocessor for LaTeX based on the Python language. When Python
@@ -105,7 +104,7 @@ as a first-class citizen and everything should work as normal. Please let us kno
 debugging task somehow fails for you.
 3. Performance. Substituting using regular expressions is faster than running the
 LaTeX processor.</p>
-<h1 id="pretty-printing-template-strings-from-python-with-pp">Pretty-printing template strings from Python with <code><a title="pyptex.pp" href="#pyptex.pp">pp()</a></code></h1>
+<h1 id="pretty-printing-template-strings-from-python-with-pp">Pretty-printing template strings from Python with <code>pp</code></h1>
 <p>The function <code>pp(X)</code> pretty-prints the template string <code>X</code> with substitutions
 from the local scope of the caller. This is useful for medium length LaTeX fragments
 containing a few Python substitutions:</p>
@@ -212,15 +211,14 @@ To create a plot with `sympy`, one can do:
 ```python
 sympy.plot(sympy.S(&#39;sin(x)+cos(pi*x)&#39;))
 ```
-By default, `sympy` will immediately attempt to `show()` this plot. When it does, it ultimately calls the
-underlying `matplotlib` `show()` command, which is provided by the PypTeX backend. The PypTeX backend
-show command will in fact use the `save()` command to export the figure to an `.eps` file, and then insert
-the appropriate `\includegraphics{...}` command into your document. You can also directly use various
-`matplotlib` plotting facilities:
+At the end of each Python fragment `@{...}`, PypTeX saves each generated figure to a
+`x.eps` file, and these figures are then inserted via `includegraphics` into the generated
+`.tex` file. Once a figure has been auto-showed in this manner, it will not be
+auto-showed again. The auto-show behavior can be disabled by setting `pyp.autoshow = False`.
+Figures can also be displayed manually via `pyp.pp(&#39;{myfig})`.
 
 ```python
 plt.plot([1,2,3],[2,1,4])
-plt.show()
 ```
 
 # Template preprocessing vs embedding
@@ -321,14 +319,9 @@ import sympy
 import types
 import matplotlib
 import matplotlib.pyplot
+from pathlib import Path
 from matplotlib.backend_bases import Gcf, FigureManagerBase
 from matplotlib.backends.backend_ps import FigureCanvasPS
-
-FigureCanvas = FigureCanvasPS
-class FigureManager(FigureManagerBase):
-    def show(self):
-        self.canvas.figure.savefig(_getfigname[-1]())
-_getfigname = []
 
 __pdoc__ = {
     &#39;pyptex.compile&#39;: False,
@@ -353,20 +346,21 @@ class pyptexNameSpace:
            return self.__dict__ == other.__dict__
         return NotImplemented
 
+######################################################################
+# The stuff below makes pyptex into a matplotlib backend
+FigureCanvas = FigureCanvasPS
+
+class FigureManager(FigureManagerBase):
+    def show(self, **kwargs):
+        pass
+
 __pdoc__[&#39;show&#39;] = False
 def show(*args, **kwargs):
-    global _getfigname
-    if(&#39;__SETUP__&#39; in kwargs):
-        foo = kwargs[&#39;__SETUP__&#39;]
-        if foo is None:
-            _getfigname.pop()
-        else:
-            _getfigname.append(foo)
-        return
-    for num, figmanager in enumerate(Gcf.get_all_fig_managers()):
-        figmanager.canvas.figure.savefig(_getfigname[-1]())
-    matplotlib.pyplot.close()
+    pass
+# end of matplotlib backend
+######################################################################
 
+ppparser = re.compile(r&#34;@([a-zA-Z_][a-zA-Z0-9_]*)|@{([^{}}]*)}&#34;,re.DOTALL)
 pypparser = re.compile(r&#39;((?&lt;!\\)%[^\n]*\n)|(@@)|(@(\[([a-zA-Z]*)\])?{([^{}]+)}|@(\[([a-zA-Z]*)\])?{{{(.*?)}}})&#39;, re.DOTALL)
 bibentryname = re.compile(r&#39;[^{]*{([^,]*),&#39;, re.DOTALL)
 stripext = re.compile(r&#39;(.*?)(\.(pyp\.)?[^\.]*)?$&#39;, re.DOTALL)
@@ -388,50 +382,6 @@ def dictdiff(A, B):
     if len(D) == 0:
         return None
     return next(iter(D))
-
-
-__pdoc__[&#39;mylatex&#39;] = False
-def mylatex(X):
-    if X is None:
-        return &#39;&#39;
-    if isinstance(X, str):
-        return X
-    if isinstance(X,pyptexNameSpace):
-        return str(X)
-    return sympy.latex(X)
-
-
-__pdoc__[&#39;latextemplate&#39;] = False
-class latextemplate(string.Template):
-    delimiter = &#39;@&#39;
-
-
-__pdoc__[&#39;LatexDict&#39;] = False
-class LatexDict:
-    def __init__(self, glob, loc):
-        self.loc = loc
-        self.glob = glob
-
-    def __getitem__(self, key):
-        return mylatex(self.loc[key] if key in self.loc else self.glob[key])
-
-
-def pp(Z, levels: int = 1):
-    r&#34;&#34;&#34;Pretty-prints the template text string `Z`, using substitutions from the local
-    scope that is `levels` calls up on the stack. The template character is @.
-
-    For example, assume the caller has the value `x=3` in its local variables. Then,
-    `pp(&#34;$x=@x$&#34;)` produces `$x=3$`.
-    &#34;&#34;&#34;
-    foo = inspect.currentframe()
-    while levels &gt; 0:
-        foo = foo.f_back
-        levels -= 1
-    foo = LatexDict(foo.f_globals, foo.f_locals)
-    D = latextemplate(Z)
-    txt = D.substitute(foo)
-    return txt
-
 
 class pyptex:
     r&#34;&#34;&#34;Class `pyptex.pyptex` is used to parse an input (templated) `a.tex` file
@@ -462,31 +412,25 @@ class pyptex:
         self.gencount += 1
         return f&#39;{self.gendir}/{pattern.format(**self.__dict__)}&#39;
 
-    def savefig(self, fig, pattern: str = &#39;fig{gencount}.eps&#39;, **kwargs):
-        &#34;&#34;&#34;Save a figure to the a-generated/* subdirectory.
-
-        If `pyp` is an object of type `pyptex`:
-        `pyp.savefig(fig)` saves a SymPy or matplotlib figure to the `a-generated/*`
-        subdirectory, using the `pyptex.genname()` automatically generated filename.
-        `pyp.savefig(fig, pattern)` further specifies the filename pattern of the
-        generated name, see `genname()`.
-        `pyp.savefig(fig, pattern, ...)` passes any further keyword arguments directly
-        to the `savefig` function from matplotlib.
-
-        A typical way of using this from a TeX file is:
-        `\\includegraphics{@{pyp.savefig(...)}}`
-        &#34;&#34;&#34;
-        if self.__sympy_plot__ is None:
-            self.__sympy_plot__ = sympy.plotting.plot(1, show=False).__class__
-        figname = self.genname(pattern)
-        if fig.__class__ == self.__sympy_plot__:
-            backend = fig.backend(fig)
-            backend.process_series()
-            backend.fig.savefig(figname, **kwargs)
+    def __setupfig__(self, fig):
+        if(hasattr(fig,&#39;__FIGNAME__&#39;)):
+            pass
         else:
-            fig.savefig(figname, **kwargs)
-        self.dep(figname)
-        return figname
+            figname = self.genname()
+            Path(figname).touch()
+            self.dep(figname)
+            fig.__FIGNAME__ = figname
+            fig.__IG__ = (self.includegraphics%figname)
+            fig.drawn = False
+        return fig.__IG__
+    def showall(self):
+        for num, figmanager in enumerate(Gcf.get_all_fig_managers()):
+            fig = figmanager.canvas.figure
+            self.__setupfig__(fig)
+            if fig.drawn:
+                pass
+            else:
+                self.print(fig)
 
     def generateddir(self):
         &#34;&#34;&#34;This is an internal function that creates the generated directory.&#34;&#34;&#34;
@@ -590,42 +534,57 @@ class pyptex:
         * `pyp.fragments` is the list of Python fragments extracted from a.tex.
         * `pyp.outputs` is the matching outputs.
         * `pyp.compiled` is the string that is written to `a.pyptex`.
+        * `pyp.autoshow` if True, each figure `fig` is automatically displayed (by `pyp.print`ing
+        a suitable `includegraphics` command) at the end of each Python block. When a `fig` is thus
+        displayed, `fig.drawn` is set to `True`. Figures that have already been `drawn` are not
+        automatically displayed at the end of the Python block.
         &#34;&#34;&#34;
-        global _getfigname
         print(f&#39;{texfilename}: pyptex compilation begins&#39;)
-#        self.__globals__ = {&#39;__builtins__&#39;: __builtins__, &#39;pyp&#39;: weakref.proxy(self) }
+        self.__sympy_plot__ = sympy.plotting.plot(1, show=False).__class__
         self.__globals__ = {&#39;__builtins__&#39;: __builtins__, &#39;pyp&#39;: self }
         self.__frozen__ = self.__globals__.copy()
         self.filename = stripext.sub(lambda m: m.group(1),texfilename)
         self.texfilename = texfilename
-        self.plotted = False
         matplotlib.use(&#34;module://pyptex&#34;)
-        def _genname():
-            figname = self.genname()
-            self.plotted = True
-            self.print(self.includegraphics+&#39;{&#39;+figname+&#39;}&#39;)
-            return figname
-        matplotlib.pyplot.show(__SETUP__=_genname)
         foo = self.filename+&#39;.tex&#39;
         self.pyptexfilename = foo if foo!=texfilename else f&#39;{self.filename}.pyptex&#39;
         self.cachefilename = f&#39;{self.filename}.pickle&#39;
         self.bibfilename = f&#39;{self.filename}.bib&#39;
         self.auxfilename = f&#39;{self.filename}.aux&#39;
-        self.includegraphics = r&#39;\includegraphics[width=\textwidth]&#39;
+        self.includegraphics = r&#39;\includegraphics[width=\textwidth]{%s}&#39;
         self.latex = &#39;pdflatex --file-line-error --synctex=1&#39;
         self.latexcommand = latexcommand
         self.disable_cache = False
+        self.autoshow = True
+        self.__show__ = matplotlib.pyplot.show
         self.deps = {}
         self.bibs = []
         self.lc = 0
         self.argv = [] if argv is None else argv
-        self.__sympy_plot__ = None
         self.exitcode = 0
         self.generateddir()
         self.dep(__file__)
         self.compile()
-        matplotlib.pyplot.show(__SETUP__=None)
         print(f&#39;{texfilename}: pyptex compilation ends&#39;)
+    def pp(self, Z, levels: int = 1):
+        r&#34;&#34;&#34;Pretty-prints the template text string `Z`, using substitutions from the local
+        scope that is `levels` calls up on the stack. The template character is @.
+
+        For example, assume the caller has the value `x=3` in its local variables. Then,
+        `pp(&#34;$x=@x$&#34;)` produces `$x=3$`.
+        &#34;&#34;&#34;
+        global ppparser
+        foo = inspect.currentframe()
+        while levels &gt; 0:
+            foo = foo.f_back
+            levels -= 1
+        def do_work(m):
+            for k in [1,2]:
+                if m.start(k) &gt;= 0:
+                    return self.mylatex(eval(m.group(k), foo.f_globals, foo.f_locals))
+            raise Exception(&#34;Tragic regular expression committed seppuku&#34;)
+
+        return ppparser.sub(do_work, Z)
 
     def run(self, S, k):
         &#34;&#34;&#34;An internal function for executing Python code.&#34;&#34;&#34;
@@ -633,21 +592,22 @@ class pyptex:
         S = &#39;\n&#39;*k + S
         glob_ = self.__globals__
         doeval = False
-        self.accum = []
+        self.__accum__ = []
         with suppress(Exception):
             C = compile(S, self.texfilename, mode=&#39;eval&#39;)
             doeval = True
-        self.plotted = False
         if doeval:
             ret = eval(C, glob_)
-            if(self.plotted):
-                ret = &#39;&#39;
-            self.accum.append(ret)
+            self.__accum__.append(ret)
+            if(self.autoshow):
+                self.showall()
         else:
             C = compile(S, self.texfilename, mode=&#39;exec&#39;)
             exec(C, glob_)
-        print(f&#39;Python result:\n{self.accum!s}&#39;)
-        return self.accum
+            if(self.autoshow):
+                self.showall()
+        print(f&#39;Python result:\n{self.__accum__!s}&#39;)
+        return self.__accum__
 
     def print(self, *argv):
         &#34;&#34;&#34;If `pyp` is an object of type `pyptex`, `pyp.print(X)` causes `X` to be converted
@@ -656,7 +616,7 @@ class pyptex:
         to the empty string.
 
         Many values can be printed at once with the notation `pyp.print(X, Y, ...)`.&#34;&#34;&#34;
-        self.accum.extend(argv)
+        self.__accum__.extend(argv)
 
     def cite(self,b):
         r&#34;&#34;&#34;If `pyp` is an object of type `pyptex`, then `pyp.cite(X)` adds the relevant
@@ -688,6 +648,22 @@ class pyptex:
             return runner(z, ln[z0], o)
 
         return pypparser.sub(do_work, S)
+
+    __pdoc__[&#39;mylatex&#39;] = False
+    def mylatex(self, X):
+        if X is None:
+            return &#39;&#39;
+        if isinstance(X, str):
+            return X
+        if isinstance(X,pyptexNameSpace):
+            return str(X)
+        if isinstance(X,matplotlib.pyplot.Figure):
+            self.__setupfig__(X)
+            X.drawn = True
+            return X.__IG__
+        if isinstance(X,self.__sympy_plot__):
+            return &#34;&#34;
+        return sympy.latex(X)
 
     def compile(self):
         &#34;&#34;&#34;An internal function for compiling the input file.&#34;&#34;&#34;
@@ -766,7 +742,7 @@ class pyptex:
 
             def appender(C, k, o):
                 result = self.run(C, k)
-                self.outputs.append(&#39;&#39;.join(map(mylatex, result)))
+                self.outputs.append(&#39;&#39;.join(map(self.mylatex, result)))
                 if(o==&#39;&#39;):
                     return self.outputs[-1]
                 if(o==&#39;verbatim&#39;):
@@ -871,7 +847,6 @@ class pyptex:
         ret = pyptex(filename, argv or self.argv, False)
         ret2 = pyptexNameSpace(ret.__globals__)
         return ret2
-#        return fr&#39;\input{{{ret.pyptexfilename}}}&#39;
 
     def open(self, filename, *argv, **kwargs):
         &#34;&#34;&#34;If pyp = pyptex(&#39;a.tex&#39;) then pyp.open(filename, ...) is a wrapper for
@@ -925,35 +900,6 @@ def pyptexmain(argv: list = None):
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="pyptex.pp"><code class="name flex">
-<span>def <span class="ident">pp</span></span>(<span>Z, levels: int = 1)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Pretty-prints the template text string <code>Z</code>, using substitutions from the local
-scope that is <code>levels</code> calls up on the stack. The template character is @.</p>
-<p>For example, assume the caller has the value <code>x=3</code> in its local variables. Then,
-<code>pp("$x=@x$")</code> produces <code>$x=3$</code>.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def pp(Z, levels: int = 1):
-    r&#34;&#34;&#34;Pretty-prints the template text string `Z`, using substitutions from the local
-    scope that is `levels` calls up on the stack. The template character is @.
-
-    For example, assume the caller has the value `x=3` in its local variables. Then,
-    `pp(&#34;$x=@x$&#34;)` produces `$x=3$`.
-    &#34;&#34;&#34;
-    foo = inspect.currentframe()
-    while levels &gt; 0:
-        foo = foo.f_back
-        levels -= 1
-    foo = LatexDict(foo.f_globals, foo.f_locals)
-    D = latextemplate(Z)
-    txt = D.substitute(foo)
-    return txt</code></pre>
-</details>
-</dd>
 <dt id="pyptex.pyptexmain"><code class="name flex">
 <span>def <span class="ident">pyptexmain</span></span>(<span>argv: list = None)</span>
 </code></dt>
@@ -1063,6 +1009,10 @@ never used.</li>
 <li><code>pyp.fragments</code> is the list of Python fragments extracted from a.tex.</li>
 <li><code>pyp.outputs</code> is the matching outputs.</li>
 <li><code>pyp.compiled</code> is the string that is written to <code>a.pyptex</code>.</li>
+<li><code>pyp.autoshow</code> if True, each figure <code>fig</code> is automatically displayed (by <code>pyp.print</code>ing
+a suitable <code>includegraphics</code> command) at the end of each Python block. When a <code>fig</code> is thus
+displayed, <code>fig.drawn</code> is set to <code>True</code>. Figures that have already been <code>drawn</code> are not
+automatically displayed at the end of the Python block.</li>
 </ul></div>
 <details class="source">
 <summary>
@@ -1097,31 +1047,25 @@ never used.</li>
         self.gencount += 1
         return f&#39;{self.gendir}/{pattern.format(**self.__dict__)}&#39;
 
-    def savefig(self, fig, pattern: str = &#39;fig{gencount}.eps&#39;, **kwargs):
-        &#34;&#34;&#34;Save a figure to the a-generated/* subdirectory.
-
-        If `pyp` is an object of type `pyptex`:
-        `pyp.savefig(fig)` saves a SymPy or matplotlib figure to the `a-generated/*`
-        subdirectory, using the `pyptex.genname()` automatically generated filename.
-        `pyp.savefig(fig, pattern)` further specifies the filename pattern of the
-        generated name, see `genname()`.
-        `pyp.savefig(fig, pattern, ...)` passes any further keyword arguments directly
-        to the `savefig` function from matplotlib.
-
-        A typical way of using this from a TeX file is:
-        `\\includegraphics{@{pyp.savefig(...)}}`
-        &#34;&#34;&#34;
-        if self.__sympy_plot__ is None:
-            self.__sympy_plot__ = sympy.plotting.plot(1, show=False).__class__
-        figname = self.genname(pattern)
-        if fig.__class__ == self.__sympy_plot__:
-            backend = fig.backend(fig)
-            backend.process_series()
-            backend.fig.savefig(figname, **kwargs)
+    def __setupfig__(self, fig):
+        if(hasattr(fig,&#39;__FIGNAME__&#39;)):
+            pass
         else:
-            fig.savefig(figname, **kwargs)
-        self.dep(figname)
-        return figname
+            figname = self.genname()
+            Path(figname).touch()
+            self.dep(figname)
+            fig.__FIGNAME__ = figname
+            fig.__IG__ = (self.includegraphics%figname)
+            fig.drawn = False
+        return fig.__IG__
+    def showall(self):
+        for num, figmanager in enumerate(Gcf.get_all_fig_managers()):
+            fig = figmanager.canvas.figure
+            self.__setupfig__(fig)
+            if fig.drawn:
+                pass
+            else:
+                self.print(fig)
 
     def generateddir(self):
         &#34;&#34;&#34;This is an internal function that creates the generated directory.&#34;&#34;&#34;
@@ -1225,42 +1169,57 @@ never used.</li>
         * `pyp.fragments` is the list of Python fragments extracted from a.tex.
         * `pyp.outputs` is the matching outputs.
         * `pyp.compiled` is the string that is written to `a.pyptex`.
+        * `pyp.autoshow` if True, each figure `fig` is automatically displayed (by `pyp.print`ing
+        a suitable `includegraphics` command) at the end of each Python block. When a `fig` is thus
+        displayed, `fig.drawn` is set to `True`. Figures that have already been `drawn` are not
+        automatically displayed at the end of the Python block.
         &#34;&#34;&#34;
-        global _getfigname
         print(f&#39;{texfilename}: pyptex compilation begins&#39;)
-#        self.__globals__ = {&#39;__builtins__&#39;: __builtins__, &#39;pyp&#39;: weakref.proxy(self) }
+        self.__sympy_plot__ = sympy.plotting.plot(1, show=False).__class__
         self.__globals__ = {&#39;__builtins__&#39;: __builtins__, &#39;pyp&#39;: self }
         self.__frozen__ = self.__globals__.copy()
         self.filename = stripext.sub(lambda m: m.group(1),texfilename)
         self.texfilename = texfilename
-        self.plotted = False
         matplotlib.use(&#34;module://pyptex&#34;)
-        def _genname():
-            figname = self.genname()
-            self.plotted = True
-            self.print(self.includegraphics+&#39;{&#39;+figname+&#39;}&#39;)
-            return figname
-        matplotlib.pyplot.show(__SETUP__=_genname)
         foo = self.filename+&#39;.tex&#39;
         self.pyptexfilename = foo if foo!=texfilename else f&#39;{self.filename}.pyptex&#39;
         self.cachefilename = f&#39;{self.filename}.pickle&#39;
         self.bibfilename = f&#39;{self.filename}.bib&#39;
         self.auxfilename = f&#39;{self.filename}.aux&#39;
-        self.includegraphics = r&#39;\includegraphics[width=\textwidth]&#39;
+        self.includegraphics = r&#39;\includegraphics[width=\textwidth]{%s}&#39;
         self.latex = &#39;pdflatex --file-line-error --synctex=1&#39;
         self.latexcommand = latexcommand
         self.disable_cache = False
+        self.autoshow = True
+        self.__show__ = matplotlib.pyplot.show
         self.deps = {}
         self.bibs = []
         self.lc = 0
         self.argv = [] if argv is None else argv
-        self.__sympy_plot__ = None
         self.exitcode = 0
         self.generateddir()
         self.dep(__file__)
         self.compile()
-        matplotlib.pyplot.show(__SETUP__=None)
         print(f&#39;{texfilename}: pyptex compilation ends&#39;)
+    def pp(self, Z, levels: int = 1):
+        r&#34;&#34;&#34;Pretty-prints the template text string `Z`, using substitutions from the local
+        scope that is `levels` calls up on the stack. The template character is @.
+
+        For example, assume the caller has the value `x=3` in its local variables. Then,
+        `pp(&#34;$x=@x$&#34;)` produces `$x=3$`.
+        &#34;&#34;&#34;
+        global ppparser
+        foo = inspect.currentframe()
+        while levels &gt; 0:
+            foo = foo.f_back
+            levels -= 1
+        def do_work(m):
+            for k in [1,2]:
+                if m.start(k) &gt;= 0:
+                    return self.mylatex(eval(m.group(k), foo.f_globals, foo.f_locals))
+            raise Exception(&#34;Tragic regular expression committed seppuku&#34;)
+
+        return ppparser.sub(do_work, Z)
 
     def run(self, S, k):
         &#34;&#34;&#34;An internal function for executing Python code.&#34;&#34;&#34;
@@ -1268,21 +1227,22 @@ never used.</li>
         S = &#39;\n&#39;*k + S
         glob_ = self.__globals__
         doeval = False
-        self.accum = []
+        self.__accum__ = []
         with suppress(Exception):
             C = compile(S, self.texfilename, mode=&#39;eval&#39;)
             doeval = True
-        self.plotted = False
         if doeval:
             ret = eval(C, glob_)
-            if(self.plotted):
-                ret = &#39;&#39;
-            self.accum.append(ret)
+            self.__accum__.append(ret)
+            if(self.autoshow):
+                self.showall()
         else:
             C = compile(S, self.texfilename, mode=&#39;exec&#39;)
             exec(C, glob_)
-        print(f&#39;Python result:\n{self.accum!s}&#39;)
-        return self.accum
+            if(self.autoshow):
+                self.showall()
+        print(f&#39;Python result:\n{self.__accum__!s}&#39;)
+        return self.__accum__
 
     def print(self, *argv):
         &#34;&#34;&#34;If `pyp` is an object of type `pyptex`, `pyp.print(X)` causes `X` to be converted
@@ -1291,7 +1251,7 @@ never used.</li>
         to the empty string.
 
         Many values can be printed at once with the notation `pyp.print(X, Y, ...)`.&#34;&#34;&#34;
-        self.accum.extend(argv)
+        self.__accum__.extend(argv)
 
     def cite(self,b):
         r&#34;&#34;&#34;If `pyp` is an object of type `pyptex`, then `pyp.cite(X)` adds the relevant
@@ -1323,6 +1283,22 @@ never used.</li>
             return runner(z, ln[z0], o)
 
         return pypparser.sub(do_work, S)
+
+    __pdoc__[&#39;mylatex&#39;] = False
+    def mylatex(self, X):
+        if X is None:
+            return &#39;&#39;
+        if isinstance(X, str):
+            return X
+        if isinstance(X,pyptexNameSpace):
+            return str(X)
+        if isinstance(X,matplotlib.pyplot.Figure):
+            self.__setupfig__(X)
+            X.drawn = True
+            return X.__IG__
+        if isinstance(X,self.__sympy_plot__):
+            return &#34;&#34;
+        return sympy.latex(X)
 
     def compile(self):
         &#34;&#34;&#34;An internal function for compiling the input file.&#34;&#34;&#34;
@@ -1401,7 +1377,7 @@ never used.</li>
 
             def appender(C, k, o):
                 result = self.run(C, k)
-                self.outputs.append(&#39;&#39;.join(map(mylatex, result)))
+                self.outputs.append(&#39;&#39;.join(map(self.mylatex, result)))
                 if(o==&#39;&#39;):
                     return self.outputs[-1]
                 if(o==&#39;verbatim&#39;):
@@ -1506,7 +1482,6 @@ never used.</li>
         ret = pyptex(filename, argv or self.argv, False)
         ret2 = pyptexNameSpace(ret.__globals__)
         return ret2
-#        return fr&#39;\input{{{ret.pyptexfilename}}}&#39;
 
     def open(self, filename, *argv, **kwargs):
         &#34;&#34;&#34;If pyp = pyptex(&#39;a.tex&#39;) then pyp.open(filename, ...) is a wrapper for
@@ -1814,6 +1789,31 @@ the notation <code>pyp.input('b.tex', argv)</code>, which will initialize the gl
     return ret2</code></pre>
 </details>
 </dd>
+<dt id="pyptex.pyptex.mylatex"><code class="name flex">
+<span>def <span class="ident">mylatex</span></span>(<span>self, X)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def mylatex(self, X):
+    if X is None:
+        return &#39;&#39;
+    if isinstance(X, str):
+        return X
+    if isinstance(X,pyptexNameSpace):
+        return str(X)
+    if isinstance(X,matplotlib.pyplot.Figure):
+        self.__setupfig__(X)
+        X.drawn = True
+        return X.__IG__
+    if isinstance(X,self.__sympy_plot__):
+        return &#34;&#34;
+    return sympy.latex(X)</code></pre>
+</details>
+</dd>
 <dt id="pyptex.pyptex.open"><code class="name flex">
 <span>def <span class="ident">open</span></span>(<span>self, filename, *argv, **kwargs)</span>
 </code></dt>
@@ -1832,6 +1832,39 @@ the list of dependencies via pyp.dep(filename).</p></div>
     &#34;&#34;&#34;
     self.dep(filename)
     return open(filename, *argv, **kwargs)</code></pre>
+</details>
+</dd>
+<dt id="pyptex.pyptex.pp"><code class="name flex">
+<span>def <span class="ident">pp</span></span>(<span>self, Z, levels: int = 1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Pretty-prints the template text string <code>Z</code>, using substitutions from the local
+scope that is <code>levels</code> calls up on the stack. The template character is @.</p>
+<p>For example, assume the caller has the value <code>x=3</code> in its local variables. Then,
+<code>pp("$x=@x$")</code> produces <code>$x=3$</code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def pp(self, Z, levels: int = 1):
+    r&#34;&#34;&#34;Pretty-prints the template text string `Z`, using substitutions from the local
+    scope that is `levels` calls up on the stack. The template character is @.
+
+    For example, assume the caller has the value `x=3` in its local variables. Then,
+    `pp(&#34;$x=@x$&#34;)` produces `$x=3$`.
+    &#34;&#34;&#34;
+    global ppparser
+    foo = inspect.currentframe()
+    while levels &gt; 0:
+        foo = foo.f_back
+        levels -= 1
+    def do_work(m):
+        for k in [1,2]:
+            if m.start(k) &gt;= 0:
+                return self.mylatex(eval(m.group(k), foo.f_globals, foo.f_locals))
+        raise Exception(&#34;Tragic regular expression committed seppuku&#34;)
+
+    return ppparser.sub(do_work, Z)</code></pre>
 </details>
 </dd>
 <dt id="pyptex.pyptex.print"><code class="name flex">
@@ -1854,52 +1887,26 @@ to the empty string.</p>
     to the empty string.
 
     Many values can be printed at once with the notation `pyp.print(X, Y, ...)`.&#34;&#34;&#34;
-    self.accum.extend(argv)</code></pre>
+    self.__accum__.extend(argv)</code></pre>
 </details>
 </dd>
-<dt id="pyptex.pyptex.savefig"><code class="name flex">
-<span>def <span class="ident">savefig</span></span>(<span>self, fig, pattern: str = 'fig{gencount}.eps', **kwargs)</span>
+<dt id="pyptex.pyptex.showall"><code class="name flex">
+<span>def <span class="ident">showall</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Save a figure to the a-generated/* subdirectory.</p>
-<p>If <code>pyp</code> is an object of type <code><a title="pyptex.pyptex" href="#pyptex.pyptex">pyptex</a></code>:
-<code>pyp.savefig(fig)</code> saves a SymPy or matplotlib figure to the <code>a-generated/*</code>
-subdirectory, using the <code><a title="pyptex.pyptex.genname" href="#pyptex.pyptex.genname">pyptex.genname()</a></code> automatically generated filename.
-<code>pyp.savefig(fig, pattern)</code> further specifies the filename pattern of the
-generated name, see <code>genname()</code>.
-<code>pyp.savefig(fig, pattern, &hellip;)</code> passes any further keyword arguments directly
-to the <code>savefig</code> function from matplotlib.</p>
-<p>A typical way of using this from a TeX file is:
-<code>\includegraphics{@{pyp.savefig(...)}}</code></p></div>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def savefig(self, fig, pattern: str = &#39;fig{gencount}.eps&#39;, **kwargs):
-    &#34;&#34;&#34;Save a figure to the a-generated/* subdirectory.
-
-    If `pyp` is an object of type `pyptex`:
-    `pyp.savefig(fig)` saves a SymPy or matplotlib figure to the `a-generated/*`
-    subdirectory, using the `pyptex.genname()` automatically generated filename.
-    `pyp.savefig(fig, pattern)` further specifies the filename pattern of the
-    generated name, see `genname()`.
-    `pyp.savefig(fig, pattern, ...)` passes any further keyword arguments directly
-    to the `savefig` function from matplotlib.
-
-    A typical way of using this from a TeX file is:
-    `\\includegraphics{@{pyp.savefig(...)}}`
-    &#34;&#34;&#34;
-    if self.__sympy_plot__ is None:
-        self.__sympy_plot__ = sympy.plotting.plot(1, show=False).__class__
-    figname = self.genname(pattern)
-    if fig.__class__ == self.__sympy_plot__:
-        backend = fig.backend(fig)
-        backend.process_series()
-        backend.fig.savefig(figname, **kwargs)
-    else:
-        fig.savefig(figname, **kwargs)
-    self.dep(figname)
-    return figname</code></pre>
+<pre><code class="python">def showall(self):
+    for num, figmanager in enumerate(Gcf.get_all_fig_managers()):
+        fig = figmanager.canvas.figure
+        self.__setupfig__(fig)
+        if fig.drawn:
+            pass
+        else:
+            self.print(fig)</code></pre>
 </details>
 </dd>
 </dl>
@@ -1929,7 +1936,6 @@ to the <code>savefig</code> function from matplotlib.</p>
 <ul id="index">
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="pyptex.pp" href="#pyptex.pp">pp</a></code></li>
 <li><code><a title="pyptex.pyptexmain" href="#pyptex.pyptexmain">pyptexmain</a></code></li>
 </ul>
 </li>
@@ -1945,9 +1951,11 @@ to the <code>savefig</code> function from matplotlib.</p>
 <li><code><a title="pyptex.pyptex.freeze" href="#pyptex.pyptex.freeze">freeze</a></code></li>
 <li><code><a title="pyptex.pyptex.genname" href="#pyptex.pyptex.genname">genname</a></code></li>
 <li><code><a title="pyptex.pyptex.input" href="#pyptex.pyptex.input">input</a></code></li>
+<li><code><a title="pyptex.pyptex.mylatex" href="#pyptex.pyptex.mylatex">mylatex</a></code></li>
 <li><code><a title="pyptex.pyptex.open" href="#pyptex.pyptex.open">open</a></code></li>
+<li><code><a title="pyptex.pyptex.pp" href="#pyptex.pyptex.pp">pp</a></code></li>
 <li><code><a title="pyptex.pyptex.print" href="#pyptex.pyptex.print">print</a></code></li>
-<li><code><a title="pyptex.pyptex.savefig" href="#pyptex.pyptex.savefig">savefig</a></code></li>
+<li><code><a title="pyptex.pyptex.showall" href="#pyptex.pyptex.showall">showall</a></code></li>
 </ul>
 </li>
 </ul>

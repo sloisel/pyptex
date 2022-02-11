@@ -14,7 +14,7 @@
 To compute the matrix inverse, we can perform ``complete Gaussian elimination'' on the augmented matrix $[A|I]$, where $I$ is an identity.
 @{{{
 from sympy import *
-from pyptex import pp
+pp = pyp.pp
 
 def GEinv(A):
     n = A.shape[0]

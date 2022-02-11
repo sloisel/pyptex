@@ -55,13 +55,13 @@ Cache is invalidated.
 Executing Python code:
 
 from sympy import *
-plot(S('sin(x)+cos(pi*x)'),show=False).save('fun.eps')
+plot(S('sin(x)+cos(pi*x)'))
 
 Python result:
-[]
+[<Figure size 460.8x345.6 with 1 Axes>]
 Saving to file: plot1.pyptex
 Dependencies are:
-{'.../__init__.py': '(datetime)'}
+{'.../__init__.py': '(datetime)', 'plot1-generated/fig1.eps': '(datetime)'}
 Saving cache file plot1.pickle
 plot1.tex: pyptex compilation ends
 Python result:
@@ -69,23 +69,16 @@ Python result:
 Executing Python code:
 pyp.input('plot2.tex')
 plot2.tex: pyptex compilation begins
-Found 5 lines of Python.
+Found 4 lines of Python.
 disable_cache=True
 Cache is invalidated.
 Executing Python code:
 
 from sympy import *
-pyp.print(pyp.savefig(plotting.plot3d(S('x*y'),show=false),
-            bbox_inches='tight'))
+plotting.plot3d(S('x*y'))
 
-The PostScript backend does not support transparency; partially transparent artists will be rendered opaque.
-The PostScript backend does not support transparency; partially transparent artists will be rendered opaque.
-The PostScript backend does not support transparency; partially transparent artists will be rendered opaque.
-The PostScript backend does not support transparency; partially transparent artists will be rendered opaque.
-The PostScript backend does not support transparency; partially transparent artists will be rendered opaque.
-The PostScript backend does not support transparency; partially transparent artists will be rendered opaque.
 Python result:
-['plot2-generated/fig1.eps']
+[<Figure size 460.8x345.6 with 1 Axes>]
 Saving to file: plot2.pyptex
 Dependencies are:
 {'.../__init__.py': '(datetime)', 'plot2-generated/fig1.eps': '(datetime)'}

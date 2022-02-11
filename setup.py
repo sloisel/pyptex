@@ -1,5 +1,5 @@
 from setuptools import setup, find_packages
-from distutils.command.build_scripts import build_scripts
+#from distutils.command.build_scripts import build_scripts
 from pathlib import Path
 import sys,os
 from contextlib import suppress

@@ -5,10 +5,10 @@
 \usepackage{graphicx}
 \usepackage{verbatim}
 
-@{
+@{{{
 from sympy import *
-pyp.includegraphics=r"\includegraphics[width=0.9\textwidth]"
- }
+pyp.includegraphics=r"\includegraphics[width=0.9\textwidth]{%s}"
+}}}
 
 \begin{document}
 Here's a 2d sympy plot:
