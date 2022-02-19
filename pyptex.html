@@ -413,14 +413,14 @@ class pyptex:
         return f&#39;{self.gendir}/{pattern.format(**self.__dict__)}&#39;
 
     def __setupfig__(self, fig):
-        if(hasattr(fig,&#39;__FIGNAME__&#39;)):
-            pass
-        else:
+        if not hasattr(fig,&#39;__FIGNAME__&#39;):
             figname = self.genname()
             Path(figname).touch()
             self.dep(figname)
             fig.__FIGNAME__ = figname
+        if not hasattr(fig,&#39;__IG__&#39;):
             fig.__IG__ = (self.includegraphics%figname)
+        if not hasattr(fig,&#39;drawn&#39;):
             fig.drawn = False
         return fig.__IG__
     def showall(self):
@@ -1048,14 +1048,14 @@ automatically displayed at the end of the Python block.</li>
         return f&#39;{self.gendir}/{pattern.format(**self.__dict__)}&#39;
 
     def __setupfig__(self, fig):
-        if(hasattr(fig,&#39;__FIGNAME__&#39;)):
-            pass
-        else:
+        if not hasattr(fig,&#39;__FIGNAME__&#39;):
             figname = self.genname()
             Path(figname).touch()
             self.dep(figname)
             fig.__FIGNAME__ = figname
+        if not hasattr(fig,&#39;__IG__&#39;):
             fig.__IG__ = (self.includegraphics%figname)
+        if not hasattr(fig,&#39;drawn&#39;):
             fig.drawn = False
         return fig.__IG__
     def showall(self):

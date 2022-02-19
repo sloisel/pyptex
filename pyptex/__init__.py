@@ -264,14 +264,14 @@ class pyptex:
         return f'{self.gendir}/{pattern.format(**self.__dict__)}'
 
     def __setupfig__(self, fig):
-        if(hasattr(fig,'__FIGNAME__')):
-            pass
-        else:
+        if not hasattr(fig,'__FIGNAME__'):
             figname = self.genname()
             Path(figname).touch()
             self.dep(figname)
             fig.__FIGNAME__ = figname
+        if not hasattr(fig,'__IG__'):
             fig.__IG__ = (self.includegraphics%figname)
+        if not hasattr(fig,'drawn'):
             fig.drawn = False
         return fig.__IG__
     def showall(self):
