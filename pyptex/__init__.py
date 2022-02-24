@@ -208,6 +208,16 @@ class FigureManager(FigureManagerBase):
 __pdoc__['show'] = False
 def show(*args, **kwargs):
     pass
+#    from matplotlib._pylab_helpers import Gcf
+#    interactive = is_interactive()
+#
+#    for manager in managers:
+#        manager.show()
+#        if hasattr(manager, '_cidgcf'):
+#            manager.canvas.mpl_disconnect(manager._cidgcf)
+#
+#        if not interactive:
+#            Gcf.figs.pop(manager.num, None)
 # end of matplotlib backend
 ######################################################################
 
@@ -467,6 +477,9 @@ class pyptex:
         to the empty string.
 
         Many values can be printed at once with the notation `pyp.print(X, Y, ...)`."""
+        for k in range(len(argv)):
+            if isinstance(argv[k],matplotlib.pyplot.Figure):
+                self.mylatex(argv[k])
         self.__accum__.extend(argv)
 
     def cite(self,b):
@@ -510,6 +523,8 @@ class pyptex:
             return str(X)
         if isinstance(X,matplotlib.pyplot.Figure):
             self.__setupfig__(X)
+            print(X.__IG__)
+            X.savefig(X.__FIGNAME__)
             X.drawn = True
             return X.__IG__
         if isinstance(X,self.__sympy_plot__):
