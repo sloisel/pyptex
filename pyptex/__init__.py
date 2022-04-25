@@ -56,7 +56,7 @@ PypTeX implements its own `matplotlib` backend, a thin wrapper around the built-
 The PypTeX backend takes care of generating `.eps` files and importing them into your document via
 `\includegraphics`. In that scenario, you must do `\usepackage{graphicx}` in your LaTeX preamble.
 The precise "includegraphics" command can be set, e.g. by
-`pyp.includegraphics=r"\includegraphics[width=0.9\textwidth]"`.
+`pyp.includegraphics=r"\includegraphics[width=0.9\textwidth]{%s}"`.
 
 To create a plot with `sympy`, one can do:
 ```python
@@ -170,6 +170,7 @@ import sympy
 import types
 import matplotlib
 import matplotlib.pyplot
+import matplotlib.artist
 from pathlib import Path
 from matplotlib.backend_bases import Gcf, FigureManagerBase
 from matplotlib.backends.backend_ps import FigureCanvasPS
@@ -208,8 +209,12 @@ class FigureManager(FigureManagerBase):
 __pdoc__['show'] = False
 def show(*args, **kwargs):
     pass
+
 #    from matplotlib._pylab_helpers import Gcf
-#    interactive = is_interactive()
+#    managers = Gcf.get_all_fig_managers()
+#    if not managers:
+#        return
+#    interactive = matplotlib.pyplot.isinteractive()
 #
 #    for manager in managers:
 #        manager.show()
@@ -524,10 +529,14 @@ class pyptex:
         if isinstance(X,matplotlib.pyplot.Figure):
             self.__setupfig__(X)
             print(X.__IG__)
-            X.savefig(X.__FIGNAME__)
+            X.canvas.print_figure(X.__FIGNAME__)
             X.drawn = True
             return X.__IG__
         if isinstance(X,self.__sympy_plot__):
+            return ""
+        if isinstance(X,matplotlib.artist.Artist):
+            return ""
+        if isinstance(X,list) and isinstance(X[0],matplotlib.artist.Artist):
             return ""
         return sympy.latex(X)
 
