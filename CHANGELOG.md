@@ -1,6 +1,7 @@
 
 # v1.4.4
 
+* Some bugfixes in make-pypi-release script (commit 14e2ac4 by Sébastien Loisel)
 * Documentation fixes relating to pyp.pp(...) and added CHANGELOG.md (commit 02d94bb by Sébastien Loisel)
 
 # v1.4.3
