@@ -1,31 +1,28 @@
 #!/bin/bash
 myerr(){
         echo -e "\033[31m\033[1mpre-commit: ERROR: $@\033[0m"
+        exit 1
 }
+scripts/makechangelog >CHANGELOG.txt
+if diff -q CHANGELOG.txt CHANGELOG.md >/dev/null 2>&1; then
+    rm CHANGELOG.txt
+else
+    rm CHANGELOG.txt
+    myerr "CHANGELOG.md is not up to date. Do 'make CHANGELOG.md'."
+fi
+
 if make -q; then
         true
 else
         myerr 'Outdated Makefile targets found. run "make".'
-        exit 1
 fi
 if git diff --quiet; then
         true
 else
         myerr 'Unstaged changes found. run "git add".'
-        exit 1
 fi
 vername=`grep 'version=' setup.py | sed -n "s/.*version='\\([0-9.]*\\)'.*,/v\\1/p"`
 if [ $(git tag -l "$vername") ]; then
     myerr "Tag $vername already exists. Either update the version number in setup.py, or delete the tag."
-    exit 1
 fi
-scripts/makechangelog >CHANGELOG.txt
-if diff CHANGELOG.txt CHANGELOG.md; then
-    rm CHANGELOG.txt
-    myerr "CHANGELOG.md is not up to date. Do 'make CHANGELOG.md'."
-    exit 1
-fi
-rm CHANGELOG.txt
-cmd1="git tag -a $vername -m \"Version tagged by make-pypi-release script.\" && git push origin $vername"
-echo "$cmd1"
-$cmd1
+#git tag -a $vername -m "Version tagged by make-pypi-release script." && git push origin $vername

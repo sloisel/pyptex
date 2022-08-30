@@ -1,7 +1,7 @@
 
 # v1.4.4
 
-
+* Documentation fixes relating to pyp.pp(...) and added CHANGELOG.md (commit 02d94bb by Sébastien Loisel)
 
 # v1.4.3
 
