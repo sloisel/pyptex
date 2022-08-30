@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 myerr(){
         echo -e "\033[31m\033[1mpre-commit: ERROR: $@\033[0m"
         exit 1
@@ -25,4 +26,4 @@ vername=`grep 'version=' setup.py | sed -n "s/.*version='\\([0-9.]*\\)'.*,/v\\1/
 if [ $(git tag -l "$vername") ]; then
     myerr "Tag $vername already exists. Either update the version number in setup.py, or delete the tag."
 fi
-#git tag -a $vername -m "Version tagged by make-pypi-release script." && git push origin $vername
+git tag -a $vername -m 'Version tagged by make-pypi-release script.' && git push origin $vername
