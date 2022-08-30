@@ -101,17 +101,14 @@ LaTeX processor.
 
 # Pretty-printing template strings from Python with `pp`
 
-The function ```pp(X)``` pretty-prints the template string `X` with substitutions
+The function ```pyp.pp(X)``` pretty-prints the template string `X` with substitutions
 from the local scope of the caller. This is useful for medium length LaTeX fragments
 containing a few Python substitutions:
 ```python
->>> from pyptex import pp
->>> from sympy import *
->>> p = S('x^2-2*x+3')
->>> dpdx = p.diff(S('x'))
->>> x0 = solve(dpdx)[0]
->>> pp('The minimum of $y=@p$ is at $x=@x0$.')
-'The minimum of $y=x^{2} - 2 x + 3$ is at $x=1$.'
+from sympy import *
+p = S('x^2-2*x+3')
+dpdx = p.diff(S('x'))
+pyp.print(pyp.pp('The minimum of $y=@p$ is at $x=@{solve(dpdx)[0]}$.'))
 ```
 
 # Caching
@@ -437,7 +434,10 @@ class pyptex:
         scope that is `levels` calls up on the stack. The template character is @.
 
         For example, assume the caller has the value `x=3` in its local variables. Then,
-        `pp("$x=@x$")` produces `$x=3$`.
+        `pyp.pp("$x=@x$")` produces `$x=3$`.
+
+        `pp` can also evaluate Python expressions in the template string, e.g.
+        `pyp.pp("@{3+4}")` produces `7`.
         """
         global ppparser
         foo = inspect.currentframe()

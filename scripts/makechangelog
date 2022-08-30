@@ -1,0 +1,13 @@
+#!/bin/bash
+verprev="master"
+vername=`grep 'version=' setup.py | sed -n "s/.*version='\\([0-9.]*\\)'.*,/v\\1/p"`
+for ver in $(git tag --sort=-v:refname)
+do
+    echo
+    echo "# $vername"
+    echo
+    git --no-pager log "$ver..$verprev" --pretty="format:* %s SUPERXXXMAGICXXXCODE (commit %h by %an)" -- . ':!CHANGELOG.md' | sed 's/ commit-msg approval for.*SUPERXXXMAGICXXXCODE//' | sed 's/SUPERXXXMAGICXXXCODE//'
+    echo
+    verprev="$ver"
+    vername="$ver"
+done

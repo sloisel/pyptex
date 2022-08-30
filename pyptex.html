@@ -105,16 +105,13 @@ debugging task somehow fails for you.
 3. Performance. Substituting using regular expressions is faster than running the
 LaTeX processor.</p>
 <h1 id="pretty-printing-template-strings-from-python-with-pp">Pretty-printing template strings from Python with <code>pp</code></h1>
-<p>The function <code>pp(X)</code> pretty-prints the template string <code>X</code> with substitutions
+<p>The function <code>pyp.pp(X)</code> pretty-prints the template string <code>X</code> with substitutions
 from the local scope of the caller. This is useful for medium length LaTeX fragments
 containing a few Python substitutions:</p>
-<pre><code class="language-python">&gt;&gt;&gt; from pyptex import pp
-&gt;&gt;&gt; from sympy import *
-&gt;&gt;&gt; p = S('x^2-2*x+3')
-&gt;&gt;&gt; dpdx = p.diff(S('x'))
-&gt;&gt;&gt; x0 = solve(dpdx)[0]
-&gt;&gt;&gt; pp('The minimum of $y=@p$ is at $x=@x0$.')
-'The minimum of $y=x^{2} - 2 x + 3$ is at $x=1$.'
+<pre><code class="language-python">from sympy import *
+p = S('x^2-2*x+3')
+dpdx = p.diff(S('x'))
+pyp.print(pyp.pp('The minimum of $y=@p$ is at $x=@{solve(dpdx)[0]}$.'))
 </code></pre>
 <h1 id="caching">Caching</h1>
 <p>When compiling <code>a.tex</code>, PypTeX creates a cache file <code>a.pickle</code>. This file is
@@ -250,17 +247,14 @@ LaTeX processor.
 
 # Pretty-printing template strings from Python with `pp`
 
-The function ```pp(X)``` pretty-prints the template string `X` with substitutions
+The function ```pyp.pp(X)``` pretty-prints the template string `X` with substitutions
 from the local scope of the caller. This is useful for medium length LaTeX fragments
 containing a few Python substitutions:
 ```python
-&gt;&gt;&gt; from pyptex import pp
-&gt;&gt;&gt; from sympy import *
-&gt;&gt;&gt; p = S(&#39;x^2-2*x+3&#39;)
-&gt;&gt;&gt; dpdx = p.diff(S(&#39;x&#39;))
-&gt;&gt;&gt; x0 = solve(dpdx)[0]
-&gt;&gt;&gt; pp(&#39;The minimum of $y=@p$ is at $x=@x0$.&#39;)
-&#39;The minimum of $y=x^{2} - 2 x + 3$ is at $x=1$.&#39;
+from sympy import *
+p = S(&#39;x^2-2*x+3&#39;)
+dpdx = p.diff(S(&#39;x&#39;))
+pyp.print(pyp.pp(&#39;The minimum of $y=@p$ is at $x=@{solve(dpdx)[0]}$.&#39;))
 ```
 
 # Caching
@@ -586,7 +580,10 @@ class pyptex:
         scope that is `levels` calls up on the stack. The template character is @.
 
         For example, assume the caller has the value `x=3` in its local variables. Then,
-        `pp(&#34;$x=@x$&#34;)` produces `$x=3$`.
+        `pyp.pp(&#34;$x=@x$&#34;)` produces `$x=3$`.
+
+        `pp` can also evaluate Python expressions in the template string, e.g.
+        `pyp.pp(&#34;@{3+4}&#34;)` produces `7`.
         &#34;&#34;&#34;
         global ppparser
         foo = inspect.currentframe()
@@ -1230,7 +1227,10 @@ automatically displayed at the end of the Python block.</li>
         scope that is `levels` calls up on the stack. The template character is @.
 
         For example, assume the caller has the value `x=3` in its local variables. Then,
-        `pp(&#34;$x=@x$&#34;)` produces `$x=3$`.
+        `pyp.pp(&#34;$x=@x$&#34;)` produces `$x=3$`.
+
+        `pp` can also evaluate Python expressions in the template string, e.g.
+        `pyp.pp(&#34;@{3+4}&#34;)` produces `7`.
         &#34;&#34;&#34;
         global ppparser
         foo = inspect.currentframe()
@@ -1880,7 +1880,9 @@ the list of dependencies via pyp.dep(filename).</p></div>
 <div class="desc"><p>Pretty-prints the template text string <code>Z</code>, using substitutions from the local
 scope that is <code>levels</code> calls up on the stack. The template character is @.</p>
 <p>For example, assume the caller has the value <code>x=3</code> in its local variables. Then,
-<code>pp("$x=@x$")</code> produces <code>$x=3$</code>.</p></div>
+<code>pyp.pp("$x=@x$")</code> produces <code>$x=3$</code>.</p>
+<p><code>pp</code> can also evaluate Python expressions in the template string, e.g.
+<code>pyp.pp("@{3+4}")</code> produces <code>7</code>.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1890,7 +1892,10 @@ scope that is <code>levels</code> calls up on the stack. The template character 
     scope that is `levels` calls up on the stack. The template character is @.
 
     For example, assume the caller has the value `x=3` in its local variables. Then,
-    `pp(&#34;$x=@x$&#34;)` produces `$x=3$`.
+    `pyp.pp(&#34;$x=@x$&#34;)` produces `$x=3$`.
+
+    `pp` can also evaluate Python expressions in the template string, e.g.
+    `pyp.pp(&#34;@{3+4}&#34;)` produces `7`.
     &#34;&#34;&#34;
     global ppparser
     foo = inspect.currentframe()

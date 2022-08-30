@@ -1,6 +1,6 @@
 all: test doc hooks dist examples
 
-.PHONY: all clean test doc hooks delete-hooks reinstall-hooks dist examples pypi
+.PHONY: all clean test doc hooks delete-hooks reinstall-hooks dist examples pypi CHANGELOG.md
 
 pyptex.html: pyptex/__init__.py
 	pdoc --html .
@@ -37,6 +37,9 @@ hookdst := $(patsubst hooks/%,.git/hooks/%,$(hooksrc))
 	@if [ -f $@ ]; then echo "Fatal Error: hook $@ already exists.\nTo recover 'make reinstall-hooks' will\ndelete and reinstall all the following hooks:\n" ${hookdst}; false; fi
 	cp $< $@
 
+CHANGELOG.md:
+	scripts/makechangelog >CHANGELOG.md
+
 hooks: ${hookdst}
 
 delete-hooks:
@@ -52,4 +55,4 @@ dist/.mark: setup.py pyptex/__init__.py
 dist: dist/.mark
 
 pypi: all
-	twine upload dist/*
+	scripts/make-pypi-release && twine upload dist/*
