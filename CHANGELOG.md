@@ -1,6 +1,10 @@
 
 # v1.4.4
 
+* In pyp.print, allow @@ to make @ (commit 0e3e07e by Sébastien Loisel)
+
+# v1.4.4
+
 * bugfixes for make-pypi-release script (commit 845c70c by Sébastien Loisel)
 * Some bugfixes in make-pypi-release script (commit 14e2ac4 by Sébastien Loisel)
 * Documentation fixes relating to pyp.pp(...) and added CHANGELOG.md (commit 02d94bb by Sébastien Loisel)
