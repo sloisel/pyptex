@@ -1,6 +1,7 @@
 
 # v1.4.5
 
+* Update version number (commit 29d1e3a by Sébastien Loisel)
 * In pyp.print, allow @@ to make @ (commit 0e3e07e by Sébastien Loisel)
 
 # v1.4.4
