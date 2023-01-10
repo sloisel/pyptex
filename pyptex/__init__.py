@@ -223,7 +223,7 @@ def show(*args, **kwargs):
 # end of matplotlib backend
 ######################################################################
 
-ppparser = re.compile(r"@([a-zA-Z_][a-zA-Z0-9_]*)|@{([^{}}]*)}",re.DOTALL)
+ppparser = re.compile(r"(@@)|@([a-zA-Z_][a-zA-Z0-9_]*)|@{([^{}}]*)}",re.DOTALL)
 pypparser = re.compile(r'((?<!\\)%[^\n]*\n)|(@@)|(@(\[([a-zA-Z]*)\])?{([^{}]+)}|@(\[([a-zA-Z]*)\])?{{{(.*?)}}})', re.DOTALL)
 bibentryname = re.compile(r'[^{]*{([^,]*),', re.DOTALL)
 stripext = re.compile(r'(.*?)(\.(pyp\.)?[^\.]*)?$', re.DOTALL)
@@ -445,7 +445,9 @@ class pyptex:
             foo = foo.f_back
             levels -= 1
         def do_work(m):
-            for k in [1,2]:
+            if m.start(1) >= 0:
+                return '@'
+            for k in [2,3]:
                 if m.start(k) >= 0:
                     return self.mylatex(eval(m.group(k), foo.f_globals, foo.f_locals))
             raise Exception("Tragic regular expression committed seppuku")

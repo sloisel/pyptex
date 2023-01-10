@@ -81,19 +81,9 @@ plotting.plot3d(S('x*y'))
 
 \includegraphics[width=\textwidth]{plot2-generated/fig1.eps}
 The PostScript backend does not support transparency; partially transparent artists will be rendered opaque.
-The PostScript backend does not support transparency; partially transparent artists will be rendered opaque.
-The PostScript backend does not support transparency; partially transparent artists will be rendered opaque.
-The PostScript backend does not support transparency; partially transparent artists will be rendered opaque.
-The PostScript backend does not support transparency; partially transparent artists will be rendered opaque.
-The PostScript backend does not support transparency; partially transparent artists will be rendered opaque.
 Python result:
 [<Figure size 460.8x345.6 with 1 Axes>]
 \includegraphics[width=\textwidth]{plot2-generated/fig1.eps}
-The PostScript backend does not support transparency; partially transparent artists will be rendered opaque.
-The PostScript backend does not support transparency; partially transparent artists will be rendered opaque.
-The PostScript backend does not support transparency; partially transparent artists will be rendered opaque.
-The PostScript backend does not support transparency; partially transparent artists will be rendered opaque.
-The PostScript backend does not support transparency; partially transparent artists will be rendered opaque.
 The PostScript backend does not support transparency; partially transparent artists will be rendered opaque.
 Saving to file: plot2.pyptex
 Dependencies are:
