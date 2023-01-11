@@ -1,4 +1,8 @@
 
+# v1.5.1
+
+* Minor tweaks to Exception handling in user code.  (commit 9b0cd19 by Sébastien Loisel)
+
 # v1.5.0
 
 * Improved error reporting and pdb behavior.  (commit 22e4b9b by Sébastien Loisel)
