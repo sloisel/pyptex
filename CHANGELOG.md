@@ -1,7 +1,7 @@
 
 # v1.5.0
 
-
+* Improved error reporting and pdb behavior.  (commit 22e4b9b by Sébastien Loisel)
 
 # v1.4.5
 
