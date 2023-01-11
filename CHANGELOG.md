@@ -1,4 +1,8 @@
 
+# v1.5.2
+
+* Fixes related to traceback truncation within pyp.pp(...)  (commit fd588ce by Sébastien Loisel)
+
 # v1.5.1
 
 * Minor tweaks to Exception handling in user code.  (commit 9b0cd19 by Sébastien Loisel)
