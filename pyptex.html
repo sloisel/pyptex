@@ -353,22 +353,6 @@ __pdoc__[&#39;show&#39;] = False
 def show(*args, **kwargs):
     pass
 
-#    from matplotlib._pylab_helpers import Gcf
-#    managers = Gcf.get_all_fig_managers()
-#    if not managers:
-#        return
-#    interactive = matplotlib.pyplot.isinteractive()
-#
-#    for manager in managers:
-#        manager.show()
-#        if hasattr(manager, &#39;_cidgcf&#39;):
-#            manager.canvas.mpl_disconnect(manager._cidgcf)
-#
-#        if not interactive:
-#            Gcf.figs.pop(manager.num, None)
-# end of matplotlib backend
-######################################################################
-
 ppparser = re.compile(r&#34;(@@)|@([a-zA-Z_][a-zA-Z0-9_]*)|@{([^{}}]*)}&#34;,re.DOTALL)
 pypparser = re.compile(r&#39;((?&lt;!\\)%[^\n]*\n)|(@@)|(@(\[([a-zA-Z]*)\])?{([^{}]+)}|@(\[([a-zA-Z]*)\])?{{{(.*?)}}})&#39;, re.DOTALL)
 bibentryname = re.compile(r&#39;[^{]*{([^,]*),&#39;, re.DOTALL)
@@ -392,8 +376,46 @@ def dictdiff(A, B):
         return None
     return next(iter(D))
 
+class ExecError(Exception):
+    r&#34;&#34;&#34;Exception class for Python errors in `a.tex` input file.
+
+    If Python code in `a.tex` raises exceptions, such exceptions are
+    wrapped in the ExecError Exception class, which are then raised.
+    This class has the following fields:
+
+    `ExecError.user_exception` is whatever exception object was raised
+    in `a.tex`.
+
+    `ExecError.user_traceback` is a stack trace of the underlying
+    `user_exception`, but truncated so that it stops at `a.tex`, and
+    does not back up into the internals of the PypTeX compiler itself.
+    If the error was generated during a call to `compile()`, 
+    `user_traceback` will be `None`.
+
+    `ExecError.mode` is either `&#39;compile&#39;`, `&#39;eval&#39;`, `&#39;exec&#39;`, depending
+    on which function (`compile()`, `eval()` or `exec()`) triggered the Exception.
+
+    One can catch and handle these exceptions as follows:
+
+    ```
+        try:
+            pyp = pyptex(&#39;a.tex&#39;)
+        except ExecError as e:
+            import pdb, traceback
+            e = e.user_exception.with_traceback(e.user_traceback)
+            print(&#39;\n&#39;.join(traceback.TracebackException(
+                exc_type=type(e), exc_value=e, exc_traceback=e.__traceback__).format()))
+            if e.user_traceback is not None:
+                pdb.post_mortem(e.__traceback__)
+    ```
+    &#34;&#34;&#34;
+    def __init__(self,e, mode):
+        self.user_exception = e
+        self.user_traceback = None if mode==&#39;compile&#39; else e.__traceback__.tb_next
+        self.mode = mode
+
 __pdoc__[&#39;exec_and_catch&#39;] = False
-def exec_and_catch(cmd,glob,loc,filename,linecount,postmortem,modes=[eval,exec]):
+def exec_and_catch(cmd,glob,loc,filename,linecount,modes=[eval,exec]):
   for k in range(len(modes)):
     mode = modes[k]
     modename = &#39;exec&#39; if mode==exec else &#39;eval&#39;
@@ -401,19 +423,12 @@ def exec_and_catch(cmd,glob,loc,filename,linecount,postmortem,modes=[eval,exec])
       C = compile((&#39;\n&#39;*linecount)+cmd,filename,mode=modename)
     except Exception as e:
       if k==len(modes)-1:
-        e = e.with_traceback(e.__traceback__.tb_next)
-        postmortem(e,None)
-        sys.exit(1) # should not be necessary, but you never know.
+        raise ExecError(e,&#39;compile&#39;) from None
       continue
     try:
       ret = mode(C,glob,loc)
     except Exception as e:
-        e = e.with_traceback(e.__traceback__.tb_next)
-        postmortem(e,e.__traceback__)
-        sys.exit(1)
-#        print(&#39;\n&#39;.join(traceback.TracebackException( # Workaround for bug in Python 3.9
-#            exc_type=type(foo), exc_value=foo, exc_traceback=foo.__traceback__).format()))
-#        postmortem(foo.__traceback__)
+        raise ExecError(e,modename) from None
     return (ret,mode)
 
 class pyptex:
@@ -521,7 +536,7 @@ class pyptex:
             if k not in foo:
                 del bar[k]
 
-    def __init__(self, texfilename, argv=None, latexcommand=False, postmortem=lambda tb: sys.exit(1)):
+    def __init__(self, texfilename, argv=None, latexcommand=False):
         r&#34;&#34;&#34;`pyp = pyptex(&#39;a.tex&#39;)` reads in the LaTeX file a.tex and locates all
         Python code fragments contained inside. These Python code fragments are
         executed and their outputs are substituted to produce the `a.pyptex` output file.
@@ -576,7 +591,6 @@ class pyptex:
         self.__sympy_plot__ = sympy.plotting.plot(1, show=False).__class__
         self.__globals__ = {&#39;__builtins__&#39;: __builtins__, &#39;pyp&#39;: self }
         self.__frozen__ = self.__globals__.copy()
-        self.__postmortem__ = postmortem
         self.filename = stripext.sub(lambda m: m.group(1),texfilename)
         self.texfilename = texfilename
         matplotlib.use(&#34;module://pyptex&#34;)
@@ -623,7 +637,7 @@ class pyptex:
                     return self.mylatex(exec_and_catch(
                         cmd=m.group(k), glob=foo.f_globals, loc=foo.f_locals,
                         filename=&#39;&lt;format string&gt;&#39;, linecount=0, modes=[eval],
-                        postmortem=self.__postmortem__)[0])
+                        )[0])
 #                    return self.mylatex(eval(m.group(k), foo.f_globals, foo.f_locals))
             raise Exception(&#34;Tragic regular expression committed seppuku&#34;)
 
@@ -638,8 +652,8 @@ class pyptex:
         self.__accum__ = []
         (ret,mode) = exec_and_catch(
             cmd=S,glob=glob_,loc=None,
-            filename=self.texfilename,linecount=k,
-            postmortem=self.__postmortem__)
+            filename=self.texfilename,linecount=k
+            )
         if mode==eval:
             self.__accum__.append(ret)
         if self.autoshow:
@@ -938,39 +952,19 @@ def pyptexmain(argv: list = None):
         print(&#39;Usage: pyptex &lt;filename.tex&gt; ...&#39;)
         sys.exit(1)
     writer = streamcapture.Writer(open(f&#39;{os.path.splitext(argv[1])[0]}.pyplog&#39;,&#39;wb&#39;),2)
-    def postmortem(e,tb):
-        import pdb
-        print(&#39;\n&#39;.join(traceback.TracebackException( # Workaround for bug in Python 3.9
-            exc_type=type(e), exc_value=e, exc_traceback=e.__traceback__).format()))
-        if tb is None:
-            pass
-        elif dopdb:
-            print(&#39;A Python error has occurred. Launching the debugger pdb.\n&#39;
-                    &#34;Type &#39;help&#39; for a list of commands, and &#39;quit&#39; when done.&#34;)
-            pdb.post_mortem(tb)
-        sys.exit(1)
     with streamcapture.StreamCapture(sys.stdout,writer), streamcapture.StreamCapture(sys.stderr,writer):
-#        try:
+        try:
             pyp = pyptex(argv[1], argv[2:],
-                latexcommand=r&#39;{latex} {pyptexfilename} &amp;&amp; (test ! -f {bibfilename} || bibtex {auxfilename})&#39;,
-                postmortem=postmortem)
-#        except PyptexUserError as e:
-#            import pdb
-#            foo = e.user_exception
-#            print(&#39;\n&#39;.join(traceback.TracebackException(exc_type=type(foo), exc_value=foo, exc_traceback=foo.__traceback__).format()))
-#            if dopdb:
-#                print(&#39;A Python error has occurred. Launching the debugger pdb.\n&#39;
-#                      &#34;Type &#39;help&#39; for a list of commands, and &#39;quit&#39; when done.&#34;)
-#                pdb.post_mortem(foo.__traceback__)
-#            sys.exit(1)
-#        except Exception:
-#            import pdb
-#            traceback.print_exc(file=sys.stdout)
-#            if dopdb:
-#                print(&#39;A Python error has occurred. Launching the debugger pdb.\n&#39;
-#                      &#34;Type &#39;help&#39; for a list of commands, and &#39;quit&#39; when done.&#34;)
-#                pdb.post_mortem()
-#            sys.exit(1)
+                latexcommand=r&#39;{latex} {pyptexfilename} &amp;&amp; (test ! -f {bibfilename} || bibtex {auxfilename})&#39;)
+        except ExecError as e:
+            import pdb
+            foo = e.user_exception.with_traceback(e.user_traceback)
+            print(&#39;\n&#39;.join(traceback.TracebackException(exc_type=type(foo), exc_value=foo, exc_traceback=foo.__traceback__).format()))
+            if e.user_traceback is not None and dopdb:
+                print(&#39;A Python error has occurred. Launching the debugger pdb.\n&#39;
+                      &#34;Type &#39;help&#39; for a list of commands, and &#39;quit&#39; when done.&#34;)
+                pdb.post_mortem(foo.__traceback__)
+            sys.exit(1)
     return pyp.exitcode</code></pre>
 </details>
 </section>
@@ -1017,39 +1011,19 @@ If "&ndash;pdb=yes" is in argv, automatic pdb postmortem is enabled. This is the
         print(&#39;Usage: pyptex &lt;filename.tex&gt; ...&#39;)
         sys.exit(1)
     writer = streamcapture.Writer(open(f&#39;{os.path.splitext(argv[1])[0]}.pyplog&#39;,&#39;wb&#39;),2)
-    def postmortem(e,tb):
-        import pdb
-        print(&#39;\n&#39;.join(traceback.TracebackException( # Workaround for bug in Python 3.9
-            exc_type=type(e), exc_value=e, exc_traceback=e.__traceback__).format()))
-        if tb is None:
-            pass
-        elif dopdb:
-            print(&#39;A Python error has occurred. Launching the debugger pdb.\n&#39;
-                    &#34;Type &#39;help&#39; for a list of commands, and &#39;quit&#39; when done.&#34;)
-            pdb.post_mortem(tb)
-        sys.exit(1)
     with streamcapture.StreamCapture(sys.stdout,writer), streamcapture.StreamCapture(sys.stderr,writer):
-#        try:
+        try:
             pyp = pyptex(argv[1], argv[2:],
-                latexcommand=r&#39;{latex} {pyptexfilename} &amp;&amp; (test ! -f {bibfilename} || bibtex {auxfilename})&#39;,
-                postmortem=postmortem)
-#        except PyptexUserError as e:
-#            import pdb
-#            foo = e.user_exception
-#            print(&#39;\n&#39;.join(traceback.TracebackException(exc_type=type(foo), exc_value=foo, exc_traceback=foo.__traceback__).format()))
-#            if dopdb:
-#                print(&#39;A Python error has occurred. Launching the debugger pdb.\n&#39;
-#                      &#34;Type &#39;help&#39; for a list of commands, and &#39;quit&#39; when done.&#34;)
-#                pdb.post_mortem(foo.__traceback__)
-#            sys.exit(1)
-#        except Exception:
-#            import pdb
-#            traceback.print_exc(file=sys.stdout)
-#            if dopdb:
-#                print(&#39;A Python error has occurred. Launching the debugger pdb.\n&#39;
-#                      &#34;Type &#39;help&#39; for a list of commands, and &#39;quit&#39; when done.&#34;)
-#                pdb.post_mortem()
-#            sys.exit(1)
+                latexcommand=r&#39;{latex} {pyptexfilename} &amp;&amp; (test ! -f {bibfilename} || bibtex {auxfilename})&#39;)
+        except ExecError as e:
+            import pdb
+            foo = e.user_exception.with_traceback(e.user_traceback)
+            print(&#39;\n&#39;.join(traceback.TracebackException(exc_type=type(foo), exc_value=foo, exc_traceback=foo.__traceback__).format()))
+            if e.user_traceback is not None and dopdb:
+                print(&#39;A Python error has occurred. Launching the debugger pdb.\n&#39;
+                      &#34;Type &#39;help&#39; for a list of commands, and &#39;quit&#39; when done.&#34;)
+                pdb.post_mortem(foo.__traceback__)
+            sys.exit(1)
     return pyp.exitcode</code></pre>
 </details>
 </dd>
@@ -1058,9 +1032,86 @@ If "&ndash;pdb=yes" is in argv, automatic pdb postmortem is enabled. This is the
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
+<dt id="pyptex.ExecError"><code class="flex name class">
+<span>class <span class="ident">ExecError</span></span>
+<span>(</span><span>e, mode)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Exception class for Python errors in <code>a.tex</code> input file.</p>
+<p>If Python code in <code>a.tex</code> raises exceptions, such exceptions are
+wrapped in the ExecError Exception class, which are then raised.
+This class has the following fields:</p>
+<p><code>ExecError.user_exception</code> is whatever exception object was raised
+in <code>a.tex</code>.</p>
+<p><code>ExecError.user_traceback</code> is a stack trace of the underlying
+<code>user_exception</code>, but truncated so that it stops at <code>a.tex</code>, and
+does not back up into the internals of the PypTeX compiler itself.
+If the error was generated during a call to <code>compile()</code>,
+<code>user_traceback</code> will be <code>None</code>.</p>
+<p><code>ExecError.mode</code> is either <code>'compile'</code>, <code>'eval'</code>, <code>'exec'</code>, depending
+on which function (<code>compile()</code>, <code>eval()</code> or <code>exec()</code>) triggered the Exception.</p>
+<p>One can catch and handle these exceptions as follows:</p>
+<pre><code>    try:
+        pyp = pyptex('a.tex')
+    except ExecError as e:
+        import pdb, traceback
+        e = e.user_exception.with_traceback(e.user_traceback)
+        print('\n'.join(traceback.TracebackException(
+            exc_type=type(e), exc_value=e, exc_traceback=e.__traceback__).format()))
+        if e.user_traceback is not None:
+            pdb.post_mortem(e.__traceback__)
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ExecError(Exception):
+    r&#34;&#34;&#34;Exception class for Python errors in `a.tex` input file.
+
+    If Python code in `a.tex` raises exceptions, such exceptions are
+    wrapped in the ExecError Exception class, which are then raised.
+    This class has the following fields:
+
+    `ExecError.user_exception` is whatever exception object was raised
+    in `a.tex`.
+
+    `ExecError.user_traceback` is a stack trace of the underlying
+    `user_exception`, but truncated so that it stops at `a.tex`, and
+    does not back up into the internals of the PypTeX compiler itself.
+    If the error was generated during a call to `compile()`, 
+    `user_traceback` will be `None`.
+
+    `ExecError.mode` is either `&#39;compile&#39;`, `&#39;eval&#39;`, `&#39;exec&#39;`, depending
+    on which function (`compile()`, `eval()` or `exec()`) triggered the Exception.
+
+    One can catch and handle these exceptions as follows:
+
+    ```
+        try:
+            pyp = pyptex(&#39;a.tex&#39;)
+        except ExecError as e:
+            import pdb, traceback
+            e = e.user_exception.with_traceback(e.user_traceback)
+            print(&#39;\n&#39;.join(traceback.TracebackException(
+                exc_type=type(e), exc_value=e, exc_traceback=e.__traceback__).format()))
+            if e.user_traceback is not None:
+                pdb.post_mortem(e.__traceback__)
+    ```
+    &#34;&#34;&#34;
+    def __init__(self,e, mode):
+        self.user_exception = e
+        self.user_traceback = None if mode==&#39;compile&#39; else e.__traceback__.tb_next
+        self.mode = mode</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.Exception</li>
+<li>builtins.BaseException</li>
+</ul>
+</dd>
 <dt id="pyptex.pyptex"><code class="flex name class">
 <span>class <span class="ident">pyptex</span></span>
-<span>(</span><span>texfilename, argv=None, latexcommand=False, postmortem=&lt;function pyptex.&lt;lambda&gt;&gt;)</span>
+<span>(</span><span>texfilename, argv=None, latexcommand=False)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Class <code><a title="pyptex.pyptex" href="#pyptex.pyptex">pyptex</a></code> is used to parse an input (templated) <code>a.tex</code> file
@@ -1225,7 +1276,7 @@ automatically displayed at the end of the Python block.</li>
             if k not in foo:
                 del bar[k]
 
-    def __init__(self, texfilename, argv=None, latexcommand=False, postmortem=lambda tb: sys.exit(1)):
+    def __init__(self, texfilename, argv=None, latexcommand=False):
         r&#34;&#34;&#34;`pyp = pyptex(&#39;a.tex&#39;)` reads in the LaTeX file a.tex and locates all
         Python code fragments contained inside. These Python code fragments are
         executed and their outputs are substituted to produce the `a.pyptex` output file.
@@ -1280,7 +1331,6 @@ automatically displayed at the end of the Python block.</li>
         self.__sympy_plot__ = sympy.plotting.plot(1, show=False).__class__
         self.__globals__ = {&#39;__builtins__&#39;: __builtins__, &#39;pyp&#39;: self }
         self.__frozen__ = self.__globals__.copy()
-        self.__postmortem__ = postmortem
         self.filename = stripext.sub(lambda m: m.group(1),texfilename)
         self.texfilename = texfilename
         matplotlib.use(&#34;module://pyptex&#34;)
@@ -1327,7 +1377,7 @@ automatically displayed at the end of the Python block.</li>
                     return self.mylatex(exec_and_catch(
                         cmd=m.group(k), glob=foo.f_globals, loc=foo.f_locals,
                         filename=&#39;&lt;format string&gt;&#39;, linecount=0, modes=[eval],
-                        postmortem=self.__postmortem__)[0])
+                        )[0])
 #                    return self.mylatex(eval(m.group(k), foo.f_globals, foo.f_locals))
             raise Exception(&#34;Tragic regular expression committed seppuku&#34;)
 
@@ -1342,8 +1392,8 @@ automatically displayed at the end of the Python block.</li>
         self.__accum__ = []
         (ret,mode) = exec_and_catch(
             cmd=S,glob=glob_,loc=None,
-            filename=self.texfilename,linecount=k,
-            postmortem=self.__postmortem__)
+            filename=self.texfilename,linecount=k
+            )
         if mode==eval:
             self.__accum__.append(ret)
         if self.autoshow:
@@ -2006,7 +2056,7 @@ scope that is <code>levels</code> calls up on the stack. The template character 
                     return self.mylatex(exec_and_catch(
                         cmd=m.group(k), glob=foo.f_globals, loc=foo.f_locals,
                         filename=&#39;&lt;format string&gt;&#39;, linecount=0, modes=[eval],
-                        postmortem=self.__postmortem__)[0])
+                        )[0])
 #                    return self.mylatex(eval(m.group(k), foo.f_globals, foo.f_locals))
             raise Exception(&#34;Tragic regular expression committed seppuku&#34;)
 
@@ -2090,6 +2140,9 @@ to the empty string.</p>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
+<li>
+<h4><code><a title="pyptex.ExecError" href="#pyptex.ExecError">ExecError</a></code></h4>
+</li>
 <li>
 <h4><code><a title="pyptex.pyptex" href="#pyptex.pyptex">pyptex</a></code></h4>
 <ul class="two-column">

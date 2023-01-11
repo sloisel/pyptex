@@ -207,22 +207,6 @@ __pdoc__['show'] = False
 def show(*args, **kwargs):
     pass
 
-#    from matplotlib._pylab_helpers import Gcf
-#    managers = Gcf.get_all_fig_managers()
-#    if not managers:
-#        return
-#    interactive = matplotlib.pyplot.isinteractive()
-#
-#    for manager in managers:
-#        manager.show()
-#        if hasattr(manager, '_cidgcf'):
-#            manager.canvas.mpl_disconnect(manager._cidgcf)
-#
-#        if not interactive:
-#            Gcf.figs.pop(manager.num, None)
-# end of matplotlib backend
-######################################################################
-
 ppparser = re.compile(r"(@@)|@([a-zA-Z_][a-zA-Z0-9_]*)|@{([^{}}]*)}",re.DOTALL)
 pypparser = re.compile(r'((?<!\\)%[^\n]*\n)|(@@)|(@(\[([a-zA-Z]*)\])?{([^{}]+)}|@(\[([a-zA-Z]*)\])?{{{(.*?)}}})', re.DOTALL)
 bibentryname = re.compile(r'[^{]*{([^,]*),', re.DOTALL)
@@ -246,8 +230,46 @@ def dictdiff(A, B):
         return None
     return next(iter(D))
 
+class ExecError(Exception):
+    r"""Exception class for Python errors in `a.tex` input file.
+
+    If Python code in `a.tex` raises exceptions, such exceptions are
+    wrapped in the ExecError Exception class, which are then raised.
+    This class has the following fields:
+
+    `ExecError.user_exception` is whatever exception object was raised
+    in `a.tex`.
+
+    `ExecError.user_traceback` is a stack trace of the underlying
+    `user_exception`, but truncated so that it stops at `a.tex`, and
+    does not back up into the internals of the PypTeX compiler itself.
+    If the error was generated during a call to `compile()`, 
+    `user_traceback` will be `None`.
+
+    `ExecError.mode` is either `'compile'`, `'eval'`, `'exec'`, depending
+    on which function (`compile()`, `eval()` or `exec()`) triggered the Exception.
+
+    One can catch and handle these exceptions as follows:
+
+    ```
+        try:
+            pyp = pyptex('a.tex')
+        except ExecError as e:
+            import pdb, traceback
+            e = e.user_exception.with_traceback(e.user_traceback)
+            print('\n'.join(traceback.TracebackException(
+                exc_type=type(e), exc_value=e, exc_traceback=e.__traceback__).format()))
+            if e.user_traceback is not None:
+                pdb.post_mortem(e.__traceback__)
+    ```
+    """
+    def __init__(self,e, mode):
+        self.user_exception = e
+        self.user_traceback = None if mode=='compile' else e.__traceback__.tb_next
+        self.mode = mode
+
 __pdoc__['exec_and_catch'] = False
-def exec_and_catch(cmd,glob,loc,filename,linecount,postmortem,modes=[eval,exec]):
+def exec_and_catch(cmd,glob,loc,filename,linecount,modes=[eval,exec]):
   for k in range(len(modes)):
     mode = modes[k]
     modename = 'exec' if mode==exec else 'eval'
@@ -255,19 +277,12 @@ def exec_and_catch(cmd,glob,loc,filename,linecount,postmortem,modes=[eval,exec])
       C = compile(('\n'*linecount)+cmd,filename,mode=modename)
     except Exception as e:
       if k==len(modes)-1:
-        e = e.with_traceback(e.__traceback__.tb_next)
-        postmortem(e,None)
-        sys.exit(1) # should not be necessary, but you never know.
+        raise ExecError(e,'compile') from None
       continue
     try:
       ret = mode(C,glob,loc)
     except Exception as e:
-        e = e.with_traceback(e.__traceback__.tb_next)
-        postmortem(e,e.__traceback__)
-        sys.exit(1)
-#        print('\n'.join(traceback.TracebackException( # Workaround for bug in Python 3.9
-#            exc_type=type(foo), exc_value=foo, exc_traceback=foo.__traceback__).format()))
-#        postmortem(foo.__traceback__)
+        raise ExecError(e,modename) from None
     return (ret,mode)
 
 class pyptex:
@@ -375,7 +390,7 @@ class pyptex:
             if k not in foo:
                 del bar[k]
 
-    def __init__(self, texfilename, argv=None, latexcommand=False, postmortem=lambda tb: sys.exit(1)):
+    def __init__(self, texfilename, argv=None, latexcommand=False):
         r"""`pyp = pyptex('a.tex')` reads in the LaTeX file a.tex and locates all
         Python code fragments contained inside. These Python code fragments are
         executed and their outputs are substituted to produce the `a.pyptex` output file.
@@ -430,7 +445,6 @@ class pyptex:
         self.__sympy_plot__ = sympy.plotting.plot(1, show=False).__class__
         self.__globals__ = {'__builtins__': __builtins__, 'pyp': self }
         self.__frozen__ = self.__globals__.copy()
-        self.__postmortem__ = postmortem
         self.filename = stripext.sub(lambda m: m.group(1),texfilename)
         self.texfilename = texfilename
         matplotlib.use("module://pyptex")
@@ -477,7 +491,7 @@ class pyptex:
                     return self.mylatex(exec_and_catch(
                         cmd=m.group(k), glob=foo.f_globals, loc=foo.f_locals,
                         filename='<format string>', linecount=0, modes=[eval],
-                        postmortem=self.__postmortem__)[0])
+                        )[0])
 #                    return self.mylatex(eval(m.group(k), foo.f_globals, foo.f_locals))
             raise Exception("Tragic regular expression committed seppuku")
 
@@ -492,8 +506,8 @@ class pyptex:
         self.__accum__ = []
         (ret,mode) = exec_and_catch(
             cmd=S,glob=glob_,loc=None,
-            filename=self.texfilename,linecount=k,
-            postmortem=self.__postmortem__)
+            filename=self.texfilename,linecount=k
+            )
         if mode==eval:
             self.__accum__.append(ret)
         if self.autoshow:
@@ -792,37 +806,17 @@ def pyptexmain(argv: list = None):
         print('Usage: pyptex <filename.tex> ...')
         sys.exit(1)
     writer = streamcapture.Writer(open(f'{os.path.splitext(argv[1])[0]}.pyplog','wb'),2)
-    def postmortem(e,tb):
-        import pdb
-        print('\n'.join(traceback.TracebackException( # Workaround for bug in Python 3.9
-            exc_type=type(e), exc_value=e, exc_traceback=e.__traceback__).format()))
-        if tb is None:
-            pass
-        elif dopdb:
-            print('A Python error has occurred. Launching the debugger pdb.\n'
-                    "Type 'help' for a list of commands, and 'quit' when done.")
-            pdb.post_mortem(tb)
-        sys.exit(1)
     with streamcapture.StreamCapture(sys.stdout,writer), streamcapture.StreamCapture(sys.stderr,writer):
-#        try:
+        try:
             pyp = pyptex(argv[1], argv[2:],
-                latexcommand=r'{latex} {pyptexfilename} && (test ! -f {bibfilename} || bibtex {auxfilename})',
-                postmortem=postmortem)
-#        except PyptexUserError as e:
-#            import pdb
-#            foo = e.user_exception
-#            print('\n'.join(traceback.TracebackException(exc_type=type(foo), exc_value=foo, exc_traceback=foo.__traceback__).format()))
-#            if dopdb:
-#                print('A Python error has occurred. Launching the debugger pdb.\n'
-#                      "Type 'help' for a list of commands, and 'quit' when done.")
-#                pdb.post_mortem(foo.__traceback__)
-#            sys.exit(1)
-#        except Exception:
-#            import pdb
-#            traceback.print_exc(file=sys.stdout)
-#            if dopdb:
-#                print('A Python error has occurred. Launching the debugger pdb.\n'
-#                      "Type 'help' for a list of commands, and 'quit' when done.")
-#                pdb.post_mortem()
-#            sys.exit(1)
+                latexcommand=r'{latex} {pyptexfilename} && (test ! -f {bibfilename} || bibtex {auxfilename})')
+        except ExecError as e:
+            import pdb
+            foo = e.user_exception.with_traceback(e.user_traceback)
+            print('\n'.join(traceback.TracebackException(exc_type=type(foo), exc_value=foo, exc_traceback=foo.__traceback__).format()))
+            if e.user_traceback is not None and dopdb:
+                print('A Python error has occurred. Launching the debugger pdb.\n'
+                      "Type 'help' for a list of commands, and 'quit' when done.")
+                pdb.post_mortem(foo.__traceback__)
+            sys.exit(1)
     return pyp.exitcode
