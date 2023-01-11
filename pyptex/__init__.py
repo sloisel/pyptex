@@ -246,6 +246,30 @@ def dictdiff(A, B):
         return None
     return next(iter(D))
 
+__pdoc__['exec_and_catch'] = False
+def exec_and_catch(cmd,glob,loc,filename,linecount,postmortem,modes=[eval,exec]):
+  for k in range(len(modes)):
+    mode = modes[k]
+    modename = 'exec' if mode==exec else 'eval'
+    try:
+      C = compile(('\n'*linecount)+cmd,filename,mode=modename)
+    except Exception as e:
+      if k==len(modes)-1:
+        e = e.with_traceback(e.__traceback__.tb_next)
+        postmortem(e,None)
+        sys.exit(1) # should not be necessary, but you never know.
+      continue
+    try:
+      ret = mode(C,glob,loc)
+    except Exception as e:
+        e = e.with_traceback(e.__traceback__.tb_next)
+        postmortem(e,e.__traceback__)
+        sys.exit(1)
+#        print('\n'.join(traceback.TracebackException( # Workaround for bug in Python 3.9
+#            exc_type=type(foo), exc_value=foo, exc_traceback=foo.__traceback__).format()))
+#        postmortem(foo.__traceback__)
+    return (ret,mode)
+
 class pyptex:
     r"""Class `pyptex.pyptex` is used to parse an input (templated) `a.tex` file
     and produce an output `a.pyptex` file, and can be used as follows:
@@ -351,7 +375,7 @@ class pyptex:
             if k not in foo:
                 del bar[k]
 
-    def __init__(self, texfilename, argv=None, latexcommand=False):
+    def __init__(self, texfilename, argv=None, latexcommand=False, postmortem=lambda tb: sys.exit(1)):
         r"""`pyp = pyptex('a.tex')` reads in the LaTeX file a.tex and locates all
         Python code fragments contained inside. These Python code fragments are
         executed and their outputs are substituted to produce the `a.pyptex` output file.
@@ -406,6 +430,7 @@ class pyptex:
         self.__sympy_plot__ = sympy.plotting.plot(1, show=False).__class__
         self.__globals__ = {'__builtins__': __builtins__, 'pyp': self }
         self.__frozen__ = self.__globals__.copy()
+        self.__postmortem__ = postmortem
         self.filename = stripext.sub(lambda m: m.group(1),texfilename)
         self.texfilename = texfilename
         matplotlib.use("module://pyptex")
@@ -449,7 +474,11 @@ class pyptex:
                 return '@'
             for k in [2,3]:
                 if m.start(k) >= 0:
-                    return self.mylatex(eval(m.group(k), foo.f_globals, foo.f_locals))
+                    return self.mylatex(exec_and_catch(
+                        cmd=m.group(k), glob=foo.f_globals, loc=foo.f_locals,
+                        filename='<format string>', linecount=0, modes=[eval],
+                        postmortem=self.__postmortem__)[0])
+#                    return self.mylatex(eval(m.group(k), foo.f_globals, foo.f_locals))
             raise Exception("Tragic regular expression committed seppuku")
 
         return ppparser.sub(do_work, Z)
@@ -457,23 +486,31 @@ class pyptex:
     def run(self, S, k):
         """An internal function for executing Python code."""
         print(f'Executing Python code:\n{S}')
-        S = '\n'*k + S
+#        S = '\n'*k + S
         glob_ = self.__globals__
         doeval = False
         self.__accum__ = []
-        with suppress(Exception):
-            C = compile(S, self.texfilename, mode='eval')
-            doeval = True
-        if doeval:
-            ret = eval(C, glob_)
+        (ret,mode) = exec_and_catch(
+            cmd=S,glob=glob_,loc=None,
+            filename=self.texfilename,linecount=k,
+            postmortem=self.__postmortem__)
+        if mode==eval:
             self.__accum__.append(ret)
-            if(self.autoshow):
-                self.showall()
-        else:
-            C = compile(S, self.texfilename, mode='exec')
-            exec(C, glob_)
-            if(self.autoshow):
-                self.showall()
+        if self.autoshow:
+            self.showall()
+#        with suppress(Exception):
+#            C = compile(S, self.texfilename, mode='eval')
+#            doeval = True
+#        if doeval:
+#            ret = eval(C, glob_)
+#            self.__accum__.append(ret)
+#            if(self.autoshow):
+#                self.showall()
+#        else:
+#            C = compile(S, self.texfilename, mode='exec')
+#            exec(C, glob_)
+#            if(self.autoshow):
+#                self.showall()
         print(f'Python result:\n{self.__accum__!s}')
         return self.__accum__
 
@@ -755,16 +792,37 @@ def pyptexmain(argv: list = None):
         print('Usage: pyptex <filename.tex> ...')
         sys.exit(1)
     writer = streamcapture.Writer(open(f'{os.path.splitext(argv[1])[0]}.pyplog','wb'),2)
+    def postmortem(e,tb):
+        import pdb
+        print('\n'.join(traceback.TracebackException( # Workaround for bug in Python 3.9
+            exc_type=type(e), exc_value=e, exc_traceback=e.__traceback__).format()))
+        if tb is None:
+            pass
+        elif dopdb:
+            print('A Python error has occurred. Launching the debugger pdb.\n'
+                    "Type 'help' for a list of commands, and 'quit' when done.")
+            pdb.post_mortem(tb)
+        sys.exit(1)
     with streamcapture.StreamCapture(sys.stdout,writer), streamcapture.StreamCapture(sys.stderr,writer):
-        try:
+#        try:
             pyp = pyptex(argv[1], argv[2:],
-                latexcommand=r'{latex} {pyptexfilename} && (test ! -f {bibfilename} || bibtex {auxfilename})')
-        except Exception:
-            import pdb
-            traceback.print_exc(file=sys.stdout)
-            if dopdb:
-                print('A Python error has occurred. Launching the debugger pdb.\n'
-                      "Type 'help' for a list of commands, and 'quit' when done.")
-                pdb.post_mortem()
-            sys.exit(1)
+                latexcommand=r'{latex} {pyptexfilename} && (test ! -f {bibfilename} || bibtex {auxfilename})',
+                postmortem=postmortem)
+#        except PyptexUserError as e:
+#            import pdb
+#            foo = e.user_exception
+#            print('\n'.join(traceback.TracebackException(exc_type=type(foo), exc_value=foo, exc_traceback=foo.__traceback__).format()))
+#            if dopdb:
+#                print('A Python error has occurred. Launching the debugger pdb.\n'
+#                      "Type 'help' for a list of commands, and 'quit' when done.")
+#                pdb.post_mortem(foo.__traceback__)
+#            sys.exit(1)
+#        except Exception:
+#            import pdb
+#            traceback.print_exc(file=sys.stdout)
+#            if dopdb:
+#                print('A Python error has occurred. Launching the debugger pdb.\n'
+#                      "Type 'help' for a list of commands, and 'quit' when done.")
+#                pdb.post_mortem()
+#            sys.exit(1)
     return pyp.exitcode
