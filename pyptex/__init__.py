@@ -269,19 +269,23 @@ class ExecError(Exception):
         self.mode = mode
 
 __pdoc__['exec_and_catch'] = False
-def exec_and_catch(cmd,glob,loc,filename,linecount,modes=[eval,exec]):
+def exec_and_catch(cmd,glob,loc,filename,linecount,reraise,modes=[eval,exec]):
   for k in range(len(modes)):
     mode = modes[k]
     modename = 'exec' if mode==exec else 'eval'
     try:
-      C = compile(('\n'*linecount)+cmd,filename,mode=modename)
+        C = compile(('\n'*linecount)+cmd,filename,mode=modename)
     except Exception as e:
-      if k==len(modes)-1:
-        raise ExecError(e,'compile') from None
-      continue
+        if k==len(modes)-1:
+            if reraise:
+                raise
+            raise ExecError(e,'compile') from None
+        continue
     try:
-      ret = mode(C,glob,loc)
+        ret = mode(C,glob,loc)
     except Exception as e:
+        if reraise:
+            raise
         raise ExecError(e,modename) from None
     return (ret,mode)
 
@@ -390,7 +394,7 @@ class pyptex:
             if k not in foo:
                 del bar[k]
 
-    def __init__(self, texfilename, argv=None, latexcommand=False):
+    def __init__(self, texfilename, argv=None, latexcommand=False, reraise=True):
         r"""`pyp = pyptex('a.tex')` reads in the LaTeX file a.tex and locates all
         Python code fragments contained inside. These Python code fragments are
         executed and their outputs are substituted to produce the `a.pyptex` output file.
@@ -445,6 +449,7 @@ class pyptex:
         self.__sympy_plot__ = sympy.plotting.plot(1, show=False).__class__
         self.__globals__ = {'__builtins__': __builtins__, 'pyp': self }
         self.__frozen__ = self.__globals__.copy()
+        self.__reraise__ = reraise
         self.filename = stripext.sub(lambda m: m.group(1),texfilename)
         self.texfilename = texfilename
         matplotlib.use("module://pyptex")
@@ -488,10 +493,9 @@ class pyptex:
                 return '@'
             for k in [2,3]:
                 if m.start(k) >= 0:
-                    return self.mylatex(exec_and_catch(
-                        cmd=m.group(k), glob=foo.f_globals, loc=foo.f_locals,
-                        filename='<format string>', linecount=0, modes=[eval],
-                        )[0])
+                    return self.mylatex(eval(
+                        m.group(k), foo.f_globals, foo.f_locals,
+                        ))
 #                    return self.mylatex(eval(m.group(k), foo.f_globals, foo.f_locals))
             raise Exception("Tragic regular expression committed seppuku")
 
@@ -506,25 +510,13 @@ class pyptex:
         self.__accum__ = []
         (ret,mode) = exec_and_catch(
             cmd=S,glob=glob_,loc=None,
-            filename=self.texfilename,linecount=k
+            filename=self.texfilename,linecount=k,
+            reraise=self.__reraise__
             )
         if mode==eval:
             self.__accum__.append(ret)
         if self.autoshow:
             self.showall()
-#        with suppress(Exception):
-#            C = compile(S, self.texfilename, mode='eval')
-#            doeval = True
-#        if doeval:
-#            ret = eval(C, glob_)
-#            self.__accum__.append(ret)
-#            if(self.autoshow):
-#                self.showall()
-#        else:
-#            C = compile(S, self.texfilename, mode='exec')
-#            exec(C, glob_)
-#            if(self.autoshow):
-#                self.showall()
         print(f'Python result:\n{self.__accum__!s}')
         return self.__accum__
 
@@ -809,7 +801,8 @@ def pyptexmain(argv: list = None):
     with streamcapture.StreamCapture(sys.stdout,writer), streamcapture.StreamCapture(sys.stderr,writer):
         try:
             pyp = pyptex(argv[1], argv[2:],
-                latexcommand=r'{latex} {pyptexfilename} && (test ! -f {bibfilename} || bibtex {auxfilename})')
+                latexcommand=r'{latex} {pyptexfilename} && (test ! -f {bibfilename} || bibtex {auxfilename})',
+                reraise=False)
         except ExecError as e:
             import pdb
             foo = e.user_exception.with_traceback(e.user_traceback)

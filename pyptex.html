@@ -415,19 +415,23 @@ class ExecError(Exception):
         self.mode = mode
 
 __pdoc__[&#39;exec_and_catch&#39;] = False
-def exec_and_catch(cmd,glob,loc,filename,linecount,modes=[eval,exec]):
+def exec_and_catch(cmd,glob,loc,filename,linecount,reraise,modes=[eval,exec]):
   for k in range(len(modes)):
     mode = modes[k]
     modename = &#39;exec&#39; if mode==exec else &#39;eval&#39;
     try:
-      C = compile((&#39;\n&#39;*linecount)+cmd,filename,mode=modename)
+        C = compile((&#39;\n&#39;*linecount)+cmd,filename,mode=modename)
     except Exception as e:
-      if k==len(modes)-1:
-        raise ExecError(e,&#39;compile&#39;) from None
-      continue
+        if k==len(modes)-1:
+            if reraise:
+                raise
+            raise ExecError(e,&#39;compile&#39;) from None
+        continue
     try:
-      ret = mode(C,glob,loc)
+        ret = mode(C,glob,loc)
     except Exception as e:
+        if reraise:
+            raise
         raise ExecError(e,modename) from None
     return (ret,mode)
 
@@ -536,7 +540,7 @@ class pyptex:
             if k not in foo:
                 del bar[k]
 
-    def __init__(self, texfilename, argv=None, latexcommand=False):
+    def __init__(self, texfilename, argv=None, latexcommand=False, reraise=True):
         r&#34;&#34;&#34;`pyp = pyptex(&#39;a.tex&#39;)` reads in the LaTeX file a.tex and locates all
         Python code fragments contained inside. These Python code fragments are
         executed and their outputs are substituted to produce the `a.pyptex` output file.
@@ -591,6 +595,7 @@ class pyptex:
         self.__sympy_plot__ = sympy.plotting.plot(1, show=False).__class__
         self.__globals__ = {&#39;__builtins__&#39;: __builtins__, &#39;pyp&#39;: self }
         self.__frozen__ = self.__globals__.copy()
+        self.__reraise__ = reraise
         self.filename = stripext.sub(lambda m: m.group(1),texfilename)
         self.texfilename = texfilename
         matplotlib.use(&#34;module://pyptex&#34;)
@@ -634,10 +639,9 @@ class pyptex:
                 return &#39;@&#39;
             for k in [2,3]:
                 if m.start(k) &gt;= 0:
-                    return self.mylatex(exec_and_catch(
-                        cmd=m.group(k), glob=foo.f_globals, loc=foo.f_locals,
-                        filename=&#39;&lt;format string&gt;&#39;, linecount=0, modes=[eval],
-                        )[0])
+                    return self.mylatex(eval(
+                        m.group(k), foo.f_globals, foo.f_locals,
+                        ))
 #                    return self.mylatex(eval(m.group(k), foo.f_globals, foo.f_locals))
             raise Exception(&#34;Tragic regular expression committed seppuku&#34;)
 
@@ -652,25 +656,13 @@ class pyptex:
         self.__accum__ = []
         (ret,mode) = exec_and_catch(
             cmd=S,glob=glob_,loc=None,
-            filename=self.texfilename,linecount=k
+            filename=self.texfilename,linecount=k,
+            reraise=self.__reraise__
             )
         if mode==eval:
             self.__accum__.append(ret)
         if self.autoshow:
             self.showall()
-#        with suppress(Exception):
-#            C = compile(S, self.texfilename, mode=&#39;eval&#39;)
-#            doeval = True
-#        if doeval:
-#            ret = eval(C, glob_)
-#            self.__accum__.append(ret)
-#            if(self.autoshow):
-#                self.showall()
-#        else:
-#            C = compile(S, self.texfilename, mode=&#39;exec&#39;)
-#            exec(C, glob_)
-#            if(self.autoshow):
-#                self.showall()
         print(f&#39;Python result:\n{self.__accum__!s}&#39;)
         return self.__accum__
 
@@ -955,7 +947,8 @@ def pyptexmain(argv: list = None):
     with streamcapture.StreamCapture(sys.stdout,writer), streamcapture.StreamCapture(sys.stderr,writer):
         try:
             pyp = pyptex(argv[1], argv[2:],
-                latexcommand=r&#39;{latex} {pyptexfilename} &amp;&amp; (test ! -f {bibfilename} || bibtex {auxfilename})&#39;)
+                latexcommand=r&#39;{latex} {pyptexfilename} &amp;&amp; (test ! -f {bibfilename} || bibtex {auxfilename})&#39;,
+                reraise=False)
         except ExecError as e:
             import pdb
             foo = e.user_exception.with_traceback(e.user_traceback)
@@ -1014,7 +1007,8 @@ If "&ndash;pdb=yes" is in argv, automatic pdb postmortem is enabled. This is the
     with streamcapture.StreamCapture(sys.stdout,writer), streamcapture.StreamCapture(sys.stderr,writer):
         try:
             pyp = pyptex(argv[1], argv[2:],
-                latexcommand=r&#39;{latex} {pyptexfilename} &amp;&amp; (test ! -f {bibfilename} || bibtex {auxfilename})&#39;)
+                latexcommand=r&#39;{latex} {pyptexfilename} &amp;&amp; (test ! -f {bibfilename} || bibtex {auxfilename})&#39;,
+                reraise=False)
         except ExecError as e:
             import pdb
             foo = e.user_exception.with_traceback(e.user_traceback)
@@ -1111,7 +1105,7 @@ on which function (<code>compile()</code>, <code>eval()</code> or <code>exec()</
 </dd>
 <dt id="pyptex.pyptex"><code class="flex name class">
 <span>class <span class="ident">pyptex</span></span>
-<span>(</span><span>texfilename, argv=None, latexcommand=False)</span>
+<span>(</span><span>texfilename, argv=None, latexcommand=False, reraise=True)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Class <code><a title="pyptex.pyptex" href="#pyptex.pyptex">pyptex</a></code> is used to parse an input (templated) <code>a.tex</code> file
@@ -1276,7 +1270,7 @@ automatically displayed at the end of the Python block.</li>
             if k not in foo:
                 del bar[k]
 
-    def __init__(self, texfilename, argv=None, latexcommand=False):
+    def __init__(self, texfilename, argv=None, latexcommand=False, reraise=True):
         r&#34;&#34;&#34;`pyp = pyptex(&#39;a.tex&#39;)` reads in the LaTeX file a.tex and locates all
         Python code fragments contained inside. These Python code fragments are
         executed and their outputs are substituted to produce the `a.pyptex` output file.
@@ -1331,6 +1325,7 @@ automatically displayed at the end of the Python block.</li>
         self.__sympy_plot__ = sympy.plotting.plot(1, show=False).__class__
         self.__globals__ = {&#39;__builtins__&#39;: __builtins__, &#39;pyp&#39;: self }
         self.__frozen__ = self.__globals__.copy()
+        self.__reraise__ = reraise
         self.filename = stripext.sub(lambda m: m.group(1),texfilename)
         self.texfilename = texfilename
         matplotlib.use(&#34;module://pyptex&#34;)
@@ -1374,10 +1369,9 @@ automatically displayed at the end of the Python block.</li>
                 return &#39;@&#39;
             for k in [2,3]:
                 if m.start(k) &gt;= 0:
-                    return self.mylatex(exec_and_catch(
-                        cmd=m.group(k), glob=foo.f_globals, loc=foo.f_locals,
-                        filename=&#39;&lt;format string&gt;&#39;, linecount=0, modes=[eval],
-                        )[0])
+                    return self.mylatex(eval(
+                        m.group(k), foo.f_globals, foo.f_locals,
+                        ))
 #                    return self.mylatex(eval(m.group(k), foo.f_globals, foo.f_locals))
             raise Exception(&#34;Tragic regular expression committed seppuku&#34;)
 
@@ -1392,25 +1386,13 @@ automatically displayed at the end of the Python block.</li>
         self.__accum__ = []
         (ret,mode) = exec_and_catch(
             cmd=S,glob=glob_,loc=None,
-            filename=self.texfilename,linecount=k
+            filename=self.texfilename,linecount=k,
+            reraise=self.__reraise__
             )
         if mode==eval:
             self.__accum__.append(ret)
         if self.autoshow:
             self.showall()
-#        with suppress(Exception):
-#            C = compile(S, self.texfilename, mode=&#39;eval&#39;)
-#            doeval = True
-#        if doeval:
-#            ret = eval(C, glob_)
-#            self.__accum__.append(ret)
-#            if(self.autoshow):
-#                self.showall()
-#        else:
-#            C = compile(S, self.texfilename, mode=&#39;exec&#39;)
-#            exec(C, glob_)
-#            if(self.autoshow):
-#                self.showall()
         print(f&#39;Python result:\n{self.__accum__!s}&#39;)
         return self.__accum__
 
@@ -2053,10 +2035,9 @@ scope that is <code>levels</code> calls up on the stack. The template character 
                 return &#39;@&#39;
             for k in [2,3]:
                 if m.start(k) &gt;= 0:
-                    return self.mylatex(exec_and_catch(
-                        cmd=m.group(k), glob=foo.f_globals, loc=foo.f_locals,
-                        filename=&#39;&lt;format string&gt;&#39;, linecount=0, modes=[eval],
-                        )[0])
+                    return self.mylatex(eval(
+                        m.group(k), foo.f_globals, foo.f_locals,
+                        ))
 #                    return self.mylatex(eval(m.group(k), foo.f_globals, foo.f_locals))
             raise Exception(&#34;Tragic regular expression committed seppuku&#34;)
 
