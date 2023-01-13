@@ -1,4 +1,8 @@
 
+# v1.5.4
+
+* Minor improvement with LaTeX error reporting (commit 66886da by Sébastien Loisel)
+
 # v1.5.3
 
 * Improved line numbers in LaTeX error messages.  (commit f6d99e2 by Sébastien Loisel)
