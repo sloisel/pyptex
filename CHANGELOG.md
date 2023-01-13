@@ -1,4 +1,8 @@
 
+# v1.5.3
+
+* Improved line numbers in LaTeX error messages.  (commit f6d99e2 by Sébastien Loisel)
+
 # v1.5.2
 
 * Fixes related to traceback truncation within pyp.pp(...)  (commit fd588ce by Sébastien Loisel)
