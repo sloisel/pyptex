@@ -130,7 +130,7 @@ One can control how the \texttt{a.pyptex} file is compiled into \texttt{a.pdf} b
 {latex} {pyptexfilename} && 
    (test ! -f {bibfilename} || bibtex {auxfilename})
 \end{lstlisting}
-The usual Python substitutions are made from the \texttt{pyp} object, e.g. \verb|pyp.latex| defaults to \verb|"pdflatex --file-line-error --synctex=1"| but this can be overridden from anywhere in \texttt{a.tex}.
+The usual Python substitutions are made from the \texttt{pyp} object, e.g. \verb|pyp.latex| defaults to \verb|"pdflatex -file-line-error --synctex=1"| but this can be overridden from anywhere in \texttt{a.tex}.
 
 \pyptex{} can be used programmatically in the Python interpreter with \texttt{import pyptex}. The module exports a \texttt{pyptex.pyptex} object; doing \\ \texttt{pyp = pyptex.pyptex('a.tex')} causes the file \texttt{a.tex} to be read in, the Python fragments are executed, and the file \texttt{a.pyptex} is written out. The compiled text \texttt{a.pyptex} is available as the string \texttt{pyp.compiled}. The function \\\texttt{pyptex.pyptexmain()} implements the standard operations of the shell command \texttt{pyptex}. Further documentation is available by doing e.g. \texttt{help(pyptex)}.
 

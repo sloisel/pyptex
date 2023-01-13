@@ -4,5 +4,6 @@ Using cached Python outputs
 Saving to file: test.pyptex
 Dependencies are:
 {'.../__init__.py': '(datetime)', 'file.txt': '(datetime)'}
+Saving cache file test.pickle
 Running Latex command:
-pdflatex --file-line-error --synctex=1 test.pyptex && (test ! -f test.bib || bibtex test.aux)
+pdflatex -file-line-error --synctex=1 test.pyptex && (test ! -f test.bib || bibtex test.aux)

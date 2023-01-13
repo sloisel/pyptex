@@ -28,10 +28,10 @@ os.system("chmod a+rx scripts/pyptex")
 setup(
     name='pyptex',
     description='Python Preprocessor for (La)TeX',
-    version='1.5.2',
+    version='1.5.3',
     packages=find_packages(),
-    install_requires=['sympy>=1.5', 'numpy>=1.18', 'setuptools', 'pdoc3>=0.7','matplotlib','streamcapture>=1.1'],
-    python_requires='>=3',
+    install_requires=['sympy>=1.5', 'numpy>=1.18', 'setuptools', 'pdoc3>=0.7','matplotlib','streamcapture>=1.2'],
+    python_requires='>=3.8',
     author='Sébastien Loisel',
     author_email='sloisel@gmail.com',
     zip_safe=False,

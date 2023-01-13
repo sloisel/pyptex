@@ -95,7 +95,7 @@ Python result:
 Executing Python code:
 pyp.latex
 Python result:
-['pdflatex --file-line-error --synctex=1']
+['pdflatex -file-line-error --synctex=1']
 Executing Python code:
 
 pyp.bib(r"""
@@ -254,4 +254,4 @@ Dependencies are:
 {'.../__init__.py': '(datetime)', 'test.bib': '(datetime)'}
 Saving cache file test.pickle
 Running Latex command:
-pdflatex --file-line-error --synctex=1 test.pyptex && (test ! -f test.bib || bibtex test.aux)
+pdflatex -file-line-error --synctex=1 test.pyptex && (test ! -f test.bib || bibtex test.aux)

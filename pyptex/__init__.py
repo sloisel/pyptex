@@ -211,7 +211,7 @@ ppparser = re.compile(r"(@@)|@([a-zA-Z_][a-zA-Z0-9_]*)|@{([^{}}]*)}",re.DOTALL)
 pypparser = re.compile(r'((?<!\\)%[^\n]*\n)|(@@)|(@(\[([a-zA-Z]*)\])?{([^{}]+)}|@(\[([a-zA-Z]*)\])?{{{(.*?)}}})', re.DOTALL)
 bibentryname = re.compile(r'[^{]*{([^,]*),', re.DOTALL)
 stripext = re.compile(r'(.*?)(\.(pyp\.)?[^\.]*)?$', re.DOTALL)
-
+__stringtag__ = "<PypTeX Format String>"
 
 __pdoc__['format_my_nanos'] = False
 # Credit: abarnet on StackOverflow
@@ -230,63 +230,40 @@ def dictdiff(A, B):
         return None
     return next(iter(D))
 
-class ExecError(Exception):
-    r"""Exception class for Python errors in `a.tex` input file.
+__pdoc__["filter_exception"] = False
+def filter_exception(e):
+    global __stringtag__
+    tb = e.__traceback__
+    if tb is None:
+        return e
+    me = tb.tb_frame.f_code.co_filename
+    while tb.tb_next is not None:
+        code0 = tb.tb_frame.f_code
+        code1 = tb.tb_next.tb_frame.f_code
+        if code1.co_filename == me or code1.co_filename == __stringtag__:
+            tb.tb_next = tb.tb_next.tb_next
+        else:
+            tb = tb.tb_next
+    return e.with_traceback(e.__traceback__.tb_next)
 
-    If Python code in `a.tex` raises exceptions, such exceptions are
-    wrapped in the ExecError Exception class, which are then raised.
-    This class has the following fields:
-
-    `ExecError.user_exception` is whatever exception object was raised
-    in `a.tex`.
-
-    `ExecError.user_traceback` is a stack trace of the underlying
-    `user_exception`, but truncated so that it stops at `a.tex`, and
-    does not back up into the internals of the PypTeX compiler itself.
-    If the error was generated during a call to `compile()`, 
-    `user_traceback` will be `None`.
-
-    `ExecError.mode` is either `'compile'`, `'eval'`, `'exec'`, depending
-    on which function (`compile()`, `eval()` or `exec()`) triggered the Exception.
-
-    One can catch and handle these exceptions as follows:
-
-    ```
-        try:
-            pyp = pyptex('a.tex')
-        except ExecError as e:
-            import pdb, traceback
-            e = e.user_exception.with_traceback(e.user_traceback)
-            print('\n'.join(traceback.TracebackException(
-                exc_type=type(e), exc_value=e, exc_traceback=e.__traceback__).format()))
-            if e.user_traceback is not None:
-                pdb.post_mortem(e.__traceback__)
-    ```
-    """
-    def __init__(self,e, mode):
-        self.user_exception = e
-        self.user_traceback = None if mode=='compile' else e.__traceback__.tb_next
-        self.mode = mode
+__pdoc__["__format_exception__"] = False
+def __format_exception__(e): # This is a workaround for broken things in Python 3.9
+    return '\n'.join(traceback.TracebackException(
+                type(e), e, e.__traceback__,limit=None,compact=True).format())
 
 __pdoc__['exec_and_catch'] = False
-def exec_and_catch(cmd,glob,loc,filename,linecount,reraise,modes=[eval,exec]):
+def exec_and_catch(cmd,glob,loc,filename,linecount,modes=[eval,exec]):
   for k in range(len(modes)):
     mode = modes[k]
     modename = 'exec' if mode==exec else 'eval'
-    try:
+    if k<len(modes)-1:
+        try:
+            C = compile(('\n'*linecount)+cmd,filename,mode=modename)
+        except Exception:
+            continue
+    else:
         C = compile(('\n'*linecount)+cmd,filename,mode=modename)
-    except Exception as e:
-        if k==len(modes)-1:
-            if reraise:
-                raise
-            raise ExecError(e,'compile') from None
-        continue
-    try:
-        ret = mode(C,glob,loc)
-    except Exception as e:
-        if reraise:
-            raise
-        raise ExecError(e,modename) from None
+    ret = mode(C,glob,loc)
     return (ret,mode)
 
 class pyptex:
@@ -394,7 +371,7 @@ class pyptex:
             if k not in foo:
                 del bar[k]
 
-    def __init__(self, texfilename, argv=None, latexcommand=False, reraise=True):
+    def __init__(self, texfilename, argv=None, latexcommand=False):
         r"""`pyp = pyptex('a.tex')` reads in the LaTeX file a.tex and locates all
         Python code fragments contained inside. These Python code fragments are
         executed and their outputs are substituted to produce the `a.pyptex` output file.
@@ -449,17 +426,19 @@ class pyptex:
         self.__sympy_plot__ = sympy.plotting.plot(1, show=False).__class__
         self.__globals__ = {'__builtins__': __builtins__, 'pyp': self }
         self.__frozen__ = self.__globals__.copy()
-        self.__reraise__ = reraise
+        self.__substarts__ = []
+        self.__subends__ = []
         self.filename = stripext.sub(lambda m: m.group(1),texfilename)
         self.texfilename = texfilename
         matplotlib.use("module://pyptex")
         foo = self.filename+'.tex'
         self.pyptexfilename = foo if foo!=texfilename else f'{self.filename}.pyptex'
         self.cachefilename = f'{self.filename}.pickle'
+        self.linemapfilename = f'{self.filename}.linemap'
         self.bibfilename = f'{self.filename}.bib'
         self.auxfilename = f'{self.filename}.aux'
         self.includegraphics = r'\includegraphics[width=\textwidth]{%s}'
-        self.latex = 'pdflatex --file-line-error --synctex=1'
+        self.latex = 'pdflatex -file-line-error --synctex=1'
         self.latexcommand = latexcommand
         self.disable_cache = False
         self.autoshow = True
@@ -473,7 +452,7 @@ class pyptex:
         self.dep(__file__)
         self.compile()
         print(f'{texfilename}: pyptex compilation ends')
-    def pp(self, Z, levels: int = 1):
+    def pp(self, Z):
         r"""Pretty-prints the template text string `Z`, using substitutions from the local
         scope that is `levels` calls up on the stack. The template character is @.
 
@@ -483,20 +462,15 @@ class pyptex:
         `pp` can also evaluate Python expressions in the template string, e.g.
         `pyp.pp("@{3+4}")` produces `7`.
         """
-        global ppparser
-        foo = inspect.currentframe()
-        while levels > 0:
-            foo = foo.f_back
-            levels -= 1
+        global ppparser,__stringtag__
+        foo = inspect.currentframe().f_back
         def do_work(m):
             if m.start(1) >= 0:
                 return '@'
             for k in [2,3]:
                 if m.start(k) >= 0:
-                    return self.mylatex(eval(
-                        m.group(k), foo.f_globals, foo.f_locals,
-                        ))
-#                    return self.mylatex(eval(m.group(k), foo.f_globals, foo.f_locals))
+                    return self.mylatex(eval(compile(m.group(k),__stringtag__,mode='eval'),
+                        foo.f_globals, foo.f_locals))
             raise Exception("Tragic regular expression committed seppuku")
 
         return ppparser.sub(do_work, Z)
@@ -504,14 +478,12 @@ class pyptex:
     def run(self, S, k):
         """An internal function for executing Python code."""
         print(f'Executing Python code:\n{S}')
-#        S = '\n'*k + S
         glob_ = self.__globals__
         doeval = False
         self.__accum__ = []
         (ret,mode) = exec_and_catch(
             cmd=S,glob=glob_,loc=None,
-            filename=self.texfilename,linecount=k,
-            reraise=self.__reraise__
+            filename=self.texfilename,linecount=k
             )
         if mode==eval:
             self.__accum__.append(ret)
@@ -541,7 +513,7 @@ class pyptex:
         self.bibs.append(b)
         return bibentryname.match(b).group(1).strip()
 
-    def process(self, S, runner):
+    def process(self, S, runner, record_substitutions):
         """An internal helper function for parsing the input file."""
         ln = numpy.cumsum(numpy.array(numpy.array(list(S), dtype='U1') == '\n', int))
         ln = numpy.insert(ln, 0, 0)
@@ -559,7 +531,11 @@ class pyptex:
                     o = m.group(k-1) or ''
                     break
             self.lc += ln[z1] - ln[z0] + 1
-            return runner(z, ln[z0], o)
+            ret = runner(z, ln[z0], o)
+            if record_substitutions:
+                self.__substarts__.append(ln[m.start(0)])
+                self.__subends__.append(ln[m.end(0)])
+            return ret
 
         return pypparser.sub(do_work, S)
 
@@ -611,7 +587,7 @@ class pyptex:
             assert o in ['','verbatim'],"Invalid option: "+o
             return ''
 
-        self.process(text, runner=scanner)
+        self.process(text, runner=scanner, record_substitutions=True)
         print(f'Found {self.lc!s} lines of Python.')
         saveddeps = self.deps
         self.deps = {}
@@ -654,7 +630,7 @@ class pyptex:
                 if(o=='verbatim'):
                     return C
 
-            self.compiled = self.process(text, runner=subber)
+            self.compiled = self.process(text, runner=subber, record_substitutions=False)
         else:
             print('Cache is invalidated.')
             self.deps = saveddeps
@@ -668,7 +644,7 @@ class pyptex:
                 if(o=='verbatim'):
                     return C
 
-            self.compiled = self.process(text, runner=appender)
+            self.compiled = self.process(text, runner=appender, record_substitutions=False)
         sys.stdout.flush()
         if self.pyptexfilename:
             print(f'Saving to file: {self.pyptexfilename}')
@@ -676,18 +652,27 @@ class pyptex:
                 file.write(self.compiled)
         self.resolvedeps()
         print(f'Dependencies are:\n{self.deps!s}')
-        if not cached:
-            print('Saving cache file', self.cachefilename)
-            with open(self.cachefilename, 'wb') as file:
-                cache = {}
-                for k, v in self.__dict__.items():
-                    if k[0:2] == '__' and k[-2:] == '__':
-                        pass
-                    elif callable(v):
-                        pass
-                    else:
-                        cache[k] = v
-                pickle.dump(cache, file)
+        numlines = len(text.split('\n'))
+        linemaps = []
+        prevline = 0
+        for k in range(len(self.outputs)):
+            linemaps.append(list(range(prevline+1,self.__substarts__[k]+1)))
+            count = len(self.outputs[k].split('\n'))
+            linemaps.append([self.__substarts__[k]]*(count-1))
+            prevline = self.__subends__[k]
+        linemaps.append(list(range(prevline+1,numlines+1)))
+        self.linemap = [str(x) for sublist in linemaps for x in sublist]
+        print('Saving cache file', self.cachefilename)
+        with open(self.cachefilename, 'wb') as file:
+            cache = {}
+            for k, v in self.__dict__.items():
+                if k[0:2] == '__' and k[-2:] == '__':
+                    pass
+                elif callable(v):
+                    pass
+                else:
+                    cache[k] = v
+            pickle.dump(cache, file)
         if self.latexcommand:
             cmd = self.latexcommand.format(**self.__dict__)
             print(f'Running Latex command:\n{cmd}')
@@ -777,6 +762,38 @@ class pyptex:
         return open(filename, *argv, **kwargs)
 
 
+class MyWriter(streamcapture.Writer):
+    def __init__(self,stream):
+        super(MyWriter, self).__init__(stream)
+        self.last = b""
+        self.matcher = re.compile(r'([^:]*):([0-9]+): LaTeX Error')
+    def write_from(self,data,cap):
+        foo = data.split(b"\n")
+        n = len(foo)
+        for k in range(n):
+            bar = b"" if k>0 else self.last
+            baz = self.matcher.match((bar+foo[k]).decode())
+            if baz:
+                try:
+                    pyptexfile = baz.group(1)
+                    basename = stripext.sub(lambda m: m.group(1),pyptexfile)
+                    picklefile = basename+'.pickle'
+                    with open(picklefile, 'rb') as file:
+                        cache = pickle.load(file)
+                    texfile = cache['texfilename']
+                    pyptexlinenumber = int(baz.group(2))
+                    texlinenumber = cache['linemap'][pyptexlinenumber-1]
+                    foo[k] += (f"\n{texfile}:{texlinenumber}: PypTeX source file").encode()
+                    data = b"\n".join(foo)
+                except Exception:
+                    pass
+        if n<2:
+            self.last = b""
+        self.last += foo[n-1]
+        self._write(data)
+        os.write(cap.dup_fd,data)
+
+
 def pyptexmain(argv: list = None):
     """This function parses an input file a.tex to produce a.pyptex and a.pdf, by
     doing pyp = pyptex('a.tex', ...) object. The filename a.tex must be in argv[1];
@@ -797,19 +814,20 @@ def pyptexmain(argv: list = None):
     if len(argv) < 2:
         print('Usage: pyptex <filename.tex> ...')
         sys.exit(1)
-    writer = streamcapture.Writer(open(f'{os.path.splitext(argv[1])[0]}.pyplog','wb'),2)
-    with streamcapture.StreamCapture(sys.stdout,writer), streamcapture.StreamCapture(sys.stderr,writer):
+    writer = MyWriter(open(f'{os.path.splitext(argv[1])[0]}.pyplog','wb'))
+    with streamcapture.StreamCapture(sys.stdout,writer,echo=False), streamcapture.StreamCapture(sys.stderr,writer,echo=False):
         try:
             pyp = pyptex(argv[1], argv[2:],
                 latexcommand=r'{latex} {pyptexfilename} && (test ! -f {bibfilename} || bibtex {auxfilename})',
-                reraise=False)
-        except ExecError as e:
+                )
+        except Exception as e:
             import pdb
-            foo = e.user_exception.with_traceback(e.user_traceback)
-            print('\n'.join(traceback.TracebackException(exc_type=type(foo), exc_value=foo, exc_traceback=foo.__traceback__).format()))
-            if e.user_traceback is not None and dopdb:
+#            e = filter_exception(e)
+            print(__format_exception__(e))
+#            print('\n'.join(traceback.TracebackException(exc_type=type(foo), exc_value=foo, exc_traceback=foo.__traceback__).format()))
+            if e.__traceback__ is not None and dopdb:
                 print('A Python error has occurred. Launching the debugger pdb.\n'
                       "Type 'help' for a list of commands, and 'quit' when done.")
-                pdb.post_mortem(foo.__traceback__)
+                pdb.post_mortem(e.__traceback__)
             sys.exit(1)
     return pyp.exitcode
