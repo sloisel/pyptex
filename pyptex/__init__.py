@@ -766,7 +766,7 @@ class MyWriter(streamcapture.Writer):
     def __init__(self,stream):
         super(MyWriter, self).__init__(stream)
         self.last = b""
-        self.matcher = re.compile(r'([^:]*):([0-9]+): LaTeX Error')
+        self.matcher = re.compile(r'([^:]*):([0-9]+): ')
     def write_from(self,data,cap):
         foo = data.split(b"\n")
         n = len(foo)

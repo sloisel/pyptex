@@ -912,7 +912,7 @@ class MyWriter(streamcapture.Writer):
     def __init__(self,stream):
         super(MyWriter, self).__init__(stream)
         self.last = b&#34;&#34;
-        self.matcher = re.compile(r&#39;([^:]*):([0-9]+): LaTeX Error&#39;)
+        self.matcher = re.compile(r&#39;([^:]*):([0-9]+): &#39;)
     def write_from(self,data,cap):
         foo = data.split(b&#34;\n&#34;)
         n = len(foo)
@@ -1059,7 +1059,7 @@ If "&ndash;pdb=yes" is in argv, automatic pdb postmortem is enabled. This is the
     def __init__(self,stream):
         super(MyWriter, self).__init__(stream)
         self.last = b&#34;&#34;
-        self.matcher = re.compile(r&#39;([^:]*):([0-9]+): LaTeX Error&#39;)
+        self.matcher = re.compile(r&#39;([^:]*):([0-9]+): &#39;)
     def write_from(self,data,cap):
         foo = data.split(b&#34;\n&#34;)
         n = len(foo)
