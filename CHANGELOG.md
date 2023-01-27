@@ -1,4 +1,8 @@
 
+# v1.5.5
+
+* Restore stack filtering that had been accidentally removed  (commit 50e36cf by Sébastien Loisel)
+
 # v1.5.4
 
 * Minor improvement with LaTeX error reporting (commit 66886da by Sébastien Loisel)
