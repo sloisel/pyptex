@@ -303,6 +303,7 @@ import pickle
 import re
 import string
 import subprocess
+import shlex
 import sys
 import time
 import traceback
@@ -822,7 +823,7 @@ class pyptex:
         if self.latexcommand:
             cmd = self.latexcommand.format(**self.__dict__)
             print(f&#39;Running Latex command:\n{cmd}&#39;)
-            self.exitcode = os.system(cmd)
+            self.exitcode = subprocess.Popen(shlex.split(cmd),close_fds=True).wait()
 
     def bib(self, bib=&#34;&#34;):
         &#34;&#34;&#34;A helper function for creating a `.bib` file. If `pyp=pyptex(&#39;a.tex&#39;)`,
@@ -913,6 +914,7 @@ class MyWriter(streamcapture.Writer):
         super(MyWriter, self).__init__(stream)
         self.last = b&#34;&#34;
         self.matcher = re.compile(r&#39;([^:]*):([0-9]+): &#39;)
+        self.caches = {}
     def write_from(self,data,cap):
         foo = data.split(b&#34;\n&#34;)
         n = len(foo)
@@ -920,19 +922,23 @@ class MyWriter(streamcapture.Writer):
             bar = b&#34;&#34; if k&gt;0 else self.last
             baz = self.matcher.match((bar+foo[k]).decode())
             if baz:
-                try:
-                    pyptexfile = baz.group(1)
-                    basename = stripext.sub(lambda m: m.group(1),pyptexfile)
-                    picklefile = basename+&#39;.pickle&#39;
-                    with open(picklefile, &#39;rb&#39;) as file:
-                        cache = pickle.load(file)
-                    texfile = cache[&#39;texfilename&#39;]
-                    pyptexlinenumber = int(baz.group(2))
-                    texlinenumber = cache[&#39;linemap&#39;][pyptexlinenumber-1]
-                    foo[k] += (f&#34;\n{texfile}:{texlinenumber}: PypTeX source file&#34;).encode()
-                    data = b&#34;\n&#34;.join(foo)
-                except Exception:
-                    pass
+                pyptexfile = baz.group(1)
+                basename = stripext.sub(lambda m: m.group(1),pyptexfile)
+                picklefile = basename+&#39;.pickle&#39;
+                if picklefile not in self.caches:
+                    try:
+                        with open(picklefile, &#39;rb&#39;) as file:
+                            self.caches[picklefile] = pickle.load(file)
+                    except Exception:
+                        self.caches[picklefile] = None
+                cache = self.caches[picklefile]
+                if cache is None:
+                    continue
+                texfile = cache[&#39;texfilename&#39;]
+                pyptexlinenumber = int(baz.group(2))
+                texlinenumber = cache[&#39;linemap&#39;][pyptexlinenumber-1]
+                foo[k] += (f&#34;\n{texfile}:{texlinenumber}: PypTeX source file&#34;).encode()
+                data = b&#34;\n&#34;.join(foo)
         if n&lt;2:
             self.last = b&#34;&#34;
         self.last += foo[n-1]
@@ -961,6 +967,7 @@ def pyptexmain(argv: list = None):
         print(&#39;Usage: pyptex &lt;filename.tex&gt; ...&#39;)
         sys.exit(1)
     writer = MyWriter(open(f&#39;{os.path.splitext(argv[1])[0]}.pyplog&#39;,&#39;wb&#39;))
+#    writer = streamcapture.Writer(open(f&#39;{os.path.splitext(argv[1])[0]}.pyplog&#39;,&#39;wb&#39;),2)
     with streamcapture.StreamCapture(sys.stdout,writer,echo=False), streamcapture.StreamCapture(sys.stderr,writer,echo=False):
         try:
             pyp = pyptex(argv[1], argv[2:],
@@ -968,7 +975,7 @@ def pyptexmain(argv: list = None):
                 )
         except Exception as e:
             import pdb
-#            e = filter_exception(e)
+            e = filter_exception(e)
             print(__format_exception__(e))
 #            print(&#39;\n&#39;.join(traceback.TracebackException(exc_type=type(foo), exc_value=foo, exc_traceback=foo.__traceback__).format()))
             if e.__traceback__ is not None and dopdb:
@@ -1022,6 +1029,7 @@ If "&ndash;pdb=yes" is in argv, automatic pdb postmortem is enabled. This is the
         print(&#39;Usage: pyptex &lt;filename.tex&gt; ...&#39;)
         sys.exit(1)
     writer = MyWriter(open(f&#39;{os.path.splitext(argv[1])[0]}.pyplog&#39;,&#39;wb&#39;))
+#    writer = streamcapture.Writer(open(f&#39;{os.path.splitext(argv[1])[0]}.pyplog&#39;,&#39;wb&#39;),2)
     with streamcapture.StreamCapture(sys.stdout,writer,echo=False), streamcapture.StreamCapture(sys.stderr,writer,echo=False):
         try:
             pyp = pyptex(argv[1], argv[2:],
@@ -1029,7 +1037,7 @@ If "&ndash;pdb=yes" is in argv, automatic pdb postmortem is enabled. This is the
                 )
         except Exception as e:
             import pdb
-#            e = filter_exception(e)
+            e = filter_exception(e)
             print(__format_exception__(e))
 #            print(&#39;\n&#39;.join(traceback.TracebackException(exc_type=type(foo), exc_value=foo, exc_traceback=foo.__traceback__).format()))
             if e.__traceback__ is not None and dopdb:
@@ -1060,6 +1068,7 @@ If "&ndash;pdb=yes" is in argv, automatic pdb postmortem is enabled. This is the
         super(MyWriter, self).__init__(stream)
         self.last = b&#34;&#34;
         self.matcher = re.compile(r&#39;([^:]*):([0-9]+): &#39;)
+        self.caches = {}
     def write_from(self,data,cap):
         foo = data.split(b&#34;\n&#34;)
         n = len(foo)
@@ -1067,19 +1076,23 @@ If "&ndash;pdb=yes" is in argv, automatic pdb postmortem is enabled. This is the
             bar = b&#34;&#34; if k&gt;0 else self.last
             baz = self.matcher.match((bar+foo[k]).decode())
             if baz:
-                try:
-                    pyptexfile = baz.group(1)
-                    basename = stripext.sub(lambda m: m.group(1),pyptexfile)
-                    picklefile = basename+&#39;.pickle&#39;
-                    with open(picklefile, &#39;rb&#39;) as file:
-                        cache = pickle.load(file)
-                    texfile = cache[&#39;texfilename&#39;]
-                    pyptexlinenumber = int(baz.group(2))
-                    texlinenumber = cache[&#39;linemap&#39;][pyptexlinenumber-1]
-                    foo[k] += (f&#34;\n{texfile}:{texlinenumber}: PypTeX source file&#34;).encode()
-                    data = b&#34;\n&#34;.join(foo)
-                except Exception:
-                    pass
+                pyptexfile = baz.group(1)
+                basename = stripext.sub(lambda m: m.group(1),pyptexfile)
+                picklefile = basename+&#39;.pickle&#39;
+                if picklefile not in self.caches:
+                    try:
+                        with open(picklefile, &#39;rb&#39;) as file:
+                            self.caches[picklefile] = pickle.load(file)
+                    except Exception:
+                        self.caches[picklefile] = None
+                cache = self.caches[picklefile]
+                if cache is None:
+                    continue
+                texfile = cache[&#39;texfilename&#39;]
+                pyptexlinenumber = int(baz.group(2))
+                texlinenumber = cache[&#39;linemap&#39;][pyptexlinenumber-1]
+                foo[k] += (f&#34;\n{texfile}:{texlinenumber}: PypTeX source file&#34;).encode()
+                data = b&#34;\n&#34;.join(foo)
         if n&lt;2:
             self.last = b&#34;&#34;
         self.last += foo[n-1]
@@ -1108,19 +1121,23 @@ If "&ndash;pdb=yes" is in argv, automatic pdb postmortem is enabled. This is the
         bar = b&#34;&#34; if k&gt;0 else self.last
         baz = self.matcher.match((bar+foo[k]).decode())
         if baz:
-            try:
-                pyptexfile = baz.group(1)
-                basename = stripext.sub(lambda m: m.group(1),pyptexfile)
-                picklefile = basename+&#39;.pickle&#39;
-                with open(picklefile, &#39;rb&#39;) as file:
-                    cache = pickle.load(file)
-                texfile = cache[&#39;texfilename&#39;]
-                pyptexlinenumber = int(baz.group(2))
-                texlinenumber = cache[&#39;linemap&#39;][pyptexlinenumber-1]
-                foo[k] += (f&#34;\n{texfile}:{texlinenumber}: PypTeX source file&#34;).encode()
-                data = b&#34;\n&#34;.join(foo)
-            except Exception:
-                pass
+            pyptexfile = baz.group(1)
+            basename = stripext.sub(lambda m: m.group(1),pyptexfile)
+            picklefile = basename+&#39;.pickle&#39;
+            if picklefile not in self.caches:
+                try:
+                    with open(picklefile, &#39;rb&#39;) as file:
+                        self.caches[picklefile] = pickle.load(file)
+                except Exception:
+                    self.caches[picklefile] = None
+            cache = self.caches[picklefile]
+            if cache is None:
+                continue
+            texfile = cache[&#39;texfilename&#39;]
+            pyptexlinenumber = int(baz.group(2))
+            texlinenumber = cache[&#39;linemap&#39;][pyptexlinenumber-1]
+            foo[k] += (f&#34;\n{texfile}:{texlinenumber}: PypTeX source file&#34;).encode()
+            data = b&#34;\n&#34;.join(foo)
     if n&lt;2:
         self.last = b&#34;&#34;
     self.last += foo[n-1]
@@ -1602,7 +1619,7 @@ automatically displayed at the end of the Python block.</li>
         if self.latexcommand:
             cmd = self.latexcommand.format(**self.__dict__)
             print(f&#39;Running Latex command:\n{cmd}&#39;)
-            self.exitcode = os.system(cmd)
+            self.exitcode = subprocess.Popen(shlex.split(cmd),close_fds=True).wait()
 
     def bib(self, bib=&#34;&#34;):
         &#34;&#34;&#34;A helper function for creating a `.bib` file. If `pyp=pyptex(&#39;a.tex&#39;)`,

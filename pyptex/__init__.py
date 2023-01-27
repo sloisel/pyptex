@@ -157,6 +157,7 @@ import pickle
 import re
 import string
 import subprocess
+import shlex
 import sys
 import time
 import traceback
@@ -676,7 +677,7 @@ class pyptex:
         if self.latexcommand:
             cmd = self.latexcommand.format(**self.__dict__)
             print(f'Running Latex command:\n{cmd}')
-            self.exitcode = os.system(cmd)
+            self.exitcode = subprocess.Popen(shlex.split(cmd),close_fds=True).wait()
 
     def bib(self, bib=""):
         """A helper function for creating a `.bib` file. If `pyp=pyptex('a.tex')`,
@@ -767,6 +768,7 @@ class MyWriter(streamcapture.Writer):
         super(MyWriter, self).__init__(stream)
         self.last = b""
         self.matcher = re.compile(r'([^:]*):([0-9]+): ')
+        self.caches = {}
     def write_from(self,data,cap):
         foo = data.split(b"\n")
         n = len(foo)
@@ -774,19 +776,23 @@ class MyWriter(streamcapture.Writer):
             bar = b"" if k>0 else self.last
             baz = self.matcher.match((bar+foo[k]).decode())
             if baz:
-                try:
-                    pyptexfile = baz.group(1)
-                    basename = stripext.sub(lambda m: m.group(1),pyptexfile)
-                    picklefile = basename+'.pickle'
-                    with open(picklefile, 'rb') as file:
-                        cache = pickle.load(file)
-                    texfile = cache['texfilename']
-                    pyptexlinenumber = int(baz.group(2))
-                    texlinenumber = cache['linemap'][pyptexlinenumber-1]
-                    foo[k] += (f"\n{texfile}:{texlinenumber}: PypTeX source file").encode()
-                    data = b"\n".join(foo)
-                except Exception:
-                    pass
+                pyptexfile = baz.group(1)
+                basename = stripext.sub(lambda m: m.group(1),pyptexfile)
+                picklefile = basename+'.pickle'
+                if picklefile not in self.caches:
+                    try:
+                        with open(picklefile, 'rb') as file:
+                            self.caches[picklefile] = pickle.load(file)
+                    except Exception:
+                        self.caches[picklefile] = None
+                cache = self.caches[picklefile]
+                if cache is None:
+                    continue
+                texfile = cache['texfilename']
+                pyptexlinenumber = int(baz.group(2))
+                texlinenumber = cache['linemap'][pyptexlinenumber-1]
+                foo[k] += (f"\n{texfile}:{texlinenumber}: PypTeX source file").encode()
+                data = b"\n".join(foo)
         if n<2:
             self.last = b""
         self.last += foo[n-1]
@@ -815,6 +821,7 @@ def pyptexmain(argv: list = None):
         print('Usage: pyptex <filename.tex> ...')
         sys.exit(1)
     writer = MyWriter(open(f'{os.path.splitext(argv[1])[0]}.pyplog','wb'))
+#    writer = streamcapture.Writer(open(f'{os.path.splitext(argv[1])[0]}.pyplog','wb'),2)
     with streamcapture.StreamCapture(sys.stdout,writer,echo=False), streamcapture.StreamCapture(sys.stderr,writer,echo=False):
         try:
             pyp = pyptex(argv[1], argv[2:],
@@ -822,7 +829,7 @@ def pyptexmain(argv: list = None):
                 )
         except Exception as e:
             import pdb
-#            e = filter_exception(e)
+            e = filter_exception(e)
             print(__format_exception__(e))
 #            print('\n'.join(traceback.TracebackException(exc_type=type(foo), exc_value=foo, exc_traceback=foo.__traceback__).format()))
             if e.__traceback__ is not None and dopdb:
