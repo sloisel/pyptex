@@ -767,16 +767,16 @@ class MyWriter(streamcapture.Writer):
     def __init__(self,stream):
         super(MyWriter, self).__init__(stream)
         self.last = b""
-        self.matcher = re.compile(r'([^:]*):([0-9]+): ')
+        self.matcher = re.compile(b'([^:]*):([0-9]+): ')
         self.caches = {}
     def write_from(self,data,cap):
         foo = data.split(b"\n")
         n = len(foo)
         for k in range(n):
             bar = b"" if k>0 else self.last
-            baz = self.matcher.match((bar+foo[k]).decode())
+            baz = self.matcher.match(bar+foo[k])
             if baz:
-                pyptexfile = baz.group(1)
+                pyptexfile = baz.group(1).decode()
                 basename = stripext.sub(lambda m: m.group(1),pyptexfile)
                 picklefile = basename+'.pickle'
                 if picklefile not in self.caches:
@@ -789,7 +789,7 @@ class MyWriter(streamcapture.Writer):
                 if cache is None:
                     continue
                 texfile = cache['texfilename']
-                pyptexlinenumber = int(baz.group(2))
+                pyptexlinenumber = int(baz.group(2).decode())
                 texlinenumber = cache['linemap'][pyptexlinenumber-1]
                 foo[k] += (f"\n{texfile}:{texlinenumber}: PypTeX source file").encode()
                 data = b"\n".join(foo)

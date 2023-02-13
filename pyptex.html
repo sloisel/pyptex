@@ -913,16 +913,16 @@ class MyWriter(streamcapture.Writer):
     def __init__(self,stream):
         super(MyWriter, self).__init__(stream)
         self.last = b&#34;&#34;
-        self.matcher = re.compile(r&#39;([^:]*):([0-9]+): &#39;)
+        self.matcher = re.compile(b&#39;([^:]*):([0-9]+): &#39;)
         self.caches = {}
     def write_from(self,data,cap):
         foo = data.split(b&#34;\n&#34;)
         n = len(foo)
         for k in range(n):
             bar = b&#34;&#34; if k&gt;0 else self.last
-            baz = self.matcher.match((bar+foo[k]).decode())
+            baz = self.matcher.match(bar+foo[k])
             if baz:
-                pyptexfile = baz.group(1)
+                pyptexfile = baz.group(1).decode()
                 basename = stripext.sub(lambda m: m.group(1),pyptexfile)
                 picklefile = basename+&#39;.pickle&#39;
                 if picklefile not in self.caches:
@@ -935,7 +935,7 @@ class MyWriter(streamcapture.Writer):
                 if cache is None:
                     continue
                 texfile = cache[&#39;texfilename&#39;]
-                pyptexlinenumber = int(baz.group(2))
+                pyptexlinenumber = int(baz.group(2).decode())
                 texlinenumber = cache[&#39;linemap&#39;][pyptexlinenumber-1]
                 foo[k] += (f&#34;\n{texfile}:{texlinenumber}: PypTeX source file&#34;).encode()
                 data = b&#34;\n&#34;.join(foo)
@@ -1067,16 +1067,16 @@ If "&ndash;pdb=yes" is in argv, automatic pdb postmortem is enabled. This is the
     def __init__(self,stream):
         super(MyWriter, self).__init__(stream)
         self.last = b&#34;&#34;
-        self.matcher = re.compile(r&#39;([^:]*):([0-9]+): &#39;)
+        self.matcher = re.compile(b&#39;([^:]*):([0-9]+): &#39;)
         self.caches = {}
     def write_from(self,data,cap):
         foo = data.split(b&#34;\n&#34;)
         n = len(foo)
         for k in range(n):
             bar = b&#34;&#34; if k&gt;0 else self.last
-            baz = self.matcher.match((bar+foo[k]).decode())
+            baz = self.matcher.match(bar+foo[k])
             if baz:
-                pyptexfile = baz.group(1)
+                pyptexfile = baz.group(1).decode()
                 basename = stripext.sub(lambda m: m.group(1),pyptexfile)
                 picklefile = basename+&#39;.pickle&#39;
                 if picklefile not in self.caches:
@@ -1089,7 +1089,7 @@ If "&ndash;pdb=yes" is in argv, automatic pdb postmortem is enabled. This is the
                 if cache is None:
                     continue
                 texfile = cache[&#39;texfilename&#39;]
-                pyptexlinenumber = int(baz.group(2))
+                pyptexlinenumber = int(baz.group(2).decode())
                 texlinenumber = cache[&#39;linemap&#39;][pyptexlinenumber-1]
                 foo[k] += (f&#34;\n{texfile}:{texlinenumber}: PypTeX source file&#34;).encode()
                 data = b&#34;\n&#34;.join(foo)
@@ -1119,9 +1119,9 @@ If "&ndash;pdb=yes" is in argv, automatic pdb postmortem is enabled. This is the
     n = len(foo)
     for k in range(n):
         bar = b&#34;&#34; if k&gt;0 else self.last
-        baz = self.matcher.match((bar+foo[k]).decode())
+        baz = self.matcher.match(bar+foo[k])
         if baz:
-            pyptexfile = baz.group(1)
+            pyptexfile = baz.group(1).decode()
             basename = stripext.sub(lambda m: m.group(1),pyptexfile)
             picklefile = basename+&#39;.pickle&#39;
             if picklefile not in self.caches:
@@ -1134,7 +1134,7 @@ If "&ndash;pdb=yes" is in argv, automatic pdb postmortem is enabled. This is the
             if cache is None:
                 continue
             texfile = cache[&#39;texfilename&#39;]
-            pyptexlinenumber = int(baz.group(2))
+            pyptexlinenumber = int(baz.group(2).decode())
             texlinenumber = cache[&#39;linemap&#39;][pyptexlinenumber-1]
             foo[k] += (f&#34;\n{texfile}:{texlinenumber}: PypTeX source file&#34;).encode()
             data = b&#34;\n&#34;.join(foo)
