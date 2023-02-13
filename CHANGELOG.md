@@ -1,4 +1,8 @@
 
+# v1.5.6
+
+* Bugfix related to decoding non-UTF8 strings. (commit 42737ec by Sébastien Loisel)
+
 # v1.5.5
 
 * Restore stack filtering that had been accidentally removed  (commit 50e36cf by Sébastien Loisel)
